@@ -1,0 +1,602 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+<script type="text/javascript" src="/static/jquery.js"></script>
+<script type="text/javascript" src="/static/bracketentry.js"></script>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+  <table border="0px" cellpadding="0px" cellspacing="0px">
+    <!-- Top Half -->
+    <tr>
+      <td class="bottom"><div id="team_1" class="team">{{teams[0]}}</div></td>
+      <td colspan="9"></td>
+      <td class="bottom"><div id="team_33" class="team">{{teams[32]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_1" value=""></input></td>
+      <td colspan="7"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_17" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_2" class="team">{{teams[1]}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="7"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><div id="team_34" class="team">{{teams[33]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_33" value=""></input></td>
+      <td colspan="5"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_41" value=""></input></td>
+      <td class="left" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_3" class="team">{{teams[2]}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="5"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><div id="team_35" class="team">{{teams[34]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner" readonly="readonly" name="winner_2" value=""></input></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="5"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><input class="winner" readonly="readonly" name="winner_18" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_4" class="team">{{teams[3]}}</div></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="5"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom left"><div id="team_36" class="team">{{teams[35]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="3"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_49" value=""></input></td>
+      <td colspan="3"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_53" value=""></input></td>
+      <td class="left" colspan="3"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_5" class="team">{{teams[4]}}</div></td>
+      <td class="right" colspan="2"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom"><div id="team_37" class="team">{{teams[36]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_3" value=""></input></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_19" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_6" class="team">{{teams[5]}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><div id="team_38" class="team">{{teams[37]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom right"><input class="winner" readonly="readonly" name="winner_34" value=""></input></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><input class="winner" readonly="readonly" name="winner_42" value=""></input></td>
+      <td class="left" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_7" class="team">{{teams[6]}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="2"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><div id="team_39" class="team">{{teams[38]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner" readonly="readonly" name="winner_4" value=""></input></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom left"><input class="winner" readonly="readonly" name="winner_20" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_8" class="team">{{teams[7]}}</div></td>
+      <td class="right" colspan="3"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="3"></td>
+      <td class="bottom left"><div id="team_40" class="team">{{teams[39]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="4"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_57" value=""></input></td>
+      <td colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_59" value=""></input></td>
+      <td class="left" colspan="4"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_9" class="team">{{teams[8]}}</div></td>
+      <td class="right" colspan="3"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="3"></td>
+      <td class="bottom"><div id="team_41" class="team">{{teams[40]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_5" value=""></input></td>
+      <td class="right" colspan="2"></td>
+      <td class="right" colspan="1"></td>
+      <td class="semi_left"><input class="winner finals" readonly="readonly" name="winner_61" value=""></input></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_21" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_10" class="team">{{teams[9]}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="2"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><div id="team_42" class="team">{{teams[41]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_35" value=""></input></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_43" value=""></input></td>
+      <td class="left"colspan="2"></td>
+    </tr>
+    <tr></tr>
+    <tr>
+      <td class="bottom"><div id="team_11" class="team">{{teams[10]}}</div></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom"><div id="team_43" class="team">{{teams[42]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner" readonly="readonly" name="winner_6" value=""></input></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom left"><input class="winner" readonly="readonly" name="winner_22" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_12" class="team">{{teams[11]}}</div></td>
+      <td class="right"colspan="2"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="2"></td>
+      <td class="bottom left"><div id="team_44" class="team">{{teams[43]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="3"></td>
+      <td class="bottom right"><input class="winner" readonly="readonly" name="winner_50" value=""></input></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom left"><input class="winner" readonly="readonly" name="winner_54" value=""></input></td>
+      <td class="left"colspan="3"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_13" class="team">{{teams[12]}}</div></td>
+      <td class="right"colspan="2"></td>
+      <td class="right"colspan="2"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="2"></td>
+      <td class="left"colspan="2"></td>
+      <td class="bottom"><div id="team_45" class="team">{{teams[44]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_7" value=""></input></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="2"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="2"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_23" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_14" class="team">{{teams[13]}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><div id="team_46" class="team">{{teams[45]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom right"><input class="winner" readonly="readonly" name="winner_36" value=""></input></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom left"><input class="winner" readonly="readonly" name="winner_44" value=""></input></td>
+      <td class="left" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_15" class="team">{{teams[14]}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="3"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><div id="team_47" class="team">{{teams[46]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner" readonly="readonly" name="winner_8" value=""></input></td>
+      <td class="right" colspan="3"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="3"></td>
+      <td class="bottom left"><input class="winner" readonly="readonly" name="winner_24" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_16" class="team">{{teams[15]}}</div></td>
+      <td class="right"colspan="4"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="4"></td>
+      <td class="bottom left"><div id="team_48" class="team">{{teams[47]}}</div></td>
+    </tr>
+
+    <!-- Championship -->
+    <tr style="height: 15px;">
+      <td class="right" colspan="5"></td>
+      <td></td>
+      <td class="left"colspan="5"></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="5"></td>
+      <td class="champ"><input class="winner finals" readonly="readonly" name="winner_63" value=""></input></td>
+      <td class="left"colspan="5"></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="5"></td>
+      <td align="center"><input type="submit" value="Submit"></td>
+      <td class="left"colspan="5"></td>
+    </tr>
+
+    <!-- Bottom Half -->
+    <tr>
+      <td class="bottom"><div id="team_17" class="team">{{teams[16]}}</div></td>
+      <td class="right"colspan="4"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="4"></td>
+      <td class="bottom"><div id="team_49" class="team">{{teams[48]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_9" value=""></input></td>
+      <td class="right" colspan="3"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="3"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_25" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_18" class="team">{{teams[17]}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="3"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><div id="team_50" class="team">{{teams[49]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_37" value=""></input></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_45" value=""></input></td>
+      <td class="left" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_19" class="team">{{teams[18]}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><div id="team_51" class="team">{{teams[50]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner" readonly="readonly" name="winner_10" value=""></input></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="2"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="2"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom left"><input class="winner" readonly="readonly" name="winner_26" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_20" class="team">{{teams[19]}}</div></td>
+      <td class="right"colspan="2"></td>
+      <td class="right"colspan="2"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="2"></td>
+      <td class="left"colspan="2"></td>
+      <td class="bottom left"><div id="team_52" class="team">{{teams[51]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="3"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_51" value=""></input></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_55" value=""></input></td>
+      <td class="left" colspan="3"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_21" class="team">{{teams[20]}}</div></td>
+      <td class="right"colspan="2"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="2"></td>
+      <td class="bottom"><div id="team_53" class="team">{{teams[52]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_11" value=""></input></td>
+
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_27" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_22" class="team">{{teams[21]}}</div></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom left"><div id="team_54" class="team">{{teams[53]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom right"><input class="winner" readonly="readonly" name="winner_38" value=""></input></td>
+
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom left"><input class="winner" readonly="readonly" name="winner_46" value=""></input></td>
+      <td class="left" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_23" class="team">{{teams[22]}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="2"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><div id="team_55" class="team">{{teams[54]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner" readonly="readonly" name="winner_12" value=""></input></td>
+      <td class="right" colspan="2"></td>
+      <td class="right" colspan="1"></td>
+      <td class="semi_right"><input class="winner finals" readonly="readonly" name="winner_62" value=""></input></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom left"><input class="winner" readonly="readonly" name="winner_28" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_24" class="team">{{teams[23]}}</div></td>
+      <td class="right" colspan="3"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="3"></td>
+      <td class="bottom left"><div id="team_56" class="team">{{teams[55]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="4"></td>
+      <td class="bottom right"><input class="winner" readonly="readonly" name="winner_58" value=""></input></td>
+      <td colspan="1"></td>
+      <td class="bottom left"><input class="winner" readonly="readonly" name="winner_60" value=""></input></td>
+      <td class="left" colspan="4"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_25" class="team">{{teams[24]}}</div></td>
+      <td class="right" colspan="3"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="3"></td>
+      <td class="bottom"><div id="team_57" class="team">{{teams[56]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_13" value=""></input></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_29" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_26" class="team">{{teams[25]}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="2"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><div id="team_58" class="team">{{teams[57]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_39" value=""></input></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_47" value=""></input></td>
+      <td class="left"colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_27" class="team">{{teams[26]}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><div id="team_59" class="team">{{teams[58]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner" readonly="readonly" name="winner_14" value=""></input></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><input class="winner" readonly="readonly" name="winner_30" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_28" class="team">{{teams[27]}}</div></td>
+      <td class="right" colspan="2"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom left"><div id="team_60" class="team">{{teams[59]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="3"></td>
+      <td class="bottom right"><input class="winner" readonly="readonly" name="winner_52" value=""></input></td>
+      <td colspan="3"></td>
+      <td class="bottom left"><input class="winner" readonly="readonly" name="winner_56" value=""></input></td>
+      <td class="left"colspan="3"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_29" class="team">{{teams[28]}}</div></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="5"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom"><div id="team_61" class="team">{{teams[60]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_15" value=""></input></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="5"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><input class="winner" readonly="readonly" name="winner_31" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_30" class="team">{{teams[29]}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="5"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><div id="team_62" class="team">{{teams[61]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom right"><input class="winner" readonly="readonly" name="winner_40" value=""></input></td>
+      <td colspan="5"></td>
+      <td class="bottom left"><input class="winner" readonly="readonly" name="winner_48" value=""></input></td>
+      <td class="left" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_31" class="team">{{teams[30]}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="7"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><div id="team_63" class="team">{{teams[62]}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner" readonly="readonly" name="winner_16" value=""></input></td>
+      <td colspan="7"></td>
+      <td class="bottom left"><input class="winner" readonly="readonly" name="winner_32" value=""></input></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_32" class="team">{{teams[31]}}</div></td>
+      <td colspan="9"></td>
+      <td class="bottom left"><div id="team_64" class="team">{{teams[63]}}</div></td>
+    </tr>
+  </table>
+</form>
+{% endblock %}
