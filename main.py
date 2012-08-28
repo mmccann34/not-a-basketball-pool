@@ -64,6 +64,8 @@ class BracketEntry(BaseHandler):
       result = self.request.get(name)
       self.write(name + ': ' + result + '<br>')
 
+    self.write('final score sum: ' + self.request.get('final_score'))
+
 app = webapp2.WSGIApplication([('/', Front),
                                ('/bracketentry', BracketEntry)],
                               debug=True)

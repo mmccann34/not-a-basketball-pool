@@ -1,12 +1,14 @@
 * {
   margin: 0px;
   padding: 0px;
+  box-sizing: border-box;
 }
 
 body {
   font-family: Helvetica, Arial, sans-serif;
   width: 960px;
   margin: 0 auto;
+  /*border: 1px solid;*/
 }
 
 .main-title {
@@ -19,10 +21,8 @@ body {
   text-decoration: none;
 }
 
-input[type=submit] {
-  font-size: 18px;
-  padding: 2px;
-  margin-top: 2px;
+.bracket {
+  margin: 0 auto;
 }
 
 .team {
@@ -42,6 +42,32 @@ input[type=submit] {
   cursor: pointer;
 }
 
+div.right, input.right {
+  text-align: right;
+  padding-right: 2px;
+}
+
+div.left, input.left {
+  text-align: left;
+  padding-left: 2px;
+}
+
+input.champ {
+  text-align: center;
+  font-weight: bold;
+}
+
+input[type=submit] {
+  font-size: 18px;
+  padding: 2px;
+  margin-top: 5px;
+  width: 75px;
+}
+
+input.finals {
+  border-bottom: 1px solid;
+}
+
 td.bottom {
   border-bottom: 1px solid;
 }
@@ -55,7 +81,8 @@ td.left {
 }
 
 td.champ{
-  padding: 0 5px;
+  width: 85px;
+  vertical-align: top;
 }
 
 td.semi_left {
@@ -64,8 +91,4 @@ td.semi_left {
 
 td.semi_right {
   padding-left: 10px;
-}
-
-input.finals {
-  border-bottom: 1px solid;
 }
