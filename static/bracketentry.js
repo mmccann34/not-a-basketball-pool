@@ -43,6 +43,21 @@ $(function() {
       $('input[name=winner_' + opponent + ']').css("font-weight","normal");
     }
   });
+
+  // Randomize the picks
+  $(document).bind('keydown', 'alt+ctrl+r', function() {
+    for (i=1; i<64; i+=2)
+    {
+      $('#team_' + (i + Math.round(Math.random()))).click();
+    }
+
+    for (i=1; i<63; i+=2)
+    {
+      $('input[name=winner_' + (i + Math.round(Math.random())) + ']').click();
+    }
+
+    $('input[name=final_score]').val(Math.floor((Math.random()*101)+100));
+  });
 });
 
 function setWinner(game, value)
@@ -86,6 +101,15 @@ function validateInputs()
     if (isNaN(final_score) || final_score != final_score || final_score_val <= 0)
     {
       alert('Final Score Sum must be a valid, positive number');
+      returnval = false;
+    }
+  }
+
+  if (returnval)
+  {
+    if (!$('input[name=entry_name]').val())
+    {
+      alert('Entry must have a name')
       returnval = false;
     }
   }

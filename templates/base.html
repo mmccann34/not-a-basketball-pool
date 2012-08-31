@@ -1,18 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
+  {% block head %}
+  <title>{% block title %}{% endblock %} - Not a Basketball Pool</title>
   <link type="text/css" rel="stylesheet" href="/static/main.css" />
-
-  <title>Not a Basketball Pool</title>
-
-  {% block scripts %}
+  <script type="text/javascript" src="/static/jquery.js"></script>
+  <script type="text/javascript" src="/static/jquery.hotkeys.js"></script>
   {% endblock %}
 </head>
 
 <body>
-  <a href="/" class="main-title">
-    Not a Basketball Pool
-  </a>
+  <div id="header">
+    <a href="/" class="main-title">
+      Not a Basketball Pool
+    </a>
+
+    <div class="login-area">
+      {% if user %}
+      {{user.name}} (<a class="login-link" href="/logout">logout</a>)
+      {% else %}
+      <a class="login-link" href="/login">login</a>
+      |
+      <a class="login-link" href="/signup">signup</a>
+      {% endif %}
+    </div>
+  </div>
 
   <div id="content">
     {% block content %}
