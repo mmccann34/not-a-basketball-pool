@@ -1,12 +1,13 @@
 $(function() {
   // do stuff when DOM is ready
-  $(".team").click(function() {
-    if ($(this).text())
+  $('.team').click(function() {
+    locked = $('#form_bracket').data('locked');
+    if (locked != 'True' && $(this).text())
     {
       var team = parseInt($(this).attr('id').split('_')[1]);
       setWinner(Math.round(team/2), $(this).text());
 
-      $(this).css("font-weight","bold");
+      $(this).css('font-weight','bold');
 
       var opponent;
       if (team % 2 == 0)
@@ -18,17 +19,18 @@ $(function() {
         opponent = team + 1;
       }
 
-      $('#team_' + opponent).css("font-weight","normal");
+      $('#team_' + opponent).css('font-weight','normal');
     }
   });
 
-  $(".winner").click(function() {
-    if ($(this).val())
+  $('.winner').click(function() {
+    locked = $('#form_bracket').data('locked');
+    if (locked != 'True' && $(this).val())
     {
       var game = parseInt($(this).attr('name').split('_')[1]);
       setWinner(Math.round(game/2) + 32, $(this).val());
 
-      $(this).css("font-weight","bold");
+      $(this).css('font-weight','bold');
 
       var opponent;
       if (game % 2 == 0)
@@ -40,7 +42,7 @@ $(function() {
         opponent = game + 1;
       }
 
-      $('input[name=winner_' + opponent + ']').css("font-weight","normal");
+      $('input[name=winner_' + opponent + ']').css('font-weight','normal');
     }
   });
 
@@ -87,7 +89,7 @@ function validateInputs()
 
   $('input.winner').each(function (i) {
     if (!$(this).val()) {
-      alert("A winner must be picked for all games");
+      alert('A winner must be picked for all games');
       returnval = false;
     }
     return returnval;

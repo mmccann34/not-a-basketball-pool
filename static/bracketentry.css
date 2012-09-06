@@ -42,6 +42,10 @@ input[name=final_score] {
   font-size: 14px;
 }
 
+input[name=entry_name] {
+  width: 150px;
+}
+
 td.bottom {
   border-bottom: 1px solid;
 }

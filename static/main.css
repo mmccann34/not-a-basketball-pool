@@ -73,6 +73,10 @@ input[type=submit] {
   color: #000;
 }
 
+input[type=text][readonly=readonly] {
+  border: 0px;
+}
+
 .user_form .label {
   text-align: right;
 }

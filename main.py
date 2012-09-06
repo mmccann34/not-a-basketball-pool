@@ -76,7 +76,6 @@ class BaseHandler(webapp2.RequestHandler):
     self.user = uid and User.by_id(int(uid))
 
 ####User####
-
 def make_salt(length = 5):
   return ''.join(random.choice(letters) for x in xrange(length))
 
@@ -129,15 +128,55 @@ def entries_key(group = 'default'):
 
 class Entry(db.Model):
   name = db.StringProperty(required = True)
-  user = db.ReferenceProperty(User)
+  final_score = db.IntegerProperty(required = True)
+  user = db.ReferenceProperty(User, required = True)
 
   @classmethod
-  def submit(cls, name, user):
+  def submit(cls, name, picks, final_score, user):
     e = Entry(parent = entries_key(),
               name = name,
+              final_score = final_score,
               user = user)
     e.put()
+
+    i = 1
+    for p in picks:
+      Pick.submit(i, p, e)
+      i += 1
+
     return e
+
+  def update(self, name, picks, final_score):
+    self.name = name
+    self.final_score = final_score
+    self.put()
+
+    pick_keys = Pick.all(keys_only=True).filter('entry =', self).run(limit=63)
+    for pk in pick_keys:
+      db.delete(pk)
+
+    i = 1
+    for p in picks:
+      Pick.submit(i, p, self)
+      i += 1
+
+####Pick####
+def picks_key(group = 'default'):
+  return db.Key.from_path('picks', group)
+
+class Pick(db.Model):
+  game = db.IntegerProperty(required = True)
+  team = db.StringProperty(required = True)
+  entry = db.ReferenceProperty(Entry, required = True)
+
+  @classmethod
+  def submit(cls, game, team, entry):
+    p = Pick(parent = picks_key(),
+              game = game,
+              team = team,
+              entry = entry)
+    p.put()
+    return p
 
 class Front(BaseHandler):
   def get(self):
@@ -218,10 +257,11 @@ class Logout(BaseHandler):
     self.redirect('/')
 
 class BracketEntry(BaseHandler):
-  def get(self):
+  def get(self, entry_id):
     if not self.user:
       self.redirect('/login')
 
+    params = dict()
     teams = ['Ohio State', 'Alabama St', 'George Mason', 'Villanova', 
               'West Virgina', 'UAB', 'Kentucky', 'Princeton', 'Xavier',
               'Marquette', 'Syracuse', 'Indiana St.', 'Washington', 
@@ -236,24 +276,52 @@ class BracketEntry(BaseHandler):
               'UNCA', 'Butler', 'Old Dominion', 'Kansas St.', 'Utah St.',
               'Wisconsin', 'Belmont', "St. John's", 'Gonzaga', 'BYU',
               'Wofford', 'UCLA', 'Michigan St.', 'Florida', 'UCSB']
-    self.render('bracketentry.html', teams = teams)
+    winners = []
 
-  def post(self):
-    e = Entry.submit(self.request.get('entry_name'), self.user)
-    self.write('entry id: ' + str(e.key().id()) + '<br>')
+    if entry_id != 'new':
+      entry = Entry.get_by_id(int(entry_id), parent = entries_key())
+      if entry:
+        for p in Pick.all().filter('entry = ', entry).order('game').run(limit=63):
+          winners.append(p.team)
+        params['name'] = entry.name
+        params['final_score'] = entry.final_score
 
-    self.write('entry name: ' + self.request.get('entry_name') + '<br>')
+    params['teams'] = teams
+    params['winners'] = winners
 
+    # params['locked'] = True
+
+    self.render('bracketentry.html', **params)
+
+  def post(self, entry_id):
+    picks = []
     for i in range(1, 64):
-      name = 'winner_' + str(i)
-      result = self.request.get(name)
-      self.write(name + ': ' + result + '<br>')
+      result = self.request.get('winner_' + str(i))
+      picks.append(result)
 
-    self.write('final score sum: ' + self.request.get('final_score'))
+    entry = None
+    if entry_id != 'new':
+      entry = Entry.get_by_id(int(entry_id), parent = entries_key())
+
+    if entry:
+      entry.update(self.request.get('entry_name'), picks, int(self.request.get('final_score')))
+    else:
+      entry = Entry.submit(self.request.get('entry_name'), picks, int(self.request.get('final_score')), self.user)
+
+    self.redirect('/mybrackets')
+
+class MyBrackets(BaseHandler):
+  def get(self):
+    if not self.user:
+      self.redirect('/login')
+      
+    entries = Entry.all().filter("user =", self.user).run(batch_size=1000)
+    self.render('mybrackets.html', entries = entries)
 
 app = webapp2.WSGIApplication([('/', Front),
                                ('/signup', Signup),
                                ('/login', Login),
                                ('/logout', Logout),
-                               ('/bracketentry', BracketEntry)],
+                               ('/brackets/(new|[0-9]+)', BracketEntry),
+                               ('/mybrackets', MyBrackets)],
                               debug=True)
