@@ -77,10 +77,10 @@ input[type=text][readonly=readonly] {
   border: 0px;
 }
 
-.user_form .label {
+.input_form .label {
   text-align: right;
 }
 
-.user_form input[type=text], input[type=password] {
+.input_form input[type=text], input[type=password] {
   margin: 2px;
 }

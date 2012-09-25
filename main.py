@@ -19,6 +19,7 @@ import re
 import random
 import hashlib
 import hmac
+from datetime import datetime
 from string import letters
 
 import webapp2
@@ -122,6 +123,23 @@ class User(db.Model):
     if u and valid_pw(name, pw, u.pw_hash):
         return u
 
+####Pool####
+def pools_key(group = 'default'):
+  return db.Key.from_path('pools', group)
+
+class Pool(db.Model):
+  name = db.StringProperty(required = True)
+  lock_date = db.DateTimeProperty(required = True)
+
+  @classmethod
+  def submit(cls, name, lock_date):
+    p = Pool(parent = pools_key(),
+              name = name,
+              lock_date = lock_date)
+    p.put()
+
+    return p
+
 ####Entry####
 def entries_key(group = 'default'):
   return db.Key.from_path('entries', group)
@@ -130,13 +148,15 @@ class Entry(db.Model):
   name = db.StringProperty(required = True)
   final_score = db.IntegerProperty(required = True)
   user = db.ReferenceProperty(User, required = True)
+  pool = db.ReferenceProperty(Pool, required = True)
 
   @classmethod
-  def submit(cls, name, picks, final_score, user):
+  def submit(cls, name, picks, final_score, user, pool):
     e = Entry(parent = entries_key(),
               name = name,
               final_score = final_score,
-              user = user)
+              user = user,
+              pool = pool)
     e.put()
 
     i = 1
@@ -256,6 +276,16 @@ class Logout(BaseHandler):
     self.logout()
     self.redirect('/')
 
+class PoolManagement(BaseHandler):
+  def get(self, entry_id):
+    if not self.user:
+      self.redirect('/login')
+
+    self.render('pool-form.html')
+
+  def post(self, entry_id):
+    pool = Pool.submit(self.request.get('name'), datetime.strptime(self.request.get('lock_date'), "%m/%d/%Y"))
+
 class BracketEntry(BaseHandler):
   def get(self, entry_id):
     if not self.user:
@@ -285,11 +315,12 @@ class BracketEntry(BaseHandler):
           winners.append(p.team)
         params['name'] = entry.name
         params['final_score'] = entry.final_score
+        params['locked'] = datetime.today() > entry.pool.lock_date
+      else:
+        self.redirect('/brackets/new')
 
     params['teams'] = teams
     params['winners'] = winners
-
-    # params['locked'] = True
 
     self.render('bracketentry.html', **params)
 
@@ -306,7 +337,7 @@ class BracketEntry(BaseHandler):
     if entry:
       entry.update(self.request.get('entry_name'), picks, int(self.request.get('final_score')))
     else:
-      entry = Entry.submit(self.request.get('entry_name'), picks, int(self.request.get('final_score')), self.user)
+      entry = Entry.submit(self.request.get('entry_name'), picks, int(self.request.get('final_score')), self.user, Pool.all().get())
 
     self.redirect('/mybrackets')
 
@@ -314,7 +345,7 @@ class MyBrackets(BaseHandler):
   def get(self):
     if not self.user:
       self.redirect('/login')
-      
+
     entries = Entry.all().filter("user =", self.user).run(batch_size=1000)
     self.render('mybrackets.html', entries = entries)
 
@@ -323,5 +354,6 @@ app = webapp2.WSGIApplication([('/', Front),
                                ('/login', Login),
                                ('/logout', Logout),
                                ('/brackets/(new|[0-9]+)', BracketEntry),
+                               ('/pools/(new|[0-9]+)', PoolManagement),
                                ('/mybrackets', MyBrackets)],
                               debug=True)
