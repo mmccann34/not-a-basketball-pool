@@ -2,42 +2,44 @@
 
 {% block title %}Create a Pool{% endblock %}
 
-{% block head %}
-{{ super() }}
-<script type="text/javascript">
-  $(function(){
-    $('#datepicker').datepicker({ minDate: 0 });          
-  });   
-</script>
-{% endblock %}
-
 {% block content %}
-    <h2>Create a Pool</h2>
-    <form method="post" class="input_form">
-      <table>
-        <tr>
-          <td class="label">
-            Name
-          </td>
-          <td>
-            <input type="text" name="name" value="{{name}}">
-          </td>
-          <td class="error">
-            {{error_name}}
-          </td>
-        </tr>
-        <tr>
-          <td class="label">
-            Lock Date
-          </td>
-          <td>
-            <input type="text" name="lock_date" id="datepicker">
-          </td>
-          <td class="error">
-            {{error_datepicker}}
-          </td>
-        </tr>
-      </table>
-      <input type="submit">
-    </form>
+<h2>Create a Pool</h2>
+<form method="post" class="input_form">
+  <table>
+    <tr>
+      <td class="label">
+        Name
+      </td>
+      <td>
+        <input type="text" name="name" value="{{name}}">
+      </td>
+      <td class="error">
+        {{error_name}}
+      </td>
+    </tr>
+    <tr>
+      <td class="label">
+        Password
+      </td>
+      <td>
+        <input type="password" name="password" value="">
+      </td>
+      <td class="error">
+        {{error_password}}
+      </td>
+    </tr>
+    <tr>
+      <td class="label">
+        Verify Password
+      </td>
+      <td>
+        <input type="password" name="verify" value="">
+      </td>
+      <td class="error">
+        {{error_verify}}
+      </td>
+    </tr>
+  </table>
+  <input type="submit">
+</form>
 {% endblock %}

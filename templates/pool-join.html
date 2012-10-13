@@ -1,19 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}{{pool.name}}{% endblock %}
 
 {% block content %}
-<h2>Login</h2>
+<h2>{{pool.name}}</h2>
 <form method="post" class="input_form">
   <table>
-    <tr>
-      <td class="label">
-        Username
-      </td>
-      <td>
-        <input type="text" name="username" value="{{username}}">
-      </td>
-    </tr>
     <tr>
       <td class="label">
         Password

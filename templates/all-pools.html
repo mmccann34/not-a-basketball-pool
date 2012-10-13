@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}All Pools{% endblock %}
+
+{% block content %}
+  <h2>All Pools</h2>
+  
+  {% for p in pools %}
+    <a href="/pools/{{p.key().id()}}">{{p.name}}</a>
+    <br>
+  {% endfor %}
+{% endblock %}
