@@ -11,7 +11,7 @@
         Username
       </td>
       <td>
-        <input type="text" name="username" value="{{username}}">
+        <input type="text" name="username" value="{{username}}" autofocus="autofocus">
       </td>
     </tr>
     <tr>
@@ -26,6 +26,8 @@
   <div class="error">
     {{error_login}}
   </div>
-  <input type="submit">
+  <input type="submit" value="Login">
 </form>
+<br>
+<label>Don't have an account? Create one <a href="/signup{{return_url}}">here</a></label>
 {% endblock %}

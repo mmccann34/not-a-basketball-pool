@@ -11,12 +11,11 @@
         Name
       </td>
       <td>
-        <input type="text" name="name" value="{{name}}">
+        <input type="text" name="name" value="{{name}}" autofocus="autofocus">
       </td>
       <td class="error">
         {{error_name}}
       </td>
-    </tr>
     <tr>
       <td class="label">
         Password
@@ -37,6 +36,35 @@
       </td>
       <td class="error">
         {{error_verify}}
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td colspan="2">
+        <table>
+          <tr>
+            <td colspan="6" class="centered_text">Point System</td>
+          </tr>
+          <tr>
+            <td class="centered_text"><label>1st Rd</label></td>
+            <td class="centered_text"><label>2nd Rd</label></td>
+            <td class="centered_text"><label>3rd Rd</label></td>
+            <td class="centered_text"><label>4th Rd</label></td>
+            <td class="centered_text"><label>5th Rd</label></td>
+            <td class="centered_text"><label>6th Rd</label></td>
+          </tr>
+          <tr>
+            <td><input type="text" name="pts_1" value="{{pts_1}}" class="input_points"></td>
+            <td><input type="text" name="pts_2" value="{{pts_2}}" class="input_points"></td>
+            <td><input type="text" name="pts_3" value="{{pts_3}}" class="input_points"></td>
+            <td><input type="text" name="pts_4" value="{{pts_4}}" class="input_points"></td>
+            <td><input type="text" name="pts_5" value="{{pts_5}}" class="input_points"></td>
+            <td><input type="text" name="pts_6" value="{{pts_6}}" class="input_points"></td>
+            <td class="error">
+              {{error_points}}
+            </td>
+          </tr>
+        </table>
       </td>
     </tr>
   </table>

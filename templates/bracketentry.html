@@ -6,12 +6,22 @@
 {{ super() }}
 <link type="text/css" rel="stylesheet" href="/static/bracketentry.css" />
 <script type="text/javascript" src="/static/bracketentry.js"></script>
+{% if locked %}
+<style type="text/css">
+.team { cursor: auto; }
+.winner { cursor: auto; }
+</style>
+{% endif %}
 {% endblock %}
 
 {% block content %}
-<form id="form_bracket" method="post" onsubmit="return validateInputs()" data-locked="{{locked}}">
-  <div style="text-align: center;">
-    Entry Name: <input type="text" name="entry_name" value="{{name}}" {% if locked %}readonly="readonly"{% endif %}>
+<form id="form_bracket" method="post" data-locked="{{locked}}" data-master="{{master}}">
+  <div style="text-align:center;">
+    {% if name %}
+    <label style="font-weight:bold;">{{name}}</label>
+    {% else %}
+    Entry Name: <input type="text" name="entry_name" value="{{name}}" {% if locked %} readonly="readonly" {% endif %}>
+    {% endif %}
   </div>
   <table class="centered" border="0px" cellpadding="0px" cellspacing="0px">
     <!-- Top Half -->
@@ -22,9 +32,9 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom"><input class="winner left" readonly="readonly" name="winner_1" value="{{winners[0]}}"></td>
+      <td class="bottom"><input class="winner left {{css_winners[0]}}" readonly="readonly" name="winner_1" value="{{winners[0]}}"></td>
       <td colspan="7"></td>
-      <td class="bottom"><input class="winner right" readonly="readonly" name="winner_17" value="{{winners[16]}}"></td>
+      <td class="bottom"><input class="winner right {{css_winners[16]}}" readonly="readonly" name="winner_17" value="{{winners[16]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>
@@ -36,9 +46,9 @@
     </tr>
     <tr>
       <td class="right" colspan="2"></td>
-      <td class="bottom"><input class="winner left" readonly="readonly" name="winner_33" value="{{winners[32]}}"></td>
+      <td class="bottom"><input class="winner left {{css_winners[32]}}" readonly="readonly" name="winner_33" value="{{winners[32]}}"></td>
       <td colspan="5"></td>
-      <td class="bottom"><input class="winner right" readonly="readonly" name="winner_41" value="{{winners[40]}}"></td>
+      <td class="bottom"><input class="winner right {{css_winners[40]}}" readonly="readonly" name="winner_41" value="{{winners[40]}}"></td>
       <td class="left" colspan="2"></td>
     </tr>
     <tr>
@@ -52,11 +62,11 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom right"><input class="winner left" readonly="readonly" name="winner_2" value="{{winners[1]}}"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[1]}}" readonly="readonly" name="winner_2" value="{{winners[1]}}"></td>
       <td class="right" colspan="1"></td>
       <td colspan="5"></td>
       <td class="left" colspan="1"></td>
-      <td class="bottom left"><input class="winner right" readonly="readonly" name="winner_18" value="{{winners[17]}}"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[17]}}" readonly="readonly" name="winner_18" value="{{winners[17]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>
@@ -68,9 +78,9 @@
     </tr>
     <tr>
       <td class="right" colspan="3"></td>
-      <td class="bottom"><input class="winner left" readonly="readonly" name="winner_49" value="{{winners[48]}}"></td>
+      <td class="bottom"><input class="winner left {{css_winners[48]}}" readonly="readonly" name="winner_49" value="{{winners[48]}}"></td>
       <td colspan="3"></td>
-      <td class="bottom"><input class="winner right" readonly="readonly" name="winner_53" value="{{winners[52]}}"></td>
+      <td class="bottom"><input class="winner right {{css_winners[52]}}" readonly="readonly" name="winner_53" value="{{winners[52]}}"></td>
       <td class="left" colspan="3"></td>
     </tr>
     <tr>
@@ -84,13 +94,13 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom"><input class="winner left" readonly="readonly" name="winner_3" value="{{winners[2]}}"></td>
+      <td class="bottom"><input class="winner left {{css_winners[2]}}" readonly="readonly" name="winner_3" value="{{winners[2]}}"></td>
       <td class="right" colspan="1"></td>
       <td class="right" colspan="1"></td>
       <td colspan="3"></td>
       <td class="left" colspan="1"></td>
       <td class="left" colspan="1"></td>
-      <td class="bottom"><input class="winner right" readonly="readonly" name="winner_19" value="{{winners[18]}}"></td>
+      <td class="bottom"><input class="winner right {{css_winners[18]}}" readonly="readonly" name="winner_19" value="{{winners[18]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>
@@ -106,11 +116,11 @@
     </tr>
     <tr>
       <td class="right" colspan="2"></td>
-      <td class="bottom right"><input class="winner left" readonly="readonly" name="winner_34" value="{{winners[33]}}"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[33]}}" readonly="readonly" name="winner_34" value="{{winners[33]}}"></td>
       <td class="right" colspan="1"></td>
       <td colspan="3"></td>
       <td class="left" colspan="1"></td>
-      <td class="bottom left"><input class="winner right" readonly="readonly" name="winner_42" value="{{winners[41]}}"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[41]}}" readonly="readonly" name="winner_42" value="{{winners[41]}}"></td>
       <td class="left" colspan="2"></td>
     </tr>
     <tr>
@@ -124,11 +134,11 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom right"><input class="winner left" readonly="readonly" name="winner_4" value="{{winners[3]}}"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[3]}}" readonly="readonly" name="winner_4" value="{{winners[3]}}"></td>
       <td class="right" colspan="2"></td>
       <td colspan="3"></td>
       <td class="left" colspan="2"></td>
-      <td class="bottom left"><input class="winner right" readonly="readonly" name="winner_20" value="{{winners[19]}}"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[19]}}" readonly="readonly" name="winner_20" value="{{winners[19]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>
@@ -140,9 +150,9 @@
     </tr>
     <tr>
       <td class="right" colspan="4"></td>
-      <td class="bottom"><input class="winner left" readonly="readonly" name="winner_57" value="{{winners[56]}}"></td>
+      <td class="bottom"><input class="winner left {{css_winners[56]}}" readonly="readonly" name="winner_57" value="{{winners[56]}}"></td>
       <td colspan="1"></td>
-      <td class="bottom"><input class="winner right" readonly="readonly" name="winner_59" value="{{winners[58]}}"></td>
+      <td class="bottom"><input class="winner right {{css_winners[58]}}" readonly="readonly" name="winner_59" value="{{winners[58]}}"></td>
       <td class="left" colspan="4"></td>
     </tr>
     <tr>
@@ -156,13 +166,13 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom"><input class="winner left" readonly="readonly" name="winner_5" value="{{winners[4]}}"></td>
+      <td class="bottom"><input class="winner left {{css_winners[4]}}" readonly="readonly" name="winner_5" value="{{winners[4]}}"></td>
       <td class="right" colspan="2"></td>
       <td class="right" colspan="1"></td>
       <td colspan="1"></td>
       <td class="left" colspan="1"></td>
       <td class="left" colspan="2"></td>
-      <td class="bottom"><input class="winner right" readonly="readonly" name="winner_21" value="{{winners[20]}}"></td>
+      <td class="bottom"><input class="winner right {{css_winners[20]}}" readonly="readonly" name="winner_21" value="{{winners[20]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>
@@ -178,16 +188,15 @@
     </tr>
     <tr>
       <td class="right" colspan="2"></td>
-      <td class="bottom"><input class="winner left" readonly="readonly" name="winner_35" value="{{winners[34]}}"></td>
+      <td class="bottom"><input class="winner left {{css_winners[34]}}" readonly="readonly" name="winner_35" value="{{winners[34]}}"></td>
       <td class="right"colspan="1"></td>
       <td class="right"colspan="1"></td>
-      <td class="semi_left"><input class="winner left finals" readonly="readonly" name="winner_61" value="{{winners[60]}}"></td>
+      <td class="semi_left"><input class="winner left finals {{css_winners[60]}}" readonly="readonly" name="winner_61" value="{{winners[60]}}"></td>
       <td class="left"colspan="1"></td>
       <td class="left"colspan="1"></td>
-      <td class="bottom"><input class="winner right" readonly="readonly" name="winner_43" value="{{winners[42]}}"></td>
+      <td class="bottom"><input class="winner right {{css_winners[42]}}" readonly="readonly" name="winner_43" value="{{winners[42]}}"></td>
       <td class="left"colspan="2"></td>
     </tr>
-    <tr></tr>
     <tr>
       <td class="bottom"><div id="team_11" class="team left">{{teams[10].seed}} {{teams[10].name}}</div></td>
       <td class="right"colspan="1"></td>
@@ -203,7 +212,7 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom right"><input class="winner left" readonly="readonly" name="winner_6" value="{{winners[5]}}"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[5]}}" readonly="readonly" name="winner_6" value="{{winners[5]}}"></td>
       <td class="right"colspan="1"></td>
       <td class="right"colspan="1"></td>
       <td class="right"colspan="1"></td>
@@ -211,7 +220,7 @@
       <td class="left"colspan="1"></td>
       <td class="left"colspan="1"></td>
       <td class="left"colspan="1"></td>
-      <td class="bottom left"><input class="winner right" readonly="readonly" name="winner_22" value="{{winners[21]}}"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[21]}}" readonly="readonly" name="winner_22" value="{{winners[21]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>
@@ -227,11 +236,11 @@
     </tr>
     <tr>
       <td class="right" colspan="3"></td>
-      <td class="bottom right"><input class="winner left" readonly="readonly" name="winner_50" value="{{winners[49]}}"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[49]}}" readonly="readonly" name="winner_50" value="{{winners[49]}}"></td>
       <td class="right"colspan="1"></td>
       <td colspan="1"></td>
       <td class="left"colspan="1"></td>
-      <td class="bottom left"><input class="winner right" readonly="readonly" name="winner_54" value="{{winners[53]}}"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[53]}}" readonly="readonly" name="winner_54" value="{{winners[53]}}"></td>
       <td class="left"colspan="3"></td>
     </tr>
     <tr>
@@ -245,13 +254,13 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom"><input class="winner left" readonly="readonly" name="winner_7" value="{{winners[6]}}"></td>
+      <td class="bottom"><input class="winner left {{css_winners[6]}}" readonly="readonly" name="winner_7" value="{{winners[6]}}"></td>
       <td class="right"colspan="1"></td>
       <td class="right"colspan="2"></td>
       <td colspan="1"></td>
       <td class="left"colspan="2"></td>
       <td class="left"colspan="1"></td>
-      <td class="bottom"><input class="winner right" readonly="readonly" name="winner_23" value="{{winners[22]}}"></td>
+      <td class="bottom"><input class="winner right {{css_winners[22]}}" readonly="readonly" name="winner_23" value="{{winners[22]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>
@@ -267,11 +276,11 @@
     </tr>
     <tr>
       <td class="right" colspan="2"></td>
-      <td class="bottom right"><input class="winner left" readonly="readonly" name="winner_36" value="{{winners[35]}}"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[35]}}" readonly="readonly" name="winner_36" value="{{winners[35]}}"></td>
       <td class="right" colspan="2"></td>
       <td colspan="1"></td>
       <td class="left" colspan="2"></td>
-      <td class="bottom left"><input class="winner right" readonly="readonly" name="winner_44" value="{{winners[43]}}"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[43]}}" readonly="readonly" name="winner_44" value="{{winners[43]}}"></td>
       <td class="left" colspan="2"></td>
     </tr>
     <tr>
@@ -285,11 +294,11 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom right"><input class="winner left" readonly="readonly" name="winner_8" value="{{winners[7]}}"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[7]}}" readonly="readonly" name="winner_8" value="{{winners[7]}}"></td>
       <td class="right" colspan="3"></td>
       <td colspan="1"></td>
       <td class="left" colspan="3"></td>
-      <td class="bottom left"><input class="winner right" readonly="readonly" name="winner_24" value="{{winners[23]}}"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[23]}}" readonly="readonly" name="winner_24" value="{{winners[23]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>
@@ -304,10 +313,12 @@
     <tr>
       <td class="right" colspan="5" style="height: 30px;"></td>
       <td class="champ" rowspan="10" align="center">
-        <input class="winner finals champ" readonly="readonly" name="winner_63" value="{{winners[62]}}">
-        <div style="font-size: 10px; margin-top: 10px;">Final Score Sum</div>
-        <input type="text" name="final_score" value="{{final_score}}" {% if locked %}readonly="readonly"{% endif %}>
-        <input type="submit" value="Submit">
+        <input class="winner finals champ  {{css_winners[62]}}" readonly="readonly" name="winner_63" value="{{winners[62]}}">
+        <div style="font-size: 10px; margin-top: 15px;">Final Score Sum</div>
+        <input type="text" name="final_score" value="{{final_score}}" {% if locked %} readonly="readonly" {% endif %}>
+        {% if not locked %}
+        <input type="button" value="Save" onclick="validateInputs()">
+        {% endif %}
       </td>
       <td class="left" colspan="5"></td>
     </tr>
@@ -322,11 +333,11 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom"><input class="winner left" readonly="readonly" name="winner_9" value="{{winners[8]}}"></td>
+      <td class="bottom"><input class="winner left {{css_winners[8]}}" readonly="readonly" name="winner_9" value="{{winners[8]}}"></td>
       <td class="right" colspan="3"></td>
       <!-- <td colspan="1"></td> -->
       <td class="left" colspan="3"></td>
-      <td class="bottom"><input class="winner right" readonly="readonly" name="winner_25" value="{{winners[24]}}"></td>
+      <td class="bottom"><input class="winner right {{css_winners[24]}}" readonly="readonly" name="winner_25" value="{{winners[24]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>
@@ -340,11 +351,11 @@
     </tr>
     <tr>
       <td class="right" colspan="2"></td>
-      <td class="bottom"><input class="winner left" readonly="readonly" name="winner_37" value="{{winners[36]}}"></td>
+      <td class="bottom"><input class="winner left {{css_winners[36]}}" readonly="readonly" name="winner_37" value="{{winners[36]}}"></td>
       <td class="right" colspan="2"></td>
       <!-- <td colspan="1"></td> -->
       <td class="left" colspan="2"></td>
-      <td class="bottom"><input class="winner right" readonly="readonly" name="winner_45" value="{{winners[44]}}"></td>
+      <td class="bottom"><input class="winner right {{css_winners[44]}}" readonly="readonly" name="winner_45" value="{{winners[44]}}"></td>
       <td class="left" colspan="2"></td>
     </tr>
     <tr>
@@ -360,13 +371,13 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom right"><input class="winner left" readonly="readonly" name="winner_10" value="{{winners[9]}}"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[9]}}" readonly="readonly" name="winner_10" value="{{winners[9]}}"></td>
       <td class="right"colspan="1"></td>
       <td class="right"colspan="2"></td>
       <!-- <td colspan="1"></td> -->
       <td class="left"colspan="2"></td>
       <td class="left"colspan="1"></td>
-      <td class="bottom left"><input class="winner right" readonly="readonly" name="winner_26" value="{{winners[25]}}"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[25]}}" readonly="readonly" name="winner_26" value="{{winners[25]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>
@@ -380,11 +391,11 @@
     </tr>
     <tr>
       <td class="right" colspan="3"></td>
-      <td class="bottom"><input class="winner left" readonly="readonly" name="winner_51" value="{{winners[50]}}"></td>
+      <td class="bottom"><input class="winner left {{css_winners[50]}}" readonly="readonly" name="winner_51" value="{{winners[50]}}"></td>
       <td class="right"colspan="1"></td>
       <!-- <td colspan="1"></td> -->
       <td class="left"colspan="1"></td>
-      <td class="bottom"><input class="winner right" readonly="readonly" name="winner_55" value="{{winners[54]}}"></td>
+      <td class="bottom"><input class="winner right {{css_winners[54]}}" readonly="readonly" name="winner_55" value="{{winners[54]}}"></td>
       <td class="left" colspan="3"></td>
     </tr>
     <tr>
@@ -400,7 +411,7 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom"><input class="winner left" readonly="readonly" name="winner_11" value="{{winners[10]}}"></td>
+      <td class="bottom"><input class="winner left {{css_winners[10]}}" readonly="readonly" name="winner_11" value="{{winners[10]}}"></td>
       <td class="right"colspan="1"></td>
       <td class="right"colspan="1"></td>
       <td class="right"colspan="1"></td>
@@ -408,7 +419,7 @@
       <td class="left"colspan="1"></td>
       <td class="left"colspan="1"></td>
       <td class="left"colspan="1"></td>
-      <td class="bottom"><input class="winner right" readonly="readonly" name="winner_27" value="{{winners[26]}}"></td>
+      <td class="bottom"><input class="winner right {{css_winners[26]}}" readonly="readonly" name="winner_27" value="{{winners[26]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>
@@ -426,13 +437,13 @@
     </tr>
     <tr>
       <td class="right" colspan="2"></td>
-      <td class="bottom right"><input class="winner left" readonly="readonly" name="winner_38" value="{{winners[37]}}"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[37]}}" readonly="readonly" name="winner_38" value="{{winners[37]}}"></td>
       <td class="right"colspan="1"></td>
       <td class="right"colspan="1"></td>
-      <td class="semi_right"><input class="winner right finals" readonly="readonly" name="winner_62" value="{{winners[61]}}"></td>
+      <td class="semi_right"><input class="winner right finals {{css_winners[61]}}" readonly="readonly" name="winner_62" value="{{winners[61]}}"></td>
       <td class="left"colspan="1"></td>
       <td class="left"colspan="1"></td>
-      <td class="bottom left"><input class="winner right" readonly="readonly" name="winner_46" value="{{winners[45]}}"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[45]}}" readonly="readonly" name="winner_46" value="{{winners[45]}}"></td>
       <td class="left" colspan="2"></td>
     </tr>
     <tr>
@@ -448,13 +459,13 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom right"><input class="winner left" readonly="readonly" name="winner_12" value="{{winners[11]}}"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[11]}}" readonly="readonly" name="winner_12" value="{{winners[11]}}"></td>
       <td class="right" colspan="2"></td>
       <td class="right" colspan="1"></td>
       <td colspan="1"></td>
       <td class="left" colspan="1"></td>
       <td class="left" colspan="2"></td>
-      <td class="bottom left"><input class="winner right" readonly="readonly" name="winner_28" value="{{winners[27]}}"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[27]}}" readonly="readonly" name="winner_28" value="{{winners[27]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>
@@ -468,9 +479,9 @@
     </tr>
     <tr>
       <td class="right" colspan="4"></td>
-      <td class="bottom right"><input class="winner left" readonly="readonly" name="winner_58" value="{{winners[57]}}"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[57]}}" readonly="readonly" name="winner_58" value="{{winners[57]}}"></td>
       <td colspan="1"></td>
-      <td class="bottom left"><input class="winner right" readonly="readonly" name="winner_60" value="{{winners[59]}}"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[59]}}" readonly="readonly" name="winner_60" value="{{winners[59]}}"></td>
       <td class="left" colspan="4"></td>
     </tr>
     <tr>
@@ -482,11 +493,11 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom"><input class="winner left" readonly="readonly" name="winner_13" value="{{winners[12]}}"></td>
+      <td class="bottom"><input class="winner left {{css_winners[12]}}" readonly="readonly" name="winner_13" value="{{winners[12]}}"></td>
       <td class="right" colspan="2"></td>
       <td colspan="3"></td>
       <td class="left" colspan="2"></td>
-      <td class="bottom"><input class="winner right" readonly="readonly" name="winner_29" value="{{winners[28]}}"></td>
+      <td class="bottom"><input class="winner right {{css_winners[28]}}" readonly="readonly" name="winner_29" value="{{winners[28]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>
@@ -500,11 +511,11 @@
     </tr>
     <tr>
       <td class="right" colspan="2"></td>
-      <td class="bottom"><input class="winner left" readonly="readonly" name="winner_39" value="{{winners[38]}}"></td>
+      <td class="bottom"><input class="winner left {{css_winners[38]}}" readonly="readonly" name="winner_39" value="{{winners[38]}}"></td>
       <td class="right" colspan="1"></td>
       <td colspan="3"></td>
       <td class="left" colspan="1"></td>
-      <td class="bottom"><input class="winner right" readonly="readonly" name="winner_47" value="{{winners[46]}}"></td>
+      <td class="bottom"><input class="winner right {{css_winners[46]}}" readonly="readonly" name="winner_47" value="{{winners[46]}}"></td>
       <td class="left"colspan="2"></td>
     </tr>
     <tr>
@@ -520,13 +531,13 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom right"><input class="winner left" readonly="readonly" name="winner_14" value="{{winners[13]}}"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[13]}}" readonly="readonly" name="winner_14" value="{{winners[13]}}"></td>
       <td class="right" colspan="1"></td>
       <td class="right" colspan="1"></td>
       <td colspan="3"></td>
       <td class="left" colspan="1"></td>
       <td class="left" colspan="1"></td>
-      <td class="bottom left"><input class="winner right" readonly="readonly" name="winner_30" value="{{winners[29]}}"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[29]}}" readonly="readonly" name="winner_30" value="{{winners[29]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>
@@ -540,9 +551,9 @@
     </tr>
     <tr>
       <td class="right" colspan="3"></td>
-      <td class="bottom right"><input class="winner left" readonly="readonly" name="winner_52" value="{{winners[51]}}"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[51]}}" readonly="readonly" name="winner_52" value="{{winners[51]}}"></td>
       <td colspan="3"></td>
-      <td class="bottom left"><input class="winner right" readonly="readonly" name="winner_56" value="{{winners[55]}}"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[55]}}" readonly="readonly" name="winner_56" value="{{winners[55]}}"></td>
       <td class="left"colspan="3"></td>
     </tr>
     <tr>
@@ -554,11 +565,11 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom"><input class="winner left" readonly="readonly" name="winner_15" value="{{winners[14]}}"></td>
+      <td class="bottom"><input class="winner left {{css_winners[14]}}" readonly="readonly" name="winner_15" value="{{winners[14]}}"></td>
       <td class="right" colspan="1"></td>
       <td colspan="5"></td>
       <td class="left" colspan="1"></td>
-      <td class="bottom"><input class="winner right" readonly="readonly" name="winner_31" value="{{winners[30]}}"></td>
+      <td class="bottom"><input class="winner right {{css_winners[30]}}" readonly="readonly" name="winner_31" value="{{winners[30]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>
@@ -572,9 +583,9 @@
     </tr>
     <tr>
       <td class="right" colspan="2"></td>
-      <td class="bottom right"><input class="winner left" readonly="readonly" name="winner_40" value="{{winners[39]}}"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[39]}}" readonly="readonly" name="winner_40" value="{{winners[39]}}"></td>
       <td colspan="5"></td>
-      <td class="bottom left"><input class="winner right" readonly="readonly" name="winner_48" value="{{winners[47]}}"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[47]}}" readonly="readonly" name="winner_48" value="{{winners[47]}}"></td>
       <td class="left" colspan="2"></td>
     </tr>
     <tr>
@@ -586,9 +597,9 @@
     </tr>
     <tr>
       <td class="right" colspan="1"></td>
-      <td class="bottom right"><input class="winner left" readonly="readonly" name="winner_16" value="{{winners[15]}}"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[15]}}" readonly="readonly" name="winner_16" value="{{winners[15]}}"></td>
       <td colspan="7"></td>
-      <td class="bottom left"><input class="winner right" readonly="readonly" name="winner_32" value="{{winners[31]}}"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[31]}}" readonly="readonly" name="winner_32" value="{{winners[31]}}"></td>
       <td class="left" colspan="1"></td>
     </tr>
     <tr>

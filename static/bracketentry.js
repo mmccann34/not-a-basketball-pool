@@ -1,5 +1,7 @@
 $(function() {
   // do stuff when DOM is ready
+  $.ajaxSetup({cache: false});
+
   $('.team').click(function() {
     locked = $('#form_bracket').data('locked');
     if (locked != 'True' && $(this).text())
@@ -7,19 +9,19 @@ $(function() {
       var team = parseInt($(this).attr('id').split('_')[1]);
       setWinner(Math.round(team/2), $(this).text());
 
-      $(this).css('font-weight','bold');
+      // $(this).css('font-weight','bold');
 
-      var opponent;
-      if (team % 2 == 0)
-      {
-        opponent = team - 1;
-      }
-      else
-      {
-        opponent = team + 1;
-      }
+      // var opponent;
+      // if (team % 2 == 0)
+      // {
+      //   opponent = team - 1;
+      // }
+      // else
+      // {
+      //   opponent = team + 1;  
+      // }
 
-      $('#team_' + opponent).css('font-weight','normal');
+      // $('#team_' + opponent).css('font-weight','normal');
     }
   });
 
@@ -30,19 +32,19 @@ $(function() {
       var game = parseInt($(this).attr('name').split('_')[1]);
       setWinner(Math.round(game/2) + 32, $(this).val());
 
-      $(this).css('font-weight','bold');
+      // $(this).css('font-weight','bold');
 
-      var opponent;
-      if (game % 2 == 0)
-      {
-        opponent = game - 1;
-      }
-      else
-      {
-        opponent = game + 1;
-      }
+      // var opponent;
+      // if (game % 2 == 0)
+      // {
+      //   opponent = game - 1;
+      // }
+      // else
+      // {
+      //   opponent = game + 1;
+      // }
 
-      $('input[name=winner_' + opponent + ']').css('font-weight','normal');
+      // $('input[name=winner_' + opponent + ']').css('font-weight','normal');
     }
   });
 
@@ -85,36 +87,78 @@ function setWinner(game, value)
 
 function validateInputs()
 {
-  var returnval = true;
+  try
+  {
+    if ($('#form_bracket').data('master') == 'True')
+    {
+      $('#form_bracket').submit()
+      return;
+    }
 
-  $('input.winner').each(function (i) {
-    if (!$(this).val()) {
-      alert('A winner must be picked for all games');
-      returnval = false;
+    var returnval = true;
+
+    $('input.winner').each(function (i) {
+      if (!$(this).val()) {
+        alert('A winner must be picked for all games');
+        returnval = false;
+      }
+      return returnval;
+    });
+
+    if (returnval)
+    {
+      var final_score_val = $('input[name=final_score]').val();
+      var final_score = parseInt(final_score_val);
+
+      if (isNaN(final_score) || final_score != final_score || final_score_val <= 0)
+      {
+        alert('Final Score Sum must be a valid, positive number');
+        returnval = false;
+      }
+    }
+
+    if (returnval)
+    {
+      var entry_name = $('input[name=entry_name]')
+      if (entry_name.length)
+      {
+        var name = entry_name.val()
+        if (!name)
+        {
+          alert('Entry must have a name');
+          returnval = false;
+        }
+        else if (name.length > 25)
+        {
+          alert('Entry name must be 25 characters or less');
+          returnval = false;
+        }
+        else
+        {
+          $.getJSON('/validate/entry', { entry_name: name }, 
+            function(response) { 
+              var result = response;
+              if (!result)
+              {
+                alert('That Entry name is already in use')
+                returnval = false;
+              }
+              else
+              {
+                $('#form_bracket').submit()
+              }
+            });
+        }
+      }
+      else
+      {
+        $('#form_bracket').submit()
+      }
     }
     return returnval;
-  });
-
-  if (returnval)
-  {
-    var final_score_val = $('input[name=final_score]').val();
-    var final_score = parseInt(final_score_val);
-
-    if (isNaN(final_score) || final_score != final_score || final_score_val <= 0)
-    {
-      alert('Final Score Sum must be a valid, positive number');
-      returnval = false;
-    }
   }
-
-  if (returnval)
+  catch(err)
   {
-    if (!$('input[name=entry_name]').val())
-    {
-      alert('Entry must have a name')
-      returnval = false;
-    }
+    return false;
   }
-
-  return returnval;
 }

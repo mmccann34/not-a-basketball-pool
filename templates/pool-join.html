@@ -3,21 +3,16 @@
 {% block title %}{{pool.name}}{% endblock %}
 
 {% block content %}
-<h2>{{pool.name}}</h2>
-<form method="post" class="input_form">
-  <table>
-    <tr>
-      <td class="label">
-        Password
-      </td>
-      <td>
-        <input type="password" name="password" value="">
-      </td>
-    </tr>
-  </table>
-  <div class="error">
-    {{error_login}}
-  </div>
-  <input type="submit">
-</form>
+<div class="centered_text">
+  <h2>{{pool.name}}</h2>
+  <form method="post" class="input_form">
+    <label>Enter the password for this Pool</label>
+    <br>
+    <input type="password" name="password" value="" autofocus="autofocus">
+    <div class="error">
+      {{error_login}}
+    </div>
+    <input type="submit" value="Join">
+  </form>
+</div>
 {% endblock %}

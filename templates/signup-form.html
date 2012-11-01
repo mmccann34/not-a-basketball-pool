@@ -3,8 +3,7 @@
 {% block title %}Signup{% endblock %}
 
 {% block content %}
-<h2>Signup</h2>
-
+<h2>Sign Up</h2>
 <form method="post" class="input_form">
   <table>
     <tr>
@@ -12,13 +11,12 @@
         Username
       </td>
       <td>
-        <input type="text" name="username" value="{{username}}">
+        <input type="text" name="username" value="{{username}}" autofocus="autofocus">
       </td>
       <td class="error">
         {{error_username}}
       </td>
     </tr>
-
     <tr>
       <td class="label">
         Password
@@ -30,7 +28,6 @@
         {{error_password}}
       </td>
     </tr>
-
     <tr>
       <td class="label">
         Verify Password
@@ -42,7 +39,6 @@
         {{error_verify}}
       </td>
     </tr>
-
     <tr>
       <td class="label">
         Email (optional)
@@ -55,7 +51,8 @@
       </td>
     </tr>
   </table>
-
-  <input type="submit">
+  <input type="submit" value="Sign Up">
 </form>
+<br>
+<label>Already have an account? Login <a href="/login{{return_url}}">here</a></label>
 {% endblock %}

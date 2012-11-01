@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}My Pools{% endblock %}
+
+{% block content %}
+<h2>My Pools</h2>
+{% if pools|length == 0 %}
+<div>No Pools yet</div>
+{% else %}
+<ul style="list-style-type:none;">
+  {% for p in pools %}
+  <li>
+    <h3>
+      <a href="/pools/{{p.id}}">{{p.name}}</a>{% if p.admin_user.id == user.id %} (<a href="/pools/{{p.id}}/admin">admin</a>){% endif %}
+    </h3>
+    <ul style="list-style-type:none;">
+      {% for e in p.entries %}
+      <li>
+        <a href="/brackets/{{e.id}}">{{e.name}}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </li>
+  <br>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

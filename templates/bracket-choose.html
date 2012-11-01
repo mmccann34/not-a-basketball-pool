@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Enter a Bracket{% endblock %}
+
+{% block content %}
+<h2>Enter a Bracket in <a href="/pools/{{pool.id}}">{{pool.name}}</a></h2>
+<div style="margin-bottom:10px;"><a href="/brackets/new?p={{pool.id}}">Create a new Bracket</a></div>
+<div style="margin-bottom:5px;">Enter an existing Bracket:</div>
+<form method="post" class="input_form">
+  {% for e in entries %}
+  <div style="height:20px;"><input type="checkbox" name="entry" value="{{e.id}}" style="margin-top:1.5px; margin-right:5px; float:left">{{e.name}}</div>
+  {% endfor %}
+  <input type="submit" value="Submit">
+</form>
+{% endblock %}

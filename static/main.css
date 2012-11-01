@@ -15,16 +15,36 @@ body {
 
 h2 {
   font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+}
+
+h3 {
+  margin-bottom: 5px;
 }
 
 input {
   color: #333;
 }
 
+a {
+  color: gray;
+  text-decoration: none;
+}
+
+a:visited {
+  color: gray;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 .centered {
   margin: 0 auto;
+}
+
+.centered_text {
+  text-align: center;
 }
 
 .login-area {
@@ -35,17 +55,12 @@ input {
   right: 10px;
 }
 
-.login-link {
-  color: gray;
-  text-decoration: none;
-}
-
-.login-link:visited {
+.login-area a {
   color: gray;
 }
 
-.login-link:hover {
-  text-decoration: underline;
+.login-area a:visited {
+  color: gray;
 }
 
 .error {
@@ -54,7 +69,7 @@ input {
 
 #header {
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   position: relative;
 }
 
@@ -62,14 +77,50 @@ input {
   color: #222;
   font-size: 40px;
   font-weight: bold;
+}
+
+.main-title:visited {
+  color: #222;
+}
+
+.main-title:hover {
   text-decoration: none;
+}
+
+.no-list-style{
+  list-style-type: none;
+}
+
+#nav-bar ul {
+  list-style-type: none;
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  width: 400px;
+  height: 20px;
+}
+
+#nav-bar li {
+  float: left;
+  height: 20px;
+  line-height: 20px;
+}
+
+#nav-bar a {
+  color: gray;
+  display: block;
+  width: 100px;
+  height: 20px;
+}
+
+#nav-bar a:visited {
+  color: gray;
 }
 
 input[type=submit] {
   font-size: 18px;
-  padding: 2px;
+  padding: 2px 5px;
   margin-top: 5px;
-  width: 75px;
   color: #000;
 }
 
@@ -83,4 +134,16 @@ input[type=text][readonly=readonly] {
 
 .input_form input[type=text], input[type=password] {
   margin: 2px;
+}
+
+.input_points {
+  width: 50px; text-align: center;
+}
+
+.cell_padding_right td, .cell_padding_right th {
+  padding-right: 20px;
+}
+
+.cell_padding_bottom td {
+  padding-bottom: 5px;
 }

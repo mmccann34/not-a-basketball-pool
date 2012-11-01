@@ -10,7 +10,45 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: Entry
+  properties:
+  - name: pools
+  - name: score
+    direction: desc
+
+- kind: Entry
+  properties:
+  - name: user
+  - name: year
+  - name: name
+
+- kind: Entry
+  ancestor: yes
+  properties:
+  - name: user
+  - name: year
+  - name: name
+
 - kind: Pick
   properties:
   - name: entry
   - name: game
+
+- kind: Pool
+  properties:
+  - name: users
+  - name: year
+  - name: name
+
+- kind: Pool
+  ancestor: yes
+  properties:
+  - name: users
+  - name: year
+  - name: name
+
+- kind: Pool
+  ancestor: yes
+  properties:
+  - name: year
+  - name: name

@@ -1,3 +1,7 @@
+table {
+  font-size: 10px;
+}
+
 .team {
   font-size: 10px;
   width: 85px;
@@ -15,6 +19,20 @@
   cursor: pointer;
 }
 
+input.correct {
+  color: green;
+  font-weight: bold;
+}
+
+input.incorrect {
+  color: red;
+  font-weight: bold;
+}
+
+input.eliminated {
+  text-decoration: line-through;
+}
+
 div.right, input.right {
   text-align: right;
   padding-right: 2px;
@@ -25,13 +43,14 @@ div.left, input.left {
   padding-left: 2px;
 }
 
-input.champ {
+input.champ { 
   text-align: center;
   font-weight: bold;
+  cursor: auto;
 }
 
 input.finals {
-  border-bottom: 1px solid;
+  border-bottom: 1px solid black;
 }
 
 input[name=final_score] {
@@ -44,6 +63,13 @@ input[name=final_score] {
 
 input[name=entry_name] {
   width: 150px;
+}
+
+input[type=button] {
+  font-size: 18px;
+  padding: 2px 5px;
+  margin-top: 5px;
+  color: #000;
 }
 
 td.bottom {

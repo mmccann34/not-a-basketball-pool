@@ -3,5 +3,30 @@
 {% block title %}{{pool.name}}{% endblock %}
 
 {% block content %}
-<h2>{{pool.name}}</h2>
+<h2 class="centered_text" style="margin-bottom:0;">{{pool.name}}</h2>
+{% if pool.admin_user.id == user.id %}
+<div class="centered_text" style="margin-bottom:5px;">
+  (<a href="/pools/{{pool.id}}/admin">admin</a>)
+</div>
+{% endif %}
+{% if not locked %}
+<div class="centered_text" style="margin-bottom:10px">
+  <a href="/brackets/choose?p={{pool.key().id()}}">Enter a Bracket</a>
+</div>
+{% endif %}
+<h3>Standings</h3>
+<table class="cell_padding_right">
+  <tr>
+    <th>Rank</th>
+    <th>Bracket</th>
+    <th>Score</th>
+  </tr>
+  {% for e in entries %}
+  <tr {% if e.own %}style="font-weight:bold;"{% endif %}>
+    <td>{{e.rank}}</td>
+    <td>{% if locked or e.own %}<a href="/brackets/{{e.id}}">{{e.name}}</a>{% else %}{{e.name}}{% endif %}</td>
+    <td style="text-align:center;">{{'{0:.3g}'.format(e.points.total)}}</td>
+  </tr>
+  {% endfor %}
+</table>
 {% endblock %}
