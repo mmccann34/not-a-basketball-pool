@@ -643,6 +643,38 @@ class PoolAdmin(BaseHandler):
 
         self.redirect(self.request.path + '?success=true')
 
+class PoolMasterBracket(BaseHandler):
+  def get(self, pool_id):
+    if not self.user:
+      self.require_login()
+      return
+
+    pool = Pool.by_id(int(pool_id))
+    if not pool:
+      self.error(404)
+      return
+
+    self.check_locked()
+    if self.user.id not in pool.users or not self.locked:
+      self.render('access-denied.html')
+      return
+
+    all_teams = get_teams(datetime.now().year)
+    teams = [] 
+    for team in all_teams.values():
+      teams.append(str(team.seed) + ' ' + team.name)
+
+    master = Entry.by_name('Master Bracket')
+    if master: 
+      for p in master.picks:
+        if p != -1:
+          team = all_teams[p]
+          teams.append(str(team.seed) + ' ' + team.name)
+        else:
+          teams.append('')
+
+    self.render('pool-master.html', pool = pool, teams = teams)
+
 def get_teams(year):
   teams = dict()
   for team in Team.all().filter('year = ', year).fetch(limit=64):
@@ -777,8 +809,8 @@ class BracketEntry(BaseHandler):
       return
 
     if entry_id != 'master':
-      a = Admin.get_current()
-      if datetime.today() > a.lock_date:
+      self.check_locked()
+      if self.locked:
         self.error(404)
         return
 
@@ -877,6 +909,7 @@ class BracketChoose(BaseHandler):
         if entry and pool.id not in entry.pools:
           entry.pools.append(pool.id)
           entry.put()
+          Points.add_new(entry.id, pool.id)
       self.redirect('/pools/' + str(pool.id))
 
 class MyBrackets(BaseHandler):
@@ -991,6 +1024,50 @@ class ValidateEntry(BaseHandler):
         result = True
       self.response.out.write(json.dumps(result))
 
+class GameAnalysis(BaseHandler):
+  def get(self, pool_id, game_id):
+    if not self.user:
+      self.require_login()
+      return
+
+    pool = Pool.by_id(int(pool_id))
+    if not pool or int(game_id) < 1 or int(game_id) > 63:
+      self.error(404)
+      return
+
+    self.check_locked()
+    if self.user.id not in pool.users or not self.locked:
+      self.render('access-denied.html')
+      return
+    
+    self.check_locked()
+    all_teams = get_teams(datetime.now().year)
+    total = 0
+    teams = []
+    entries = []
+    points = Points.by_pool(int(pool_id))
+    for e in Entry.by_pool(int(pool_id)):
+      team = all_teams[e.picks[int(game_id) - 1]]
+      e.team = team
+      e.points = points[e.id]
+      e.own = self.user.id == e.user.id
+      entries.append(e)
+      if team in teams:
+        team.picked += 1
+      else:
+        team.picked = 1
+        teams.append(team)
+      total += 1
+
+    for t in teams:
+      t.percent_picked = float(t.picked)/total
+
+    teams.sort(key=attrgetter('name'))
+    teams.sort(key=attrgetter('percent_picked'), reverse=True)
+    entries.sort(key=attrgetter('name'))
+
+    self.render('game-analysis.html', teams = teams, entries = entries, pool = pool)
+
 app = webapp2.WSGIApplication([('/', Front),
                                ('/signup', Signup),
                                ('/login', Login),
@@ -1001,6 +1078,8 @@ app = webapp2.WSGIApplication([('/', Front),
                                ('/pools/all', AllPools),
                                ('/pools/([0-9]+)', PoolPage),
                                ('/pools/([0-9]+)/admin', PoolAdmin),
+                               ('/pools/([0-9]+)/master', PoolMasterBracket),
+                               ('/pools/([0-9]+)/master/([0-9]+)', GameAnalysis),
                                ('/mybrackets', MyBrackets),
                                ('/mypools', MyPools),
                                ('/admin', AdminPage),

@@ -1,0 +1,461 @@
+{% extends "base.html" %}
+
+{% block title %}Master Bracket - {{pool.name}}{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style type="text/css">
+#bracket { font-size:10px; height:1024px; width:956px; margin:0 auto; }
+.block { width:86px; height:16px; }
+.block2 { width:86px; height:32px; }
+.block3 { width:86px; height:48px; }
+.block4 { width:86px; height:64px; }
+.block7 { width:86px; height:112px; }
+.block8 { width:86px; height:128px; }
+.block11 { width:86px; height:176px; }
+.block12 { width:86px; height:192px; }
+.block15 { width:86px; height:240px; }
+.block16 { width:86px; height:256px; }
+.block19 { width:86px; height:304px; }
+.block24 { width:86px; height:384px; }
+.block32 { width:86px; height:512px; }
+.bottom { border-bottom:1px solid black; }
+.right { border-right:1px solid black; }
+.left { border-left:1px solid black; }
+#bracket a { color:#333; text-decoration:none; width:86px; display:block; } 
+#bracket a:visited { color:#333;}
+#bracket a:hover { text-decoration:none; cursor:pointer; font-weight:bold; }
+#bracket a:hover div { border-width:2px; }
+.column { float:left; }
+.column.left-align div { text-align:left; padding-left:2px; }
+.column.right-align div { text-align:right; padding-right:2px; }
+#bracket a:hover div.champ { border-left: 1px solid black; border-right: 1px solid black; }
+#bracket a:hover div.champ-left { border-left: 1px solid black; }
+#bracket a:hover div.champ-right { border-right: 1px solid black; }
+#bracket div.champ-bottom { border-bottom: 1px solid black; }
+#bracket a:hover div.champ-bottom { border-bottom: 1px solid black; }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2 class="pool-title"><a href="/pools/{{pool.id}}">{{pool.name}}</a></h2>
+<div style="height:16px; text-align:center; font-weight:bold;">Click on a matchup to see a breakdown of the picks</div>
+<div id="bracket">
+  <!-- Column 1 -->
+  <div class="column left-align">
+    <a href="master/1">
+      <div class="block bottom">{{teams[0]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[1]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/2">
+      <div class="block bottom">{{teams[2]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[3]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/3">
+      <div class="block bottom">{{teams[4]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[5]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/4">
+      <div class="block bottom">{{teams[6]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[7]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/5">
+      <div class="block bottom">{{teams[8]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[9]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/6">
+      <div class="block bottom">{{teams[10]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[11]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/7">
+      <div class="block bottom">{{teams[12]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[13]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/8">
+      <div class="block bottom">{{teams[14]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[15]}}</div>
+    </a>
+    <div class="block2"></div>
+    <a href="master/9">
+      <div class="block bottom">{{teams[16]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[17]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/10">
+      <div class="block bottom">{{teams[18]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[19]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/11">
+      <div class="block bottom">{{teams[20]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[21]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/12">
+      <div class="block bottom">{{teams[22]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[23]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/13">
+      <div class="block bottom">{{teams[24]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[25]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/14">
+      <div class="block bottom">{{teams[26]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[27]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/15">
+      <div class="block bottom">{{teams[28]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[29]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/16">
+      <div class="block bottom">{{teams[30]}}</div>
+      <div class="block right"></div>
+      <div class="block bottom right">{{teams[31]}}</div>
+    </a>
+  </div>
+  <!-- Column 2 -->
+  <div class="column left-align">
+    <div class="block"></div>
+    <a href="master/33">
+      <div class="block bottom">{{teams[64]}}</div>
+      <div class="block3 right"></div>
+      <div class="block bottom right">{{teams[65]}}</div>
+    </a>
+    <div class="block3"></div>
+    <a href="master/34">
+      <div class="block bottom">{{teams[66]}}</div>
+      <div class="block3 right"></div>
+      <div class="block bottom right">{{teams[67]}}</div>
+    </a>
+    <div class="block3"></div>
+    <a href="master/35">
+      <div class="block bottom">{{teams[68]}}</div>
+      <div class="block3 right"></div>
+      <div class="block bottom right">{{teams[69]}}</div>
+    </a>
+    <div class="block3"></div>
+    <a href="master/36">
+      <div class="block bottom">{{teams[70]}}</div>
+      <div class="block3 right"></div>
+      <div class="block bottom right">{{teams[71]}}</div>
+    </a>
+    <div class="block4"></div>
+    <a href="master/37">
+      <div class="block bottom">{{teams[72]}}</div>
+      <div class="block3 right"></div>
+      <div class="block bottom right">{{teams[73]}}</div>
+    </a>
+    <div class="block3"></div>
+    <a href="master/38">
+      <div class="block bottom">{{teams[74]}}</div>
+      <div class="block3 right"></div>
+      <div class="block bottom right">{{teams[75]}}</div>
+    </a>
+    <div class="block3"></div>
+    <a href="master/39">
+      <div class="block bottom">{{teams[76]}}</div>
+      <div class="block3 right"></div>
+      <div class="block bottom right">{{teams[77]}}</div>
+    </a>
+    <div class="block3"></div>
+    <a href="master/40">
+      <div class="block bottom">{{teams[78]}}</div>
+      <div class="block3 right"></div>
+      <div class="block bottom right">{{teams[79]}}</div>
+    </a>
+  </div>
+  <!-- Column 3 -->
+  <div class="column left-align">
+    <div class="block3"></div>
+    <a href="master/49">
+      <div class="block bottom">{{teams[96]}}</div>
+      <div class="block7 right"></div>
+      <div class="block bottom right">{{teams[97]}}</div>
+    </a>
+    <div class="block7"></div>
+    <a href="master/50">
+      <div class="block bottom">{{teams[98]}}</div>
+      <div class="block7 right"></div>
+      <div class="block bottom right">{{teams[99]}}</div>
+    </a>
+    <div class="block8"></div>
+    <a href="master/51">
+      <div class="block bottom">{{teams[100]}}</div>
+      <div class="block7 right"></div>
+      <div class="block bottom right">{{teams[101]}}</div>
+    </a>
+    <div class="block7"></div>
+    <a href="master/52">
+      <div class="block bottom">{{teams[102]}}</div>
+      <div class="block7 right"></div>
+      <div class="block bottom right">{{teams[103]}}</div>
+    </a>
+  </div>
+  <!-- Column 4 -->
+  <div class="column left-align">
+    <div class="block7"></div>
+    <a href="master/57">
+      <div class="block bottom">{{teams[112]}}</div>
+      <div class="block15 right"></div>
+      <div class="block bottom right">{{teams[113]}}</div>
+    </a>
+    <div class="block16"></div>
+    <a href="master/58">
+      <div class="block bottom">{{teams[114]}}</div>
+      <div class="block15 right"></div>
+      <div class="block bottom right">{{teams[115]}}</div>
+    </a>
+  </div>
+  <!-- Column 5 -->
+  <div class="column left-align">
+    <div class="block15"></div>
+    <a href="master/61">
+      <div class="block bottom">{{teams[120]}}</div>
+      <div class="block32 right"></div>
+      <div class="block bottom right">{{teams[121]}}</div>
+    </a>
+  </div>
+  <!-- Column 6 -->
+  <div class="column">
+    <div class="block19"></div>
+    <a href="master/63" style="width:96px;">
+      <div class="block bottom" style="text-align:left; padding-left:2px; float:left;">{{teams[124]}}</div>
+      <div style="width:10px; height:16px; float:left;"></div>
+      <div class="block11 champ" style="clear:both; width:96px;"></div>
+      <div style="width:5px; height:16px; float:left;" class="champ-left"></div>
+      <div class="block champ-bottom" style="text-align:center; font-weight:bold; float:left;">{{teams[126]}}</div>
+      <div style="width:5px; height:16px; float:left;" class="champ-right"></div>
+      <div class="block12 champ" style="width:96px; clear:both;"></div>
+      <div style="width:10px; height:16px; float:left;" class="champ-left"></div>
+      <div class="block bottom champ-right" style="text-align:right; padding-right:2px; float:left;">{{teams[125]}}</div>
+    </a>
+  </div>
+  <!-- Column 7 -->
+  <div class="column right-align">
+    <div class="block15"></div>
+    <a href="master/62">
+      <div class="block bottom">{{teams[122]}}</div>
+      <div class="block32 left"></div>
+      <div class="block bottom left">{{teams[123]}}</div>
+    </a>
+  </div>
+  <!-- Column 8 -->
+  <div class="column right-align">
+    <div class="block7"></div>
+    <a href="master/59">
+      <div class="block bottom">{{teams[116]}}</div>
+      <div class="block15 left"></div>
+      <div class="block bottom left">{{teams[117]}}</div>
+    </a>
+    <div class="block16"></div>
+    <a href="master/60">
+      <div class="block bottom">{{teams[118]}}</div>
+      <div class="block15 left"></div>
+      <div class="block bottom left">{{teams[119]}}</div>
+    </a>
+  </div>
+  <!-- Column 9 -->
+  <div class="column right-align">
+    <div class="block3"></div>
+    <a href="master/53">
+      <div class="block bottom">{{teams[104]}}</div>
+      <div class="block7 left"></div>
+      <div class="block bottom left">{{teams[105]}}</div>
+    </a>
+    <div class="block7"></div>
+    <a href="master/54">
+      <div class="block bottom">{{teams[106]}}</div>
+      <div class="block7 left"></div>
+      <div class="block bottom left">{{teams[107]}}</div>
+    </a>
+    <div class="block8"></div>
+    <a href="master/55">
+      <div class="block bottom">{{teams[108]}}</div>
+      <div class="block7 left"></div>
+      <div class="block bottom left">{{teams[109]}}</div>
+    </a>
+    <div class="block7"></div>
+    <a href="master/56">
+      <div class="block bottom">{{teams[110]}}</div>
+      <div class="block7 left"></div>
+      <div class="block bottom left">{{teams[111]}}</div>
+    </a>
+  </div>
+  <!-- Column 10 -->
+  <div class="column right-align">
+    <div class="block"></div>
+    <a href="master/41">
+      <div class="block bottom">{{teams[80]}}</div>
+      <div class="block3 left"></div>
+      <div class="block bottom left">{{teams[81]}}</div>
+    </a>
+    <div class="block3"></div>
+    <a href="master/42">
+      <div class="block bottom">{{teams[82]}}</div>
+      <div class="block3 left"></div>
+      <div class="block bottom left">{{teams[83]}}</div>
+    </a>
+    <div class="block3"></div>
+    <a href="master/43">
+      <div class="block bottom">{{teams[84]}}</div>
+      <div class="block3 left"></div>
+      <div class="block bottom left">{{teams[85]}}</div>
+    </a>
+    <div class="block3"></div>
+    <a href="master/44">
+      <div class="block bottom">{{teams[86]}}</div>
+      <div class="block3 left"></div>
+      <div class="block bottom left">{{teams[87]}}</div>
+    </a>
+    <div class="block4"></div>
+    <a href="master/45">
+      <div class="block bottom">{{teams[88]}}</div>
+      <div class="block3 left"></div>
+      <div class="block bottom left">{{teams[89]}}</div>
+    </a>
+    <div class="block3"></div>
+    <a href="master/46">
+      <div class="block bottom">{{teams[90]}}</div>
+      <div class="block3 left"></div>
+      <div class="block bottom left">{{teams[91]}}</div>
+    </a>
+    <div class="block3"></div>
+    <a href="master/47">
+      <div class="block bottom">{{teams[92]}}</div>
+      <div class="block3 left"></div>
+      <div class="block bottom left">{{teams[93]}}</div>
+    </a>
+    <div class="block3"></div>
+    <a href="master/48">
+      <div class="block bottom">{{teams[94]}}</div>
+      <div class="block3 left"></div>
+      <div class="block bottom left">{{teams[95]}}</div>
+    </a>
+  </div>
+  <!-- Column 11 -->
+  <div class="column right-align">
+    <a href="master/17">
+      <div class="block bottom">{{teams[32]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[33]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/18">
+      <div class="block bottom">{{teams[34]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[35]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/19">
+      <div class="block bottom">{{teams[36]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[37]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/20">
+      <div class="block bottom">{{teams[38]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[39]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/21">
+      <div class="block bottom">{{teams[40]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[41]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/22">
+      <div class="block bottom">{{teams[42]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[43]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/23">
+      <div class="block bottom">{{teams[44]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[45]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/24">
+      <div class="block bottom">{{teams[46]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[47]}}</div>
+    </a>
+    <div class="block2"></div>
+    <a href="master/25">
+      <div class="block bottom">{{teams[48]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[49]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/26">
+      <div class="block bottom">{{teams[50]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[51]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/27">
+      <div class="block bottom">{{teams[52]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[53]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/28">
+      <div class="block bottom">{{teams[54]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[55]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/29">
+      <div class="block bottom">{{teams[56]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[57]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/30">
+      <div class="block bottom">{{teams[58]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[59]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/31">
+      <div class="block bottom">{{teams[60]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[61]}}</div>
+    </a>
+    <div class="block"></div>
+    <a href="master/32">
+      <div class="block bottom">{{teams[62]}}</div>
+      <div class="block left"></div>
+      <div class="block bottom left">{{teams[63]}}</div>
+    </a>
+  </div>
+</div>
+<div style="height:5px;"></div>
+{% endblock %}

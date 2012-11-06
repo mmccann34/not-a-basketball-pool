@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Game Analysis{% endblock %}
+
+{% block content %}
+<h2 class="pool-title"><a href="/pools/{{pool.id}}">{{pool.name}}</a></h2>
+<h2>Pick Breakdown</h2>
+{% for t in teams %}
+<div style="width:{{t.percent_picked * 150}}px; height:10px; background-color:#00648B; float:left; margin-top:2.5px;"></div>
+<div style="font-weight:bold; font-size:12px; float:left; margin-left:5px;">{{'{:.0%}'.format(t.percent_picked)}}</div>
+<div style="font-size:12px; clear:both; margin-bottom:2.5px;">{{t.name}}</div>
+{% endfor %}
+<table class="cell_padding_right cell_padding_bottom" style="margin-top:15px;">
+  <tr>
+      <th>Bracket</th>
+      <th>Pick</th>
+      <th>Score</th>
+  </tr>
+  {% for e in entries %}
+  <tr {% if e.own %}style="font-weight:bold;"{% endif %}>
+    <td>{% if locked or e.own %}<a href="/brackets/{{e.id}}">{{e.name}}</a>{% else %}{{e.name}}{% endif %}</td>
+    <td>{{e.team.name}}</td>
+    <td style="text-align:center">{{'{0:.3g}'.format(e.points.total)}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

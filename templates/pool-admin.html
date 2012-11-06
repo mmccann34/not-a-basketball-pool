@@ -3,7 +3,7 @@
 {% block title %}{{pool.name}} - Admin{% endblock %}
 
 {% block content %}
-<h2 class="centered_text" style="margin-bottom:0;">{{pool.name}}</h2>
+<h2 class="pool-title"><a href="/pools/{{pool.id}}">{{pool.name}}</a></h2>  
 <div class="centered_text">(<a href="/pools/{{pool.id}}">view</a>)</div>
 <h2>Admin Page</h2>
 <h3>Users</h3>
