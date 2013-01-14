@@ -2,6 +2,13 @@
 
 {% block title %}{{pool.name}}{% endblock %}
 
+{% block head %}
+{{ super() }}
+<script type="text/javascript" src="/static/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="/static/pool.js"></script>
+<link type="text/css" rel="stylesheet" href="/static/pool.css" />
+{% endblock %}
+
 {% block content %}
 <h2 class="pool-title"><a href="/pools/{{pool.id}}">{{pool.name}}</a></h2>
 {% if pool.admin_user.id == user.id %}
@@ -10,25 +17,53 @@
 </div>
 {% endif %}
 <div class="centered_text" style="margin-bottom:10px">
-{% if not locked %}
+  {% if not locked %}
   <a href="/brackets/choose?p={{pool.id}}">Enter a Bracket</a>
-{% else %}
+  {% else %}
   <a href="/pools/{{pool.id}}/master">View Master Bracket/Game Analysis</a>
-{% endif %}
+  {% endif %}
 </div>
-<h3>Standings</h3>
-<table class="cell_padding_right">
-  <tr>
-    <th>Rank</th>
-    <th>Bracket</th>
-    <th>Score</th>
-  </tr>
-  {% for e in entries %}
-  <tr {% if e.own %}style="font-weight:bold;"{% endif %}>
-    <td>{{e.rank}}</td>
-    <td>{% if locked or e.own %}<a href="/brackets/{{e.id}}">{{e.name}}</a>{% else %}{{e.name}}{% endif %}</td>
-    <td style="text-align:center;">{{'{0:.3g}'.format(e.points.total)}}</td>
-  </tr>
-  {% endfor %}
-</table>
+<div class="mod-header">
+  <h4>Standings</h4>
+</div>
+<div class="mod-content">
+  <table id="standings" class="standings tablesorter">
+    <thead>
+      <tr>
+        <th><div>Rank</div></th>
+        <th><div>Bracket Name</div></th>
+        <th><div>Total Score</div></th>
+        <th><div>Rd 1</div></th>
+        <th><div>Rd 2</div></th>
+        <th><div>SS</div></th>
+        <th><div>EE</div></th>
+        <th><div>FF</div></th>
+        <th><div>Champ</div></th>
+        <th><div>Prior Rank</div></th>
+        <th><div>Change in Rank</div></th>
+        <th><div>Max Score</div></th>
+        <th><div>Max Score Rank</div></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in entries %}
+      <tr class="{{loop.cycle('odd', 'even')}} {% if e.own %}user-entry{% endif %}" {% if locked or e.own %}onclick="document.location.href = '/brackets/{{e.id}}';"{% endif %}}>
+        <td>{{e.rank}}</td>
+        <td>{{e.name}}</td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.points.total)}}</td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.points.round_1)}}</td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.points.round_2)}}</td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.points.round_3)}}</td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.points.round_4)}}</td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.points.round_5)}}</td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.points.round_6)}}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

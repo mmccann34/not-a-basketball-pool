@@ -4,6 +4,8 @@
 
 {% block head %}
 {{ super() }}
+<link type="text/css" rel="stylesheet" href="/static/jquery-ui-1.8.23.custom.css" />
+<script type="text/javascript" src="/static/jquery-ui-1.8.23.custom.min.js"></script>
 <script type="text/javascript">
 $(function(){
   $('#datepicker').datepicker({ minDate: 0 });          
@@ -13,12 +15,8 @@ $(function(){
 
 {% block content %}
 <h2>Admin Settings</h2>
-<a href="/admin/teams/upload">Upload Teams</a>
-<br>
-<br>
-<a href="/brackets/master">Master Bracket</a>
-<br>
-<br>
+<div style="margin-bottom:15px;"><a href="/admin/teams/upload">Upload Teams</a></div>
+<div style="margin-bottom:15px;"><a href="/brackets/master">Master Bracket</a></div>
 <form method="post" class="input_form">
   <table>
     <tr>

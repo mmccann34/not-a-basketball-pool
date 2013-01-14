@@ -2,16 +2,30 @@
 
 {% block title %}Signup{% endblock %}
 
+{% block head %}
+{{ super() }}
+<script>
+$(function() {
+    // do stuff when DOM is ready
+    $("#signup_form").submit(function() {
+      if (!$("#email").val()) {
+        return confirm("No email address! You won't be able to recover a lost password! Continue?")
+      }
+    });
+  });
+</script>
+{% endblock %}
+
 {% block content %}
 <h2>Sign Up</h2>
-<form method="post" class="input_form">
+<form id="signup_form" method="post" class="input_form">
   <table>
     <tr>
       <td class="label">
         Username
       </td>
       <td>
-        <input type="text" name="username" value="{{username}}" autofocus="autofocus">
+        <input type="text" name="username" value="{{username}}" autofocus="autofocus" maxlength="20">
       </td>
       <td class="error">
         {{error_username}}
@@ -22,7 +36,7 @@
         Password
       </td>
       <td>
-        <input type="password" name="password" value="">
+        <input type="password" name="password" value="" maxlength="20">
       </td>
       <td class="error">
         {{error_password}}
@@ -33,7 +47,7 @@
         Verify Password
       </td>
       <td>
-        <input type="password" name="verify" value="">
+        <input type="password" name="verify" value="" maxlength="20">
       </td>
       <td class="error">
         {{error_verify}}
@@ -44,7 +58,7 @@
         Email (optional)
       </td>
       <td>
-        <input type="text" name="email" value="{{email}}">
+        <input type="text" id="email" name="email" value="{{email}}">
       </td>
       <td class="error">
         {{error_email}}
@@ -54,5 +68,5 @@
   <input type="submit" value="Sign Up">
 </form>
 <br>
-<label>Already have an account? Login <a href="/login{{return_url}}">here</a></label>
+<p>Already have an account? <a href="/login{{return_url}}">Login</a>.</p>
 {% endblock %}

@@ -8,28 +8,36 @@
 <div>No Brackets yet</div>
 {% else %}
 <table class="cell_padding_right">
-  <tr>
+  <tr class="cell_padding_bottom">
     <th>Bracket</th>
     <th>Pool</th>
     <th>Score</th>
   </tr>
   {% for e in entries %}
-  {% for i in range(e.pool_items|length) %}
-  {% if i < e.pool_items|length - 1 %}
-  <tr>
+    {% if e.pool_items|length > 0 %}
+      {% for i in range(e.pool_items|length) %}
+        {% if i < e.pool_items|length - 1 %}
+          <tr>
+        {% else %}
+          <tr class="cell_padding_bottom">
+        {% endif %}
+        {% if i == 0 %}
+          <td><a href="/brackets/{{e.id}}">{{e.name}}</a></td>
+        {% else %}
+          <td></td>
+        {% endif %}
+        <td><a href="/pools/{{e.pool_items[i].id}}">{{e.pool_items[i].name}}</a></td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.points[i].total)}}</td>
+        </tr>
+      {% endfor %}
     {% else %}
     <tr class="cell_padding_bottom">
-      {% endif %}
-      {% if i == 0 %}
       <td><a href="/brackets/{{e.id}}">{{e.name}}</a></td>
-      {% else %}
       <td></td>
-      {% endif %}
-      <td><a href="/pools/{{e.pool_items[i].id}}">{{e.pool_items[i].name}}</a></td>
-      <td style="text-align:center;">{{'{0:.3g}'.format(e.points[i].total)}}</td>
+      <td></td>
     </tr>
-    {% endfor %}
-    {% endfor %}
+    {% endif %}
+  {% endfor %}
   </table>
   {% endif %}
   {% endblock %}

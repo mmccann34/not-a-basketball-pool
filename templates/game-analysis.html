@@ -4,10 +4,11 @@
 
 {% block content %}
 <h2 class="pool-title"><a href="/pools/{{pool.id}}">{{pool.name}}</a></h2>
-<h2>Pick Breakdown</h2>
+<h2>{{game}}</h2>
+<!-- <h3 style="margin-bottom:10px;">{{game}}</h3> -->
 {% for t in teams %}
 <div style="width:{{t.percent_picked * 150}}px; height:10px; background-color:#00648B; float:left; margin-top:2.5px;"></div>
-<div style="font-weight:bold; font-size:12px; float:left; margin-left:5px;">{{'{:.0%}'.format(t.percent_picked)}}</div>
+<div style="font-weight:bold; font-size:12px; float:left; margin-left:5px;">{{t.percent_picked_display}}</div>
 <div style="font-size:12px; clear:both; margin-bottom:2.5px;">{{t.name}}</div>
 {% endfor %}
 <table class="cell_padding_right cell_padding_bottom" style="margin-top:15px;">

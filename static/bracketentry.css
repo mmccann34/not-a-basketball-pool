@@ -96,3 +96,13 @@ td.semi_left {
 td.semi_right {
   padding-left: 10px;
 }
+
+.region {
+  text-align:center;
+  font-weight:bold;
+  font-size:14px;
+}
+
+.region input {
+  text-align:center;
+}

@@ -2,72 +2,52 @@
 
 {% block title %}Create a Pool{% endblock %}
 
+{% block head %}
+{{ super() }}
+<link type="text/css" rel="stylesheet" href="/static/pool-form.css" />
+{% endblock %}
+
 {% block content %}
 <h2>Create a Pool</h2>
 <form method="post" class="input_form">
-  <table>
-    <tr>
-      <td class="label">
-        Name
-      </td>
-      <td>
-        <input type="text" name="name" value="{{name}}" autofocus="autofocus">
-      </td>
-      <td class="error">
-        {{error_name}}
-      </td>
-    <tr>
-      <td class="label">
-        Password
-      </td>
-      <td>
-        <input type="password" name="password" value="">
-      </td>
-      <td class="error">
-        {{error_password}}
-      </td>
-    </tr>
-    <tr>
-      <td class="label">
-        Verify Password
-      </td>
-      <td>
-        <input type="password" name="verify" value="">
-      </td>
-      <td class="error">
-        {{error_verify}}
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td colspan="2">
-        <table>
-          <tr>
-            <td colspan="6" class="centered_text">Point System</td>
-          </tr>
-          <tr>
-            <td class="centered_text"><label>1st Rd</label></td>
-            <td class="centered_text"><label>2nd Rd</label></td>
-            <td class="centered_text"><label>3rd Rd</label></td>
-            <td class="centered_text"><label>4th Rd</label></td>
-            <td class="centered_text"><label>5th Rd</label></td>
-            <td class="centered_text"><label>6th Rd</label></td>
-          </tr>
-          <tr>
-            <td><input type="text" name="pts_1" value="{{pts_1}}" class="input_points"></td>
-            <td><input type="text" name="pts_2" value="{{pts_2}}" class="input_points"></td>
-            <td><input type="text" name="pts_3" value="{{pts_3}}" class="input_points"></td>
-            <td><input type="text" name="pts_4" value="{{pts_4}}" class="input_points"></td>
-            <td><input type="text" name="pts_5" value="{{pts_5}}" class="input_points"></td>
-            <td><input type="text" name="pts_6" value="{{pts_6}}" class="input_points"></td>
-            <td class="error">
-              {{error_points}}
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-  <input type="submit">
+  <div>
+    <div class="top-label">Name your Pool</div>
+    <div>
+      <input type="text" name="name" value="{{name}}" autofocus="autofocus" autocomplete="off" maxlength="50">
+      <span class="error">{{error_name}}</span>
+    </div>
+    <div style="float:left;" class="password">
+      <div class="top-label">Enter a password</div>
+      <div><input type="password" name="password" value="" autocomplete="off" maxlength="20"></div>
+    </div>
+    <div style="float:left;">
+      <div class="top-label">Verify your password</div>
+      <div>
+        <input type="password" name="verify" value="" maxlength="20">
+        <span class="error">{{error_password}}</span>
+      </div>
+    </div>
+    <div style="float:left; margin-top:5px; margin-left:15px; width:250px;" class="error">{{error_email}}</div>
+  </div>
+  <div id="points">
+    <div class="top-label">Enter the points for each correctly chosen game:</div>
+    <div><span class="points-label">Round 1 (Round of 64):</span><input type="text" name="pts_1" value="{{pts_1}}" class="input_points"></div>
+    <div><span class="points-label">Round 2 (Round of 32):</span><input type="text" name="pts_2" value="{{pts_2}}" class="input_points"></div>
+    <div><span class="points-label">Round 3 (Sweet 16):</span><input type="text" name="pts_3" value="{{pts_3}}" class="input_points"></div>
+    <div><span class="points-label">Round 4 (Elite Eight):</span><input type="text" name="pts_4" value="{{pts_4}}" class="input_points"></div>
+    <div><span class="points-label">Round 5 (Final Four):</span><input type="text" name="pts_5" value="{{pts_5}}" class="input_points"></div>
+    <div><span class="points-label">Round 6 (Championship):</span><input type="text" name="pts_6" value="{{pts_6}}" class="input_points"></div>
+  </div>
+  <div id="bonus">
+    <div class="top-label">Select bonus point option:</div>
+    <div>
+      <input type="radio" name="bonus" value="upset" style="margin-right:5px;" checked/>Upset bonus: Add points equal to difference in seed when the lower seed wins <span style="color:blue; cursor:default" title="Upset Bonus Example: &#013If you pick the #12 to beat the #5 in the first round you will get 9 points: 2 points for winning the pick in Round 1 and 7 points for the difference in seed when the lower seed wins (12-5)">(?)</span>
+    </div>
+    <div>
+      <input type="radio" name="bonus" value="seed" style="margin-right:5px;"/>Seed bonus: Add points equal to seed for each round <span style="color:blue; cursor:default" title="Seed Bonus Example: &#013If you pick the #12 to beat the #5 in the first round you will get 14 points: 2 points for winning the pick in Round 1 and 12 points for picking the 12 seed">(?)</span>
+    </div>
+    <div><input type="radio" name="bonus" value="none" style="margin-right:5px;"/>None</div>
+  </div>
+  <input type="submit" value="Create Pool">
 </form>
 {% endblock %}

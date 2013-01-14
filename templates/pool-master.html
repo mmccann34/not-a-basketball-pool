@@ -4,37 +4,7 @@
 
 {% block head %}
 {{ super() }}
-<style type="text/css">
-#bracket { font-size:10px; height:1024px; width:956px; margin:0 auto; }
-.block { width:86px; height:16px; }
-.block2 { width:86px; height:32px; }
-.block3 { width:86px; height:48px; }
-.block4 { width:86px; height:64px; }
-.block7 { width:86px; height:112px; }
-.block8 { width:86px; height:128px; }
-.block11 { width:86px; height:176px; }
-.block12 { width:86px; height:192px; }
-.block15 { width:86px; height:240px; }
-.block16 { width:86px; height:256px; }
-.block19 { width:86px; height:304px; }
-.block24 { width:86px; height:384px; }
-.block32 { width:86px; height:512px; }
-.bottom { border-bottom:1px solid black; }
-.right { border-right:1px solid black; }
-.left { border-left:1px solid black; }
-#bracket a { color:#333; text-decoration:none; width:86px; display:block; } 
-#bracket a:visited { color:#333;}
-#bracket a:hover { text-decoration:none; cursor:pointer; font-weight:bold; }
-#bracket a:hover div { border-width:2px; }
-.column { float:left; }
-.column.left-align div { text-align:left; padding-left:2px; }
-.column.right-align div { text-align:right; padding-right:2px; }
-#bracket a:hover div.champ { border-left: 1px solid black; border-right: 1px solid black; }
-#bracket a:hover div.champ-left { border-left: 1px solid black; }
-#bracket a:hover div.champ-right { border-right: 1px solid black; }
-#bracket div.champ-bottom { border-bottom: 1px solid black; }
-#bracket a:hover div.champ-bottom { border-bottom: 1px solid black; }
-</style>
+<link type="text/css" rel="stylesheet" href="/static/pool-master.css" />
 {% endblock %}
 
 {% block content %}
@@ -191,14 +161,16 @@
     </a>
   </div>
   <!-- Column 3 -->
-  <div class="column left-align">
+  <div class="column left-align" style="margin-right:-86px;">
     <div class="block3"></div>
     <a href="master/49">
       <div class="block bottom">{{teams[96]}}</div>
       <div class="block7 right"></div>
       <div class="block bottom right">{{teams[97]}}</div>
     </a>
-    <div class="block7"></div>
+    <div class="block3"></div>
+    <div class="region">{{regions[0]}}</div>
+    <div class="block3"></div>
     <a href="master/50">
       <div class="block bottom">{{teams[98]}}</div>
       <div class="block7 right"></div>
@@ -210,7 +182,9 @@
       <div class="block7 right"></div>
       <div class="block bottom right">{{teams[101]}}</div>
     </a>
-    <div class="block7"></div>
+    <div class="block3"></div>
+    <div class="region">{{regions[1]}}</div>
+    <div class="block3"></div>
     <a href="master/52">
       <div class="block bottom">{{teams[102]}}</div>
       <div class="block7 right"></div>
@@ -270,13 +244,17 @@
     <div class="block7"></div>
     <a href="master/59">
       <div class="block bottom">{{teams[116]}}</div>
-      <div class="block15 left"></div>
+      <div class="block7 left"></div>
+      <div class="region left">{{regions[2]}}</div>
+      <div class="block7 left"></div>
       <div class="block bottom left">{{teams[117]}}</div>
     </a>
     <div class="block16"></div>
     <a href="master/60">
       <div class="block bottom">{{teams[118]}}</div>
-      <div class="block15 left"></div>
+      <div class="block7 left"></div>
+      <div class="region left">{{regions[3]}}</div>
+      <div class="block7 left"></div>
       <div class="block bottom left">{{teams[119]}}</div>
     </a>
   </div>

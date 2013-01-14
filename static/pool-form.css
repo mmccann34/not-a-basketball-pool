@@ -1,0 +1,32 @@
+.top-label{
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
+.password {
+  margin-right: 15px;
+}
+
+#points{
+  padding-top: 10px;
+  clear:both;
+}
+
+#points input{
+  margin-bottom: 2.5px;
+}
+
+.points-label{
+  display:inline-block;
+  width: 175px;
+  margin-right:10px;
+}
+
+#bonus {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+#bonus input {
+  margin-bottom: 7.5px;
+}

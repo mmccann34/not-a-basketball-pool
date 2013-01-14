@@ -1,0 +1,69 @@
+table.standings {
+  width: 100%;
+}
+
+table.standings th {
+  background: #E8E8E8 url('/static/images/header_gradient.gif') repeat-x;
+  padding: 4px 0px 4px 6px;
+  font-size: 11px;
+}
+
+table.standings td {
+  padding: 4px 21px 4px 6px;
+  font-size: 11px;
+}
+
+table.standings tr.even td {
+  background-color: #F1F1F1;
+}
+
+table.standings tr.user-entry {
+  font-weight: bold;
+}
+
+tr[onclick] {
+  cursor: pointer;
+}
+
+.mod-header {
+  background: black url('/static/images/mod_header_gradient.gif') repeat-x;
+  height: 25px;
+}
+
+.mod-header h4 {
+  color: white;
+  font-size: 12px;
+  line-height: 25px;
+  padding: 0 0 0 6px
+}
+
+.mod-content {
+  border-width: 0 1px 1px 1px;
+  border-color: #C2C2C2;
+  border-style: solid;
+}
+
+/* tablesorter */
+table.tablesorter thead tr .header {
+  background-image: url(/static/images/bg.gif);
+  background-repeat: no-repeat;
+  background-position: center right;
+  cursor: pointer;
+  /*text-align: left;*/
+}
+
+table.tablesorter thead tr div {
+  padding-right: 21px;
+}
+
+table.tablesorter thead tr .headerSortUp {
+  background-image: url(/static/images/asc.gif);
+}
+
+table.tablesorter thead tr .headerSortDown {
+  background-image: url(/static/images/desc.gif);
+}
+
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+/*background-color: #8dbdd8;*/
+}

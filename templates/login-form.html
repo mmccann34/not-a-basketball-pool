@@ -3,24 +3,24 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
+<p style="font-weight:bold;">{{message}}</p>
 <h2>Login</h2>
 <form method="post" class="input_form">
   <table>
     <tr>
-      <td class="label">
-        Username
-      </td>
+      <td class="label">Username</td>
       <td>
-        <input type="text" name="username" value="{{username}}" autofocus="autofocus">
+        <input type="text" name="username" value="{{username}}" autofocus="autofocus" maxlength="20">
       </td>
     </tr>
     <tr>
-      <td class="label">
-        Password
-      </td>
+      <td class="label">Password</td>
       <td>
-        <input type="password" name="password" value="">
+        <input type="password" name="password" value="" maxlength="20">
       </td>
+    </tr>
+    <tr>
+      <td colspan="2" style="padding-top:5px;"><a href="/account/settings/password/forgot">Forgot your password?</a></td>
     </tr>
   </table>
   <div class="error">
@@ -29,5 +29,5 @@
   <input type="submit" value="Login">
 </form>
 <br>
-<label>Don't have an account? Create one <a href="/signup{{return_url}}">here</a></label>
+<p>Don't have an account? <a href="/signup{{return_url}}">Sign Up</a>.</p>
 {% endblock %}

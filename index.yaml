@@ -29,6 +29,17 @@ indexes:
   - name: year
   - name: name
 
+- kind: Game
+  properties:
+  - name: year
+  - name: game_id
+
+- kind: Game
+  ancestor: yes
+  properties:
+  - name: year
+  - name: game_id
+
 - kind: Pick
   properties:
   - name: entry
@@ -52,3 +63,9 @@ indexes:
   properties:
   - name: year
   - name: name
+
+- kind: PoolSetting
+  ancestor: yes
+  properties:
+  - name: type
+  - name: order

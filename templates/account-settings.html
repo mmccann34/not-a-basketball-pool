@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Account Settings{% endblock %}
+
+{% block head %}
+{{ super() }}
+<script>
+$(function() {
+    // do stuff when DOM is ready
+    $("#delete").click(function() {
+      if (confirm("Deleting your account will delete all of your bracket entries. Continue?")) {
+        $("#delete_form").submit();
+      }
+    });
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+<h2>Account Settings</h2>
+<table class="cell_padding_right cell_padding_bottom" style="margin-bottom:5px;">
+  <tr>
+    <td style="font-weight:bold;">Username</td>
+    <td>{{user.name}}</td>
+  </tr>
+  <tr>
+    <td style="font-weight:bold;">Password</td>
+    <td>********</td>
+  </tr>
+  <tr>
+    <td style="font-weight:bold;">Email</td>
+    <td>{{user.email}}</td>
+  </tr>
+</table>
+<div><a href="settings/edit">Edit Your Settings</a> | <span id="delete" class="button-link">Delete Account</span></div>
+<form method="post" id="delete_form"></form>
+{% endblock %}

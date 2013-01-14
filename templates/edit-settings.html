@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Settings{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom:15px;">Edit Settings</h2>
+<form method="post" class="input_form">
+  <table style="margin-bottom:10px;">
+    <tr>
+      <td class="label">
+        Username
+      </td>
+      <td>
+        <input type="text" name="username" value="{{username}}" maxlength="20">
+      </td>
+      <td class="error" style="width:200px;">
+        {{error_username}}
+      </td>
+    </tr>
+    <tr>
+      <td class="label">
+        Email (optional)
+      </td>
+      <td>
+        <input type="text" name="email" value="{{email}}" autocomplete="off">
+      </td>
+      <td class="error" style="width:200px;">
+        {{error_email}}
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3" style="font-weight:bold; padding-top:10px;">
+        Change your password
+      </td>
+    </tr>
+    <tr>
+      <td class="label">
+        New Password
+      </td>
+      <td>
+        <input type="password" name="password_new" value="" autocomplete="off" maxlength="20">
+      </td>
+      <td class="error" style="width:200px;">
+        {{error_password_new}}
+      </td>
+    </tr>
+    <tr>
+      <td class="label">
+        Verify New Password
+      </td>
+      <td>
+        <input type="password" name="verify_new" value="" autocomplete="off" maxlength="20">
+      </td>
+      <td class="error" style="width:200px;">
+        {{error_verify_new}}
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3" style="font-weight:bold; padding-top:10px;">To save these settings, please enter your current password</td>
+    </tr>
+    <tr>
+      <td class="label">
+        Password
+      </td>
+      <td>
+        <input type="password" name="password" value="" maxlength="20">
+      </td>
+      <td class="error">
+        {{error_password}}
+      </td>
+    </tr>
+  </table>
+  <input type="submit" value="Save">
+  <a href="/account/settings">Cancel</a>
+</form>
+{% endblock %}

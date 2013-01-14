@@ -128,26 +128,21 @@ function validateInputs()
           alert('Entry must have a name');
           returnval = false;
         }
-        else if (name.length > 25)
-        {
-          alert('Entry name must be 25 characters or less');
-          returnval = false;
-        }
         else
         {
-          $.getJSON('/validate/entry', { entry_name: name }, 
-            function(response) { 
-              var result = response;
-              if (!result)
-              {
-                alert('That Entry name is already in use')
-                returnval = false;
-              }
-              else
-              {
-                $('#form_bracket').submit()
-              }
-            });
+        $.getJSON('/validate/entry', { entry_name: name }, 
+          function(response) { 
+            var result = response;
+            if (!result)
+            {
+              alert('That Entry name is already in use')
+              returnval = false;
+            }
+            else
+            {
+              $('#form_bracket').submit()
+            }
+          });
         }
       }
       else

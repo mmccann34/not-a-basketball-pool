@@ -6,9 +6,10 @@
 <h2 class="pool-title"><a href="/pools/{{pool.id}}">{{pool.name}}</a></h2>  
 <div class="centered_text">(<a href="/pools/{{pool.id}}">view</a>)</div>
 <h2>Admin Page</h2>
+<div style="margin-bottom:15px;"><a href="admin/export-picks" target="_blank">Export all picks to a .csv file</a></div>
 <h3>Users</h3>
 <form method="post" class="input_form">
-  <table class="cell_padding_right">
+  <table class="cell_padding_right cell_padding_bottom">
     <tr>
       <th>Name</th>
       <th>Email</th>
@@ -17,13 +18,23 @@
       <th>Remove</th>
     </tr>
     {% for u in users %}
-    <tr>
-      <td>{{u.name}}</td>
-      <td>{{u.email}}</td>
-      <td class="centered_text">{{u.brackets|count}}</td>
-      <td class="centered_text"><input type="checkbox" {% if u.paid %} checked="checked" {% endif %} name="paid_{{u.id}}"></td>
-      <td class="centered_text"><input type="checkbox" name="remove_{{u.id}}"></td>
-    </tr>
+      {% if u.admin %}
+        <tr style="font-weight:bold;">
+          <td>{{u.name}}</td>
+          <td>{{u.email}}</td>
+          <td class="centered_text">{{u.brackets|count}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+      {% else %}
+        <tr>
+          <td>{{u.name}}</td>
+          <td>{{u.email}}</td>
+          <td class="centered_text">{{u.brackets|count}}</td>
+          <td class="centered_text"><input type="checkbox" {% if u.paid %} checked="checked" {% endif %} name="paid_{{u.id}}"></td>
+          <td class="centered_text"><input type="checkbox" name="remove_{{u.id}}"></td>
+        </tr>
+      {% endif %}
     {% endfor %}
   </table>
   <input type="submit" value="Save">

@@ -6,6 +6,7 @@
 {{ super() }}
 <link type="text/css" rel="stylesheet" href="/static/bracketentry.css" />
 <script type="text/javascript" src="/static/bracketentry.js"></script>
+<script type="text/javascript" src="/static/jquery.hotkeys.js"></script>
 {% if locked %}
 <style type="text/css">
 .team { cursor: auto; }
@@ -20,10 +21,10 @@
     {% if name %}
     <label style="font-weight:bold;">{{name}}</label>
     {% else %}
-    Entry Name: <input type="text" name="entry_name" value="{{name}}" {% if locked %} readonly="readonly" {% endif %}>
+    Entry Name: <input type="text" name="entry_name" value="{{name}}" {% if locked %} readonly="readonly" {% endif %} maxlength="25">
     {% endif %}
   </div>
-  <table class="centered" border="0px" cellpadding="0px" cellspacing="0px">
+  <table class="centered bracket" border="0px" cellpadding="0px" cellspacing="0px">
     <!-- Top Half -->
     <tr>
       <td class="bottom"><div id="team_1" class="team left">{{teams[0].seed}} {{teams[0].name}}</div></td>
@@ -149,11 +150,17 @@
       <td class="bottom left"><div id="team_40" class="team right">{{teams[39].seed}} {{teams[39].name}}</div></td>
     </tr>
     <tr>
-      <td class="right" colspan="4"></td>
+      <td colspan="2"></td>
+      <td colspan="2" class="right">
+        <div class="region">{% if master %}<input type="text" name="region_1" value="{{regions[0]}}">{% else %}{{regions[0]}}{% endif %}</div>
+      </td>
       <td class="bottom"><input class="winner left {{css_winners[56]}}" readonly="readonly" name="winner_57" value="{{winners[56]}}"></td>
       <td colspan="1"></td>
       <td class="bottom"><input class="winner right {{css_winners[58]}}" readonly="readonly" name="winner_59" value="{{winners[58]}}"></td>
-      <td class="left" colspan="4"></td>
+      <td colspan="2" class="left">
+        <div class="region">{% if master %}<input type="text" name="region_3" value="{{regions[2]}}">{% else %}{{regions[2]}}{% endif %}</div>
+      </td>
+      <td colspan="2"></td>
     </tr>
     <tr>
       <td class="bottom"><div id="team_9" class="team left">{{teams[8].seed}} {{teams[8].name}}</div></td>
@@ -478,11 +485,17 @@
       <td class="bottom left"><div id="team_56" class="team right">{{teams[55].seed}} {{teams[55].name}}</div></td>
     </tr>
     <tr>
-      <td class="right" colspan="4"></td>
+      <td colspan="2"></td>
+      <td colspan="2" class="right">
+        <div class="region">{% if master %}<input type="text" name="region_2" value="{{regions[1]}}">{% else %}{{regions[1]}}{% endif %}</div>
+      </td>
       <td class="bottom right"><input class="winner left {{css_winners[57]}}" readonly="readonly" name="winner_58" value="{{winners[57]}}"></td>
       <td colspan="1"></td>
       <td class="bottom left"><input class="winner right {{css_winners[59]}}" readonly="readonly" name="winner_60" value="{{winners[59]}}"></td>
-      <td class="left" colspan="4"></td>
+      <td colspan="2" class="left">
+        <div class="region">{% if master %}<input type="text" name="region_4" value="{{regions[3]}}">{% else %}{{regions[3]}}{% endif %}</div>
+      </td>
+      <td colspan="2"></td>
     </tr>
     <tr>
       <td class="bottom"><div id="team_25" class="team left">{{teams[24].seed}} {{teams[24].name}}</div></td>

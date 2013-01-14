@@ -1,0 +1,37 @@
+#bracket { font-size:10px; height:1024px; width:956px; margin:0 auto; }
+.block { width:86px; height:16px; }
+.block2 { width:86px; height:32px; }
+.block3 { width:86px; height:48px; }
+.block4 { width:86px; height:64px; }
+.block7 { width:86px; height:112px; }
+.block8 { width:86px; height:128px; }
+.block11 { width:86px; height:176px; }
+.block12 { width:86px; height:192px; }
+.block15 { width:86px; height:240px; }
+.block16 { width:86px; height:256px; }
+.block19 { width:86px; height:304px; }
+.block24 { width:86px; height:384px; }
+.block32 { width:86px; height:512px; }
+.bottom { border-bottom:1px solid black; }
+.right { border-right:1px solid black; }
+.left { border-left:1px solid black; }
+#bracket a { color:#333; text-decoration:none; width:86px; display:block; } 
+#bracket a:visited { color:#333;}
+#bracket a:hover { text-decoration:none; cursor:pointer; font-weight:bold; }
+#bracket a:hover div { border-width:2px; }
+.column { float:left; }
+.left-align div { text-align:left; padding-left:2px; }
+.right-align div { text-align:right; padding-right:2px; }
+#bracket a:hover div.champ { border-left: 1px solid black; border-right: 1px solid black; }
+#bracket a:hover div.champ-left { border-left: 1px solid black; }
+#bracket a:hover div.champ-right { border-right: 1px solid black; }
+#bracket div.champ-bottom { border-bottom: 1px solid black; }
+#bracket a:hover div.champ-bottom { border-bottom: 1px solid black; }
+.left-align .region, .right-align .region {
+  font-weight: bold;
+  font-size: 14px;
+  padding: 0;
+  text-align: center;
+  height: 16px; 
+  width: 172px;
+}
