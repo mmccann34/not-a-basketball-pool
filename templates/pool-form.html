@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% set active_page = "createapool" %}
+
 {% block title %}Create a Pool{% endblock %}
 
 {% block head %}
@@ -8,46 +10,82 @@
 {% endblock %}
 
 {% block content %}
-<h2>Create a Pool</h2>
-<form method="post" class="input_form">
-  <div>
-    <div class="top-label">Name your Pool</div>
-    <div>
-      <input type="text" name="name" value="{{name}}" autofocus="autofocus" autocomplete="off" maxlength="50">
-      <span class="error">{{error_name}}</span>
-    </div>
-    <div style="float:left;" class="password">
-      <div class="top-label">Enter a password</div>
-      <div><input type="password" name="password" value="" autocomplete="off" maxlength="20"></div>
-    </div>
-    <div style="float:left;">
-      <div class="top-label">Verify your password</div>
-      <div>
-        <input type="password" name="verify" value="" maxlength="20">
-        <span class="error">{{error_password}}</span>
+<div class="page-header {{status_name}}"><h1>Create a Pool</h1></div>
+<form method="post">
+  {% if not user.email %}
+  <p style="margin-bottom:20px;">*An email address is required to recover a lost Pool password. Visit your <a href="/settings">Account Settings</a> page to add one.
+  </p>
+  {% endif %}
+  <fieldset>
+    <div class="control-group">
+      <label class="control-label hide">Pool Name</label>
+      <div class="controls">
+        <input type="text" name="name" value="{{name}}" autofocus="autofocus" autocomplete="off" placeholder="Pool Name" maxlength="50" required>
+        <span class="help-inline">{{message_name}}</span>
       </div>
     </div>
-    <div style="float:left; margin-top:5px; margin-left:15px; width:250px;" class="error">{{error_email}}</div>
-  </div>
-  <div id="points">
-    <div class="top-label">Enter the points for each correctly chosen game:</div>
-    <div><span class="points-label">Round 1 (Round of 64):</span><input type="text" name="pts_1" value="{{pts_1}}" class="input_points"></div>
-    <div><span class="points-label">Round 2 (Round of 32):</span><input type="text" name="pts_2" value="{{pts_2}}" class="input_points"></div>
-    <div><span class="points-label">Round 3 (Sweet 16):</span><input type="text" name="pts_3" value="{{pts_3}}" class="input_points"></div>
-    <div><span class="points-label">Round 4 (Elite Eight):</span><input type="text" name="pts_4" value="{{pts_4}}" class="input_points"></div>
-    <div><span class="points-label">Round 5 (Final Four):</span><input type="text" name="pts_5" value="{{pts_5}}" class="input_points"></div>
-    <div><span class="points-label">Round 6 (Championship):</span><input type="text" name="pts_6" value="{{pts_6}}" class="input_points"></div>
-  </div>
-  <div id="bonus">
-    <div class="top-label">Select bonus point option:</div>
-    <div>
-      <input type="radio" name="bonus" value="upset" style="margin-right:5px;" checked/>Upset bonus: Add points equal to difference in seed when the lower seed wins <span style="color:blue; cursor:default" title="Upset Bonus Example: &#013If you pick the #12 to beat the #5 in the first round you will get 9 points: 2 points for winning the pick in Round 1 and 7 points for the difference in seed when the lower seed wins (12-5)">(?)</span>
+    <div class="control-group">
+      <label class="control-label hide">Password</label>
+      <div class="controls">
+        <input type="password" name="password" value="" autocomplete="off" placeholder="Password" maxlength="20" pattern=".{3,20}" title="3 to 20 characters" required>
+        <span class="help-inline">{{message_password}}</span>
+      </div>
     </div>
-    <div>
-      <input type="radio" name="bonus" value="seed" style="margin-right:5px;"/>Seed bonus: Add points equal to seed for each round <span style="color:blue; cursor:default" title="Seed Bonus Example: &#013If you pick the #12 to beat the #5 in the first round you will get 14 points: 2 points for winning the pick in Round 1 and 12 points for picking the 12 seed">(?)</span>
+    <div class="control-group">
+      <label class="control-label hide">Confirm Password</label>
+      <div class="controls">
+        <input type="password" name="verify" value="" autocomplete="off" placeholder="Confirm Password" maxlength="20" pattern=".{3,20}" title="3 to 20 characters" required>
+        <span class="help-inline">{{message_verify}}</span>
+      </div>
     </div>
-    <div><input type="radio" name="bonus" value="none" style="margin-right:5px;"/>None</div>
-  </div>
-  <input type="submit" value="Create Pool">
+    <p style="font-weight:bold;">Choose the points awarded for each correct pick:</p>
+    <div id="points" class="clearfix">
+      <div class="options">
+        <div class="form-inline">
+          <label for="pts_1">Round 1 (Round of 64)</label>
+          <input type="number" name="pts_1" id="pts_1" value="{{pts_1}}" required>
+        </div>
+        <div class="form-inline">
+          <label for="pts_2">Round 2 (Round of 32)</label>
+          <input type="number" name="pts_2" id="pts_2" value="{{pts_2}}" required>
+        </div>
+        <div class="form-inline">
+          <label for="pts_3">Round 3 (Sweet 16)</label>
+          <input type="number" name="pts_3" id="pts_3" value="{{pts_3}}" required>
+        </div>
+      </div>
+      <div class="options">
+        <div class="form-inline">
+          <label for="pts_4">Round 4 (Elite Eight)</label>
+          <input type="number" name="pts_4" id="pts_4" value="{{pts_4}}" required>
+        </div>
+        <div class="form-inline">
+          <label for="pts_5">Round 5 (Final Four)</label>
+          <input type="number" name="pts_5" id="pts_5" value="{{pts_5}}" required>
+        </div>
+        <div class="form-inline">
+          <label for="pts_6">Round 6 (Championship)</label>
+          <input type="number" name="pts_6" id="pts_6" value="{{pts_6}}" required>
+        </div>
+      </div>
+    </div>
+    <p style="font-weight:bold;">Select bonus point option:</p>
+    <div id="bonus">
+      <label class="radio">
+        <input type="radio" name="bonus" value="upset" checked>
+        Upset bonus: Add points equal to difference in seed when the lower seed wins 
+        <span style="color:blue; cursor:default" title="Upset Bonus Example: &#013If you pick the #12 to beat the #5 in the first round you will get 9 points: 2 points for winning the pick in Round 1 and 7 points for the difference in seed when the lower seed wins (12-5)">(?)</span>
+      </label>
+      <label class="radio">
+        <input type="radio" name="bonus" value="seed">
+        Seed bonus: Add points equal to seed for each round
+        <span style="color:blue; cursor:default" title="Seed Bonus Example: &#013If you pick the #12 to beat the #5 in the first round you will get 14 points: 2 points for winning the pick in Round 1 and 12 points for picking the 12 seed">(?)</span>
+      </label>
+      <label class="radio">
+        <input type="radio" name="bonus" value="none">None
+      </label>
+    </div>
+  </fieldset>
+  <input type="submit" value="Create Pool" class="btn btn-primary">
 </form>
 {% endblock %}

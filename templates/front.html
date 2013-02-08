@@ -1,10 +1,16 @@
 {% extends "base.html" %}
+{% set active_page = "home" %}
 
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div style="width: 100%; text-align:center;">
-  <div style="margin-bottom:10px;"><a href="/pools/new">Create a Pool</a></div>
-  <div><a href="/pools/all">Join a Pool</a></div>
+<div style="text-align:center;">
+  <h1 style="color:#5A5A5A;">Welcome to Not A Basketball Pool</h1>
+  <p class="lead">Blah blah blah blah blah</p>
+  <p>
+    <a href="/brackets/new" class="btn btn-primary" style="width:125px;">Create a Bracket</a>
+    <a href="/pools/new" class="btn btn-primary" style="width:125px;">Create a Pool</a>
+    <a href="/pools/all" class="btn btn-primary" style="width:125px;">Find a Pool</a>
+  </p>
 </div>
 {% endblock %}

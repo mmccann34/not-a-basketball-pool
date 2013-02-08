@@ -3,42 +3,54 @@
 {% block title %}{{pool.name}} - Admin{% endblock %}
 
 {% block content %}
-<h2 class="pool-title"><a href="/pools/{{pool.id}}">{{pool.name}}</a></h2>  
-<div class="centered_text">(<a href="/pools/{{pool.id}}">view</a>)</div>
-<h2>Admin Page</h2>
-<div style="margin-bottom:15px;"><a href="admin/export-picks" target="_blank">Export all picks to a .csv file</a></div>
-<h3>Users</h3>
-<form method="post" class="input_form">
-  <table class="cell_padding_right cell_padding_bottom">
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Brackets</th>
-      <th>Paid</th>
-      <th>Remove</th>
-    </tr>
-    {% for u in users %}
-      {% if u.admin %}
-        <tr style="font-weight:bold;">
-          <td>{{u.name}}</td>
-          <td>{{u.email}}</td>
-          <td class="centered_text">{{u.brackets|count}}</td>
-          <td></td>
-          <td></td>
-        </tr>
-      {% else %}
-        <tr>
-          <td>{{u.name}}</td>
-          <td>{{u.email}}</td>
-          <td class="centered_text">{{u.brackets|count}}</td>
-          <td class="centered_text"><input type="checkbox" {% if u.paid %} checked="checked" {% endif %} name="paid_{{u.id}}"></td>
-          <td class="centered_text"><input type="checkbox" name="remove_{{u.id}}"></td>
-        </tr>
-      {% endif %}
-    {% endfor %}
-  </table>
-  <input type="submit" value="Save">
-</form>
-<br>
-<div><b>{{message}}</b></div>
+<div class="page-header" style="position:relative;">
+  <h1 style="text-align:center">
+    {{pool.name}}
+    <div><small>Admin Dashboard</small></div>
+  </h1>
+  <div>
+    <p style="position:absolute; bottom:0; right:0; margin-bottom:19px; margin-right:5px;"><a href="/pools/{{pool.id}}">Back to Pool</a></p>
+  </div>
+</div>
+<p style="margin-bottom:30px;"><a href="admin/export-picks" target="_blank" class="btn">Export all picks</a></p>
+<h2>Manage Users</h2>
+<div class="well-frame">
+  <form method="post" style="margin-bottom:0;">
+    <fieldset>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th style="text-align:center">Brackets</th>
+            <th style="text-align:center">Paid</th>
+            <th style="text-align:center">Remove</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          {% if u.admin %}
+          <tr style="font-weight:bold;">
+            <td>{{u.name}}</td>
+            <td>{{u.email}}</td>
+            <td style="text-align:center">{{u.brackets|count}}</td>
+            <td></td>
+            <td></td>
+          </tr>
+          {% else %}
+          <tr>
+            <td>{{u.name}}</td>
+            <td>{{u.email}}</td>
+            <td style="text-align:center">{{u.brackets|count}}</td>
+            <td style="text-align:center"><input type="checkbox" {% if u.paid %} checked="checked" {% endif %} name="paid_{{u.id}}" style="margin:0;"></td>
+            <td style="text-align:center"><input type="checkbox" name="remove_{{u.id}}" style="margin:0;"></td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </fieldset>
+    <input type="submit" value="Save Changes" class="btn btn-primary">
+  </form>
+</div>
 {% endblock %}

@@ -1,33 +1,25 @@
 {% extends "base.html" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Log In{% endblock %}
 
 {% block content %}
-<p style="font-weight:bold;">{{message}}</p>
-<h2>Login</h2>
-<form method="post" class="input_form">
-  <table>
-    <tr>
-      <td class="label">Username</td>
-      <td>
-        <input type="text" name="username" value="{{username}}" autofocus="autofocus" maxlength="20">
-      </td>
-    </tr>
-    <tr>
-      <td class="label">Password</td>
-      <td>
-        <input type="password" name="password" value="" maxlength="20">
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" style="padding-top:5px;"><a href="/account/settings/password/forgot">Forgot your password?</a></td>
-    </tr>
-  </table>
-  <div class="error">
-    {{error_login}}
-  </div>
-  <input type="submit" value="Login">
-</form>
-<br>
-<p>Don't have an account? <a href="/signup{{return_url}}">Sign Up</a>.</p>
+<div style="max-width:250px; margin:20px auto 0 auto;" class="well">
+  <form method="post">
+    <fieldset>
+      <legend>Log In</legend>
+      <label class="hide">Username</label>
+      <div>
+        <input class="input-block-level" type="text" name="username" value="{{username}}" autofocus="autofocus" maxlength="20" placeholder="Username" required>
+      </div>
+      <label class="hide">Password</label>
+      <div>
+        <input class="input-block-level" type="password" name="password" value="" maxlength="20" placeholder="Password" required>
+        <p class="text-error" style="font-weight:bold;">{{error_login}}</p>
+        <span class="help-block"><a href="settings/password/forgot">Forgot your password?</a></span>
+      </div>
+    </fieldset>
+    <button type="submit" class="btn btn-primary btn-block">Log In</button>
+  </form>
+  <p>Don't have an account? <a href="/signup{{return_url}}">Sign Up</a></p>
+</div>
 {% endblock %}

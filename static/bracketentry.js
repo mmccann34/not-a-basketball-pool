@@ -119,10 +119,10 @@ function validateInputs()
 
     if (returnval)
     {
-      var entry_name = $('input[name=entry_name]')
+      var entry_name = $('input[name=entry_name]');
       if (entry_name.length)
       {
-        var name = entry_name.val()
+        var name = entry_name.val();
         if (!name)
         {
           alert('Entry must have a name');
@@ -135,19 +135,19 @@ function validateInputs()
             var result = response;
             if (!result)
             {
-              alert('That Entry name is already in use')
+              alert('That Entry name is already in use');
               returnval = false;
             }
             else
             {
-              $('#form_bracket').submit()
+              $('#form_bracket').submit();
             }
           });
         }
       }
       else
       {
-        $('#form_bracket').submit()
+        $('#form_bracket').submit();
       }
     }
     return returnval;

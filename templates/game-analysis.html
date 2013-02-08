@@ -3,26 +3,35 @@
 {% block title %}Game Analysis{% endblock %}
 
 {% block content %}
-<h2 class="pool-title"><a href="/pools/{{pool.id}}">{{pool.name}}</a></h2>
-<h2>{{game}}</h2>
-<!-- <h3 style="margin-bottom:10px;">{{game}}</h3> -->
-{% for t in teams %}
-<div style="width:{{t.percent_picked * 150}}px; height:10px; background-color:#00648B; float:left; margin-top:2.5px;"></div>
-<div style="font-weight:bold; font-size:12px; float:left; margin-left:5px;">{{t.percent_picked_display}}</div>
-<div style="font-size:12px; clear:both; margin-bottom:2.5px;">{{t.name}}</div>
-{% endfor %}
-<table class="cell_padding_right cell_padding_bottom" style="margin-top:15px;">
-  <tr>
+<div class="page-header">
+  <h1 style="text-align:center">{{pool.name}}</h1>
+</div>
+<h2 style="text-align:center;">{{game}} <small>{{region}} Region</small></h2>
+<div class=""><h3>Pick Breakdown</h3></div>
+<div style="margin:15px 0;">
+  {% for t in teams %}
+  <div class="clearfix">
+    <div style="width:{{t.percent_picked * 150}}px; height:10px; background-color:#00648B; float:left; margin-top:2.5px;"></div>
+    <div style="font-weight:bold; font-size:12px; float:left; margin-left:5px;">{{t.name}} ({{t.percent_picked_display}})</div>
+  </div>
+  {% endfor %}
+</div>  
+<table class="table" >
+  <thead>
+    <tr>
       <th>Bracket</th>
       <th>Pick</th>
-      <th>Score</th>
-  </tr>
-  {% for e in entries %}
-  <tr {% if e.own %}style="font-weight:bold;"{% endif %}>
-    <td>{% if locked or e.own %}<a href="/brackets/{{e.id}}">{{e.name}}</a>{% else %}{{e.name}}{% endif %}</td>
-    <td>{{e.team.name}}</td>
-    <td style="text-align:center">{{'{0:.3g}'.format(e.points.total)}}</td>
-  </tr>
-  {% endfor %}
+      <th style="text-align:center;">Score</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for e in entries %}
+    <tr {% if e.own %}style="font-weight:bold;"{% endif %}>
+      <td>{% if locked or e.own %}<a href="/brackets/{{e.id}}">{{e.name}}</a>{% else %}{{e.name}}{% endif %}</td>
+      <td>{{e.team.name}}</td>
+      <td style="text-align:center">{{'{0:.3g}'.format(e.points.total)}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
 </table>
 {% endblock %}

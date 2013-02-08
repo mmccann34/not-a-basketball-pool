@@ -14,25 +14,14 @@ $(function(){
 {% endblock %}
 
 {% block content %}
-<h2>Admin Settings</h2>
-<div style="margin-bottom:15px;"><a href="/admin/teams/upload">Upload Teams</a></div>
-<div style="margin-bottom:15px;"><a href="/brackets/master">Master Bracket</a></div>
-<form method="post" class="input_form">
-  <table>
-    <tr>
-      <td class="label">
-        Lock Date
-      </td>
-      <td>
-        <input type="text" name="lock_date" id="datepicker" value="{{lock_date}}">
-      </td>
-      <td class="error">
-        {{error_datepicker}}
-      </td>
-    </tr>
-  </table>
-  <input type="submit" value="Save">
+<div class="page-header"><h1>Admin Settings</h1></div>
+<p><a href="/admin/teams/upload">Upload Teams</a></p>
+<p><a href="/brackets/master">Edit Master Bracket</a></p>
+<form method="post">
+  <fieldset>
+    <label for="datepicker">Lock Date</label>
+    <input type="text" name="lock_date" id="datepicker" value="{{lock_date}}" class="input-small">
+  </fieldset>
+  <input type="submit" class="btn btn-primary" value="Save Changes">
 </form>
-<br>
-<div><b>{{message}}</b></div>
 {% endblock %}

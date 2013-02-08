@@ -10,39 +10,39 @@
 {% endblock %}
 
 {% block content %}
-<h2 class="pool-title"><a href="/pools/{{pool.id}}">{{pool.name}}</a></h2>
-{% if pool.admin_user.id == user.id %}
-<div class="centered_text" style="margin-bottom:5px;">
-  (<a href="/pools/{{pool.id}}/admin">admin</a>)
+<div class="page-header" style="position:relative;">
+  <h1 style="text-align:center">{{pool.name}}</h1>
+  {% if pool.admin_user.id == user.id %}
+  <div>
+    <p style="position:absolute; bottom:0; right:0; margin-bottom:19px; margin-right:5px;"><a href="/pools/{{pool.id}}/admin">Admin Dashboard</a></p>
+  </div>
+  {% endif %}
 </div>
-{% endif %}
-<div class="centered_text" style="margin-bottom:10px">
+<p style="text-align:center;">
   {% if not locked %}
-  <a href="/brackets/choose?p={{pool.id}}">Enter a Bracket</a>
+  <a href="/brackets/choose?p={{pool.id}}" class="btn btn-primary btn-large">Enter a Bracket</a>
   {% else %}
   <a href="/pools/{{pool.id}}/master">View Master Bracket/Game Analysis</a>
   {% endif %}
-</div>
-<div class="mod-header">
-  <h4>Standings</h4>
-</div>
-<div class="mod-content">
-  <table id="standings" class="standings tablesorter">
+</p>
+<h2>Standings</h2>
+<div class="mod-content" style="font-size:13px;">
+  <table id="standings" class="table table-striped table-hover tablesorter">
     <thead>
       <tr>
-        <th><div>Rank</div></th>
-        <th><div>Bracket Name</div></th>
-        <th><div>Total Score</div></th>
-        <th><div>Rd 1</div></th>
-        <th><div>Rd 2</div></th>
-        <th><div>SS</div></th>
-        <th><div>EE</div></th>
-        <th><div>FF</div></th>
-        <th><div>Champ</div></th>
-        <th><div>Prior Rank</div></th>
-        <th><div>Change in Rank</div></th>
-        <th><div>Max Score</div></th>
-        <th><div>Max Score Rank</div></th>
+        <th>Rank</th>
+        <th>Bracket Name</th>
+        <th>Total Score</th>
+        <th>Rd 1</th>
+        <th>Rd 2</th>
+        <th>SS</th>
+        <th>EE</th>
+        <th>FF</th>
+        <th>Champ</th>
+        <th>Prior Rank</th>
+        <th>Change in Rank</th>
+        <th>Max Score</th>
+        <th>Max Score Rank</th>
       </tr>
     </thead>
     <tbody>

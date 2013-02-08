@@ -1,42 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
+  {% set navigation_bar = [
+  ('/brackets/new', 'createabracket', 'Create a Bracket'),
+  ('/pools/new', 'createapool', 'Create a Pool'),
+  ('/pools/all', 'findapool', 'Find a Pool'),
+  ('/manage', 'managemytourney', 'Manage My Tourney')
+  ] -%}
+  {% set active_page = active_page|default('') -%}
+
   {% block head %}
   <title>{% block title %}{% endblock %} - Not a Basketball Pool</title>
   <link type="text/css" rel="stylesheet" href="/static/main.css" />
+  <!--[if IE]>
+  <link type="text/css" rel="stylesheet" href="/static/ie.css" />
+  <![endif]-->
+  <link type="text/css" rel="stylesheet" href="/static/bootstrap.min.css" />
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
   <script>!window.jQuery && document.write('<script src="/static/jquery-1.8.0.min.js"><\/script>')</script>
+  <script src="/static/bootstrap.min.js"></script>
   {% endblock %}
 </head>
 
 <body>
-  <div id="header">
-    <a href="/" class="main-title">
-      Not a Basketball Pool
-    </a>
-    <div class="login-area">
-      {% if user %}
-      <a href="/account/settings">{{user.name}}</a> (<a href="/logout">logout</a>{% if user.admin %} | <a href="/admin">admin</a>{% endif %})
-      {% else %}
-      <a href="/login">login</a>
-      |
-      <a href="/signup">sign up</a>
-      {% endif %}
-    </div>
-    <div id="nav-bar">
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/pools/all">All Pools</a></li>
-        <li><a href="/mypools">My Pools</a></li>
-        <li><a href="/mybrackets">My Brackets</a></li>
-      </ul>
+  <div class="navbar navbar-static-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="brand" href="/">Not A Basketball Pool</a>
+        <ul class="nav">
+          {% for href, id, caption in navigation_bar %}
+          <li{% if id == active_page %} class="active"{% endif
+          %}><a href="{{ href|e }}">{{ caption|e }}</a></li>
+          {% endfor %}
+        </ul>
+        <p class="login-area pull-right navbar-text">
+          {% if user %}
+          <a href="/settings">{{user.name}}</a> (<a href="/logout">Log Out</a>){% if user.admin %}<span class="divider-vertical"></span><a href="/admin">Admin</a>{% endif %}
+          {% else %}
+          <a href="/login">Log In</a>
+          <span class="divider-vertical"></span>
+          <a href="/signup">Sign Up</a>
+          {% endif %}
+        </p>
+      </div>
     </div>
   </div>
-  <div id="content">
+  <div class="container">
+    {% if flash_message %}
+    <div class="alert {{'alert-%s' % flash_status if flash_status}} fade in" style="margin-top:20px;">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {{ flash_message }}
+    </div>
+    {% endif %}
     {% block content %}
     {% endblock %}
   </div>
-  {% block footer %}
-  {% endblock %}
 </body>
 </html>

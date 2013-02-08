@@ -29,6 +29,7 @@ from datetime import timedelta
 from operator import attrgetter
 
 import webapp2
+from webapp2_extras import sessions
 import jinja2
 
 from google.appengine.ext import db
@@ -42,14 +43,14 @@ def render_str(template, **params):
   t = jinja_env.get_template(template)
   return t.render(params)
 
-secret = 'bball'
+secret = 'poqieurjfads'
 def make_secure_val(val):
-    return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
+  return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
 
 def check_secure_val(secure_val):
-    val = secure_val.split('|')[0]
-    if secure_val == make_secure_val(val):
-        return val
+  val = secure_val.split('|')[0]
+  if secure_val == make_secure_val(val):
+      return val
 
 class BaseHandler(webapp2.RequestHandler):
   def write(self, *a, **kw):
@@ -57,6 +58,14 @@ class BaseHandler(webapp2.RequestHandler):
       
   def render_str(self, template, **params):
     params['user'] = self.user
+    
+    # Set the flash message
+    flash = self.session.get_flashes()
+    if flash:
+      params['flash_message'] = flash[0][0]
+      if len(flash[0]) > 1:
+        params['flash_status'] = flash[0][1]
+
     if 'locked' not in params:
       params['locked'] = self.locked
     return render_str(template, **params)
@@ -79,21 +88,43 @@ class BaseHandler(webapp2.RequestHandler):
 
   def logout(self):
     self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
+
+  def require_login(self):
+    self.redirect('/login?return-url=' + self.request.path_qs)
+
+  def add_flash(self, message, status=None):
+    self.session.add_flash(message, status)
       
   def initialize(self, *a, **kw):
     webapp2.RequestHandler.initialize(self, *a, **kw)
+    
     uid = self.read_secure_cookie('user_id')
     self.user = uid and User.by_id(int(uid))
+    
     a = Admin.get_current()
     self.locked = a and datetime.today() > a.lock_date
+
     self.dev = os.environ['SERVER_SOFTWARE'].startswith('Development')
     if self.dev:
       self.base_url = "http://localhost:8080"
     else:
       self.base_url = "notabasketballpool.appspot.com"
 
-  def require_login(self):
-    self.redirect('/login?return-url=' + self.request.path_qs)
+  def dispatch(self):
+    # Get a session store for this request.
+    self.session_store = sessions.get_store(request=self.request)
+
+    try:
+      # Dispatch the request.
+      webapp2.RequestHandler.dispatch(self)
+    finally:
+      # Save all sessions.
+      self.session_store.save_sessions(self.response)
+
+  @webapp2.cached_property
+  def session(self):
+    # Returns a session using the default cookie key.
+    return self.session_store.get_session()
 
 ####User####
 def make_salt(length = 5):
@@ -505,11 +536,13 @@ class Front(BaseHandler):
   def get(self):
     self.render('front.html')
 
-USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
+USER_RE = re.compile(r"^.{3,20}$")
+USERNAME_ERROR = "3 to 20 characters"
 def valid_username(username):
     return username and USER_RE.match(username)
 
 PASS_RE = re.compile(r"^.{3,20}$")
+PASSWORD_ERROR = "3 to 20 characters"
 def valid_password(password):
     return password and PASS_RE.match(password)
 
@@ -534,18 +567,22 @@ class Signup(BaseHandler):
     params = dict(username = username, email = email)
 
     if not valid_username(username):
-      params['error_username'] = "Username must be between 3 and 20 characters and contain no special characters or spaces."
+      params['message_username'] = USERNAME_ERROR
+      params['status_username'] = "error"
       have_error = True
 
     if not valid_password(password):
-      params['error_password'] = "Password must be between 3 and 20 characters."
+      params['message_password'] = PASSWORD_ERROR
+      params['status_password'] = "error"
       have_error = True
     elif password != verify:
-      params['error_verify'] = "Your passwords didn't match."
+      params['message_verify'] = "Your passwords didn't match."
+      params['status_verify'] = "error"
       have_error = True
 
     if not valid_email(email):
-      params['error_email'] = "That's not a valid email."
+      params['message_email'] = "That's not a valid email."
+      params['status_email'] = "error"
       have_error = True
 
     if have_error:
@@ -561,7 +598,8 @@ class Signup(BaseHandler):
         else:
           self.redirect('/')
       else:   
-        params['error_username'] = "That username already exsists."
+        params['message_username'] = "That username is taken"
+        params['status_username'] = "info"
         self.render('signup-form.html', **params)
 
 class Login(BaseHandler):
@@ -573,7 +611,7 @@ class Login(BaseHandler):
       params['return_url'] = return_url
 
     if self.request.get('password_reset') == "true":
-      params['message'] = "You will receive an email with instructions about how to reset your password in a few minutes."
+      params['flash_message_info'] = "You will receive an email with instructions about how to reset your password in a few minutes."
 
     self.render('login-form.html', **params)
 
@@ -612,8 +650,6 @@ class NewPool(BaseHandler):
     for i in range(1, 7):
       params['pts_' + str(i)] = int(math.pow(2, i))
 
-    if not self.user.email:
-      params['error_email'] = 'Your user account has no email address associated with it, you will not be able to recover a lost password'
     self.render('pool-form.html', **params)
 
   def post(self):
@@ -631,17 +667,22 @@ class NewPool(BaseHandler):
     params = dict(name = name)
 
     if not name:
-      params['error_name'] = "Please enter a name."
+      params['message_name'] = "Please enter a name"
+      params['status_name'] = "error"
       have_error = True
     elif not valid_poolname(name):
-      params['error_name'] = "Name must be less than 50 characters."
+      params['message_name'] = "Max 50 characters."
+      params['status_name'] = "error"
       have_error = True
 
     if not valid_password(password):
-      params['error_password'] = "Password must be between 3 and 20 characters."
+      params['message_password'] = PASSWORD_ERROR
+      params['status_password'] = "error"
       have_error = True
     elif password != verify:
-      params['error_password'] = "Your passwords didn't match."
+      params['message_verify'] = "Your passwords didn't match"
+      params['status_password'] = "error"
+      params['status_verify'] = "error"
       have_error = True
 
     for i in range(1, 7):
@@ -652,22 +693,25 @@ class NewPool(BaseHandler):
         if pt > 0:
           points.append(pt)
         else:
-          params['error_points'] = "All point values must be valid, positive numbers."
+          params['error_points'] = "All point values must be valid, positive numbers"
           have_error = True
       except ValueError:
-        params['error_points'] = "All point values must be valid, positive numbers."
+        params['error_points'] = "All point values must be valid, positive numbers"
+        have_error = True
+
+    if not have_error:
+      pool = Pool.by_name(name)
+      if not pool:
+        pool = Pool.submit(name, password, points, bonus, self.user)
+      else: 
+        params['message_name'] = "That Pool name is already in use"
+        params['status_name'] = "info"
         have_error = True
 
     if have_error:
       self.render('pool-form.html', **params)
     else:
-      pool = Pool.by_name(name)
-      if not pool:
-        pool = Pool.submit(name, password, points, bonus, self.user)
-        self.redirect('/pools/' + str(pool.id))
-      else: 
-        params['error_name'] = "That Pool name is already in use."
-        self.render('pool-form.html', **params)
+      self.redirect('/pools/' + str(pool.id))
 
 class AllPools(BaseHandler):
   def get(self):
@@ -730,7 +774,7 @@ class PoolPage(BaseHandler):
         pool.put()
         self.redirect('/pools/' + pool_id)
       else:
-        self.render('pool-join.html', error_login = 'Invalid password', pool = pool)
+        self.render('pool-join.html', error_login = 'That password is incorrect', pool = pool)
 
 class PoolAdmin(BaseHandler):
   def get(self, pool_id):
@@ -761,9 +805,6 @@ class PoolAdmin(BaseHandler):
         params = dict()
         params['pool'] = pool
         params['users'] = users
-        
-        if self.request.get('success') == "true":
-          params['message'] = 'Changes were saved successfully.'
 
         self.render('pool-admin.html', **params)
 
@@ -798,7 +839,8 @@ class PoolAdmin(BaseHandler):
             msg.send()
         pool.put()
 
-        self.redirect(self.request.path + '?success=true')
+        self.add_flash('Changes were saved successfully.', 'success')
+        self.redirect(self.request.path)
 
 class PoolExportPicks(BaseHandler):
   def get(self, pool_id):
@@ -931,13 +973,15 @@ class BracketEntry(BaseHandler):
     params['regions'] = a.regions
     if entry_id == 'new':
       pool_id = self.request.get('p')
-      try:  
-        pool = Pool.by_id(int(pool_id))
-      except ValueError:
-        pool = None
-      if not pool or not self.user.id in pool.users:
-        self.error(404)
-        return
+      if pool_id:
+        try:
+          pool = Pool.by_id(int(pool_id))
+        except ValueError:
+          pool = None
+        if not pool or not self.user.id in pool.users:
+          self.error(404)
+          return
+      params['pool_id'] = pool_id
       teams = Team.get_teams_dict()
       params['final_score'] = 0
     elif entry_id == 'master':
@@ -1057,6 +1101,7 @@ class BracketEntry(BaseHandler):
           entry.update(picks, final_score)
 
     if entry:
+      self.add_flash('Bracket was saved successfully.', 'success')
       self.redirect('/brackets/' + str(entry.id))
 
 class BracketChoose(BaseHandler):
@@ -1108,6 +1153,17 @@ class BracketChoose(BaseHandler):
           entry.put()
           Points.add_new(entry.id, pool.id)
       self.redirect('/pools/' + str(pool.id))
+
+class ManageTourney(BaseHandler):
+  def get(self):
+    if not self.user:
+      self.require_login()
+      return
+
+    params = dict()
+    params['pools'] = self.user.get_pools()
+    params['entries'] = self.user.get_entries()
+    self.render('manage-tourney.html',  **params)
 
 class MyBrackets(BaseHandler):
   def get(self):
@@ -1199,9 +1255,6 @@ class AdminPage(BaseHandler):
     if a:
       params['lock_date'] = datetime.strftime(a.lock_date, '%m/%d/%Y')
 
-    if self.request.get('success') == "true":
-      params['message'] = 'Changes were saved successfully.'
-
     self.render('admin.html', **params)
 
   def post(self):
@@ -1212,7 +1265,8 @@ class AdminPage(BaseHandler):
     lock_date = datetime.strptime(self.request.get('lock_date'), '%m/%d/%Y')
     Admin.submit(lock_date)
 
-    self.redirect('/admin?success=true')
+    self.add_flash('Changes were saved successfully.', 'success')
+    self.redirect('/admin')
 
 class ValidateEntry(BaseHandler):
   def get(self):
@@ -1228,43 +1282,52 @@ class ValidateEntry(BaseHandler):
 def get_game_title(game_id):
   a = Admin.get_current()
   title = ''
-  if game_id < 8:
-    title = '%s Region - Round of 64' % a.regions[0]
-  elif game_id < 16:
-    title = '%s Region - Round of 64' % a.regions[1]
-  elif game_id < 24:
-    title = '%s Region - Round of 64' % a.regions[2]
-  elif game_id < 32:
-    title = '%s Region - Round of 64' % a.regions[3]
-  elif game_id < 36:
-    title = '%s Region - Round of 32' % a.regions[0]
-  elif game_id < 40:
-    title = '%s Region - Round of 32' % a.regions[1]
-  elif game_id < 44:
-    title = '%s Region - Round of 32' % a.regions[2]
+  region = ''
+  if game_id < 32:
+    title = 'Round of 64'
+    if game_id < 8:
+      region = a.regions[0]
+    elif game_id < 16:
+      region = regions[1]
+    elif game_id < 24:
+      region = a.regions[2]
+    else:
+      region = a.regions[3]
   elif game_id < 48:
-    title = '%s Region - Round of 32' % a.regions[3]
-  elif game_id < 50:
-    title = '%s Region - Sweet Sixteen' % a.regions[0]
-  elif game_id < 52:
-    title = '%s Region - Sweet Sixteen' % a.regions[1]
-  elif game_id < 54:
-    title = '%s Region - Sweet Sixteen' % a.regions[2]
+    title = 'Round of 32'
+    if game_id < 36:
+      region = a.regions[0]
+    elif game_id < 40:
+      region = a.regions[1]
+    elif game_id < 44:
+      region = a.regions[2]
+    else:
+      region = a.regions[3]
   elif game_id < 56:
-    title = '%s Region - Sweet Sixteen' % a.regions[3]
-  elif game_id < 57:
-    title = '%s Region - Elite Eight' % a.regions[0]
-  elif game_id < 58:
-    title = '%s Region - Elite Eight' % a.regions[1]
-  elif game_id < 59:
-    title = '%s Region - Elite Eight' % a.regions[2]
+    title = 'Sweet Sixteen'
+    if game_id < 50:
+      region = a.regions[0]
+    elif game_id < 52:
+      region = a.regions[1]
+    elif game_id < 54:
+      region = a.regions[2]
+    else:
+      region = a.regions[3]
   elif game_id < 60:
-    title = '%s Region - Elite Eight' % a.regions[3]
+    title = 'Elite Eight'
+    if game_id < 57:
+      region = a.regions[0]
+    elif game_id < 58:
+      region = a.regions[1]
+    elif game_id < 59:
+      region = a.regions[2]
+    else:
+      region = a.regions[3]
   elif game_id < 62:
     title = 'Final Four'
   elif game_id == 62:
     title = 'National Championship'
-  return title
+  return title, region
 
 class GameAnalysis(BaseHandler):
   def get(self, pool_id, game_id):
@@ -1314,7 +1377,9 @@ class GameAnalysis(BaseHandler):
     params['teams'] = teams
     params['entries'] = entries
     params['pool'] = pool
-    params['game'] = get_game_title(game_id)
+    game, region = get_game_title(game_id)
+    params['game'] = game
+    params['region'] = region
 
     self.render('game-analysis.html', **params)
 
@@ -1324,27 +1389,17 @@ class AccountSettings(BaseHandler):
       self.require_login()
       return
 
-    self.render('account-settings.html')
+    params = dict(username = self.user.name, email = self.user.email)
+    self.render('account-settings.html', **params)
 
   def post(self):
     if not self.user:
       self.redirect('/')
       return
 
-    self.user.delete_account()
-    self.logout()
-    self.redirect('/')
-
-class EditSettings(BaseHandler):
-  def get(self):
-    if not self.user:
-      self.require_login()
-      return
-
-    self.render('edit-settings.html', username=self.user.name, email=self.user.email)
-
-  def post(self):
-    if not self.user:
+    if self.request.get('delete') == "true":
+      self.user.delete_account()
+      self.logout()
       self.redirect('/')
       return
 
@@ -1358,55 +1413,60 @@ class EditSettings(BaseHandler):
     params = dict(username = username, email = email)
 
     if not valid_username(username):
-      params['error_username'] = "Username must be between 3 and 20 characters and contain no special characters or spaces."
+      params['message_username'] = USERNAME_ERROR
+      params['status_username'] = "error"
       have_error = True
 
     if password_new:
       if not valid_password(password_new):
-        params['error_password_new'] = "Password must be between 3 and 20 characters."
+        params['message_password_new'] = PASSWORD_ERROR
+        params['status_password_new'] = "error"
         have_error = True
       elif password_new != verify_new:
-        params['error_verify_new'] = "Your passwords didn't match."
+        params['message_verify_new'] = "Your passwords didn't match"
+        params['status_password_new'] = "error"
+        params['status_verify_new'] = "error"
         have_error = True
 
     if not valid_email(email):
-      params['error_email'] = "That's not a valid email."
+      params['message_email'] = "That's not a valid email"
+      params['status_email'] = "error"
       have_error = True
 
-    if have_error:
-      self.render('edit-settings.html', **params)
-    else:
+    if not have_error:
       password = self.request.get('password')
       if not valid_pw(self.user.name, password, self.user.pw_hash):
-        params['error_password'] = "Incorrect password."
-        self.render('edit-settings.html', **params) 
-        return
-      else:
-        have_changes = False
-        name = username.strip()
-        if name.upper() != self.user.name_search:
-          user = User.by_name(name)
-          if not user:
-            self.user.name = name
-            self.user.name_search = name.upper()
-            self.user.pw_hash = make_pw_hash(password, name)
-            have_changes = True
-          else:
-            params['error_username'] = "That username already exsists."
-            self.render('edit-settings.html', **params) 
-            return
-        if email != self.user.email:
-          self.user.email = email
-          have_changes = True
-        if password_new:
-          self.user.pw_hash = make_pw_hash(password_new, self.user.name)
-          have_changes = True
-
-        if have_changes:
-            self.user.put()
-            self.redirect('/account/settings?success=true')
+        params['message_password'] = "Incorrect password"
+        params['status_password'] = "error"
+        have_error = True
+    
+    if not have_error:
+      name = username.strip()
+      if name.upper() != self.user.name_search:
+        user = User.by_name(name)
+        if not user:
+          self.user.name = name
+          self.user.name_search = name.upper()
+          self.user.pw_hash = make_pw_hash(password, name)
         else:
-          self.redirect('/account/settings')
+          params['message_username'] = "That username is taken"
+          params['status_username'] = "info" 
+          have_error = True
+
+    if not have_error:
+      self.user.email = email
+      if password_new:
+        self.user.pw_hash = make_pw_hash(password_new, self.user.name)
+
+      self.user.put()
+      self.add_flash('Your changes were saved successfully.', 'success')
+      self.redirect('/settings')
+    else:
+      self.add_flash('Your changes were not saved.', 'error')
+      self.render('account-settings.html', **params)
+
+  def delete(self):
+    self.write("deleted")    
 
 class ResetPassword(BaseHandler):
   def get(self):
@@ -1421,10 +1481,13 @@ class ResetPassword(BaseHandler):
     password = self.request.get('password')
     verify = self.request.get('verify')
     if not valid_password(password):
-      params['error_password'] = "Password must be between 3 and 20 characters."
+      params['message_password'] = PASSWORD_ERROR
+      params['status_password'] = "error"
       have_error = True
     elif password != verify:
-      params['error_verify'] = "Your passwords didn't match."
+      params['message_verify'] = "Your passwords didn't match."
+      params['status_password'] = "error"
+      params['status_verify'] = "error"
       have_error = True
 
     if not have_error:
@@ -1446,7 +1509,7 @@ class ResetPassword(BaseHandler):
     if have_error:
       self.render('reset-password.html', **params)
     else:
-      self.redirect('/account/settings')
+      self.redirect('/settings')
 
 class ForgotPassword(BaseHandler):
   def get(self):
@@ -1462,7 +1525,7 @@ class ForgotPassword(BaseHandler):
     u = User.by_name(username)
     if not u:
       have_error = True
-      error_username = "That Username doesn't exist"
+      error_username = "That username doesn't exist"
     else:
       if not u.email:
         have_error = True
@@ -1472,7 +1535,7 @@ class ForgotPassword(BaseHandler):
       self.render('forgot-password.html', error_username = error_username)
     else:
       token = u.prepare_reset_token()
-      url = "%s/account/settings/password/reset?token=%s" % (self.base_url, token)
+      url = "%s/settings/password/reset?token=%s" % (self.base_url, token)
       msg = mail.EmailMessage(sender="Accounts <accounts@notabasketballpool.appspotmail.com>",
               to=u.email,
               subject="Password reset instructions",
@@ -1502,6 +1565,11 @@ class UpdateYear(BaseHandler):
       p.year = 2013
       p.put()
 
+config = {}
+config['webapp2_extras.sessions'] = {
+    'secret_key': 'mavlkjhasehffcsasldfkj',
+}
+
 app = webapp2.WSGIApplication([('/', Front),
                                ('/signup', Signup),
                                ('/login', Login),
@@ -1519,10 +1587,10 @@ app = webapp2.WSGIApplication([('/', Front),
                                ('/mypools', MyPools),
                                ('/admin', AdminPage),
                                ('/admin/teams/upload', UploadTeams),
-                               ('/account/settings', AccountSettings),
-                               ('/account/settings/edit', EditSettings),
-                               ('/account/settings/password/forgot', ForgotPassword),
-                               ('/account/settings/password/reset', ResetPassword),
+                               ('/settings', AccountSettings),
+                               ('/settings/password/forgot', ForgotPassword),
+                               ('/settings/password/reset', ResetPassword),
                                ('/validate/entry', ValidateEntry),
+                               ('/manage', ManageTourney),
                                ('/updateyear', UpdateYear)],
-                              debug=False)
+                              debug=True, config=config)

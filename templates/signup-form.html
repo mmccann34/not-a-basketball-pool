@@ -6,10 +6,9 @@
 {{ super() }}
 <script>
 $(function() {
-    // do stuff when DOM is ready
     $("#signup_form").submit(function() {
       if (!$("#email").val()) {
-        return confirm("No email address! You won't be able to recover a lost password! Continue?")
+        return confirm("Email is optional, but you won't be able to recover a lost password without one. Continue?")
       }
     });
   });
@@ -17,56 +16,41 @@ $(function() {
 {% endblock %}
 
 {% block content %}
-<h2>Sign Up</h2>
-<form id="signup_form" method="post" class="input_form">
-  <table>
-    <tr>
-      <td class="label">
-        Username
-      </td>
-      <td>
-        <input type="text" name="username" value="{{username}}" autofocus="autofocus" maxlength="20">
-      </td>
-      <td class="error">
-        {{error_username}}
-      </td>
-    </tr>
-    <tr>
-      <td class="label">
-        Password
-      </td>
-      <td>
-        <input type="password" name="password" value="" maxlength="20">
-      </td>
-      <td class="error">
-        {{error_password}}
-      </td>
-    </tr>
-    <tr>
-      <td class="label">
-        Verify Password
-      </td>
-      <td>
-        <input type="password" name="verify" value="" maxlength="20">
-      </td>
-      <td class="error">
-        {{error_verify}}
-      </td>
-    </tr>
-    <tr>
-      <td class="label">
-        Email (optional)
-      </td>
-      <td>
-        <input type="text" id="email" name="email" value="{{email}}">
-      </td>
-      <td class="error">
-        {{error_email}}
-      </td>
-    </tr>
-  </table>
-  <input type="submit" value="Sign Up">
-</form>
-<br>
-<p>Already have an account? <a href="/login{{return_url}}">Login</a>.</p>
+<div style="max-width:250px; margin:20px auto 0 auto;" class="well">
+  <form method="post" id="signup_form">
+    <fieldset>
+      <legend style="margin-bottom:0;">Sign Up</legend>
+      <div class="control-group {{status_username}}">
+        <label class="control-label hide">Username</label>
+        <div class="controls">
+          <input type="text" class="input-block-level" name="username" value="{{username}}" maxlength="20" autocomplete="off" required placeholder="Username" pattern=".{3,20}" title="3 to 20 characters">
+          <span class="help-block">{{message_username}}</span>
+        </div>
+      </div>
+      <div class="control-group {{status_password}}">
+        <label class="control-label hide">Password</label>
+        <div class="controls">
+          <input type="password" class="input-block-level" name="password" value="" maxlength="20" autocomplete="off" required placeholder="Password" pattern=".{3,20}" title="3 to 20 characters">
+          <span class="help-block">{{message_password}}</span>
+        </div>
+      </div>
+      <div class="control-group {{status_verify}}">
+        <label class="control-label hide">Confirm Password</label>
+        <div class="controls">
+          <input type="password" class="input-block-level" name="verify" value="" maxlength="20" autocomplete="off" required placeholder="Confirm Password" pattern=".{3,20}" title="3 to 20 characters">
+          <span class="help-block">{{message_verify}}</span>
+        </div>
+      </div>
+      <div class="control-group {{status_email}}">
+        <label class="control-label hide">Email (optional)</label>
+        <div class="controls">
+          <input type="email" class="input-block-level" name="email" id="email" value="{{email}}" placeholder="Email (optional)">
+          <span class="help-block">{{message_email}}</span>
+        </div>
+      </div>
+    </fieldset>
+    <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+  </form>
+  <p>Already have an account? <a href="/login{{return_url}}">Log In</a></p>
+</div>
 {% endblock %}

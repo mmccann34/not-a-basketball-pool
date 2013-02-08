@@ -3,14 +3,14 @@
 {% block title %}Upload Teams{% endblock %}
 
 {% block content %}
-<h2>Upload Teams</h2>
+<div class="page-header"><h1>Upload Teams</h1></div>
 <form method="post" enctype="multipart/form-data">
-  <label>Year:</label>
-  <input type="text" name="year">
-  <br>
-  <label>Teams CSV:</label>
-  <input type="file" name="team_file">
-  <br>
-  <input type="submit">
+  <fieldset style="margin-bottom:10px;">
+    <label>Year</label>
+    <input type="text" name="year">
+    <label>Teams CSV</label>
+    <input type="file" name="team_file">
+  </fieldset>
+  <input type="submit" value="Submit" class="btn btn-primary">
 </form>
 {% endblock %} 

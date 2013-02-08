@@ -1,15 +1,29 @@
 {% extends "base.html" %}
 
+{% set active_page = "findapool" %}
+
 {% block title %}All Pools{% endblock %}
 
 {% block content %}
-<h2>All Pools</h2>
-<h3><a href="/pools/new">Create a Pool</a></h3>
-<ul class="no-list-style">
-{% for p in pools %}
-<li>
-  <a href="/pools/{{p.key().id()}}">{{p.name}}</a>{% if p.admin_user.id == user.id %} (<a href="/pools/{{p.id}}/admin">admin</a>){% endif %}
-</li>
-{% endfor %}
-</ul>
+<div class="page-header"><h1>Find a Pool</h1></div>
+<div class="row">
+  <div class="span6">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Pool Name</th>
+          <th>Pool Admin</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in pools %}
+        <tr>
+          <td><a href="/pools/{{p.key().id()}}">{{p.name}}</a></td>
+          <td>{{p.admin_user.name}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endblock %}

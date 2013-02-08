@@ -4,34 +4,53 @@
 
 {% block head %}
 {{ super() }}
-<script>
-$(function() {
-    // do stuff when DOM is ready
-    $("#delete").click(function() {
-      if (confirm("Deleting your account will delete all of your bracket entries. Continue?")) {
-        $("#delete_form").submit();
-      }
-    });
-  });
-</script>
+<script type="text/javascript" src="/static/account-settings.js"></script>
 {% endblock %}
 
 {% block content %}
-<h2>Account Settings</h2>
-<table class="cell_padding_right cell_padding_bottom" style="margin-bottom:5px;">
-  <tr>
-    <td style="font-weight:bold;">Username</td>
-    <td>{{user.name}}</td>
-  </tr>
-  <tr>
-    <td style="font-weight:bold;">Password</td>
-    <td>********</td>
-  </tr>
-  <tr>
-    <td style="font-weight:bold;">Email</td>
-    <td>{{user.email}}</td>
-  </tr>
-</table>
-<div><a href="settings/edit">Edit Your Settings</a> | <span id="delete" class="button-link">Delete Account</span></div>
-<form method="post" id="delete_form"></form>
+<div class="page-header"><h1>Account Settings</h1></div>
+<form method="post" id="form_settings">
+  <fieldset>
+    <div class="control-group {{status_username}}">
+      <label class="control-label hide">Username</label>
+      <div class="controls">
+        <input type="text" name="username" value="{{username}}" maxlength="20" autocomplete="off" required placeholder="Username" pattern=".{3,20}" title="3 to 20 characters">
+        <span class="help-inline">{{message_username}}</span>
+      </div>
+    </div>
+    <div class="control-group {{status_email}}">
+      <label class="control-label hide">Email (optional)</label>
+      <div class="controls">
+        <input type="email" name="email" id="email" value="{{email}}" autocomplete="off" placeholder="Email (optional)">
+        <span class="help-inline">{{message_email|default("*Email is optional, but you won't be able to recover a lost password without one")}}</span>
+      </div>
+    </div>
+    <div class="control-group {{status_password_new}}">
+      <label class="control-label hide">New Password</label>
+      <div class="controls">
+        <input type="password" name="password_new" value="" autocomplete="off" maxlength="20" placeholder="New Password" pattern=".{3,20}" title="3 to 20 characters">
+        <span class="help-inline">{{message_password_new}}</span>
+      </div>
+    </div>
+    <div class="control-group {{status_verify_new}}">
+      <label class="control-label hide">Confirm New Password</label>
+      <div class="controls">
+        <input type="password" name="verify_new" value="" autocomplete="off" maxlength="20" placeholder="Confirm New Password" pattern=".{3,20}" title="3 to 20 characters">
+        <span class="help-inline">{{message_verify_new}}</span>
+      </div>
+    </div>
+    <div class="control-group {{status_password}}">
+      <label class="control-label" style="font-weight:bold;">To save these settings, please enter your current password</label>
+      <div class="controls">
+        <input type="password" name="password" value="" maxlength="20" placeholder="Current Password" required>
+        <span class="help-inline">{{message_password}}</span>
+      </div>
+    </div>
+  </fieldset>
+  <input type="submit" class="btn btn-primary" value="Save Changes">
+  <input type="button" class="btn btn-danger" value="Delete your Account" onclick="deleteAccount()">
+</form>
+<form method="post" id="form_delete">
+  <input type="hidden" name="delete" value="true">
+</form>
 {% endblock %}

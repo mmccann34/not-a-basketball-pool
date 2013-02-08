@@ -3,16 +3,15 @@
 {% block title %}{{pool.name}}{% endblock %}
 
 {% block content %}
-<div class="centered_text">
-  <h2>{{pool.name}}</h2>
-  <form method="post" class="input_form">
-    <label>Enter the password for this Pool</label>
-    <br>
-    <input type="password" name="password" value="" autofocus="autofocus">
-    <div class="error">
-      {{error_login}}
-    </div>
-    <input type="submit" value="Join">
+<div class="page-header"><h1 style="text-align:center">{{pool.name}}</h1></div>
+<div style="text-align:center;">
+  <p>Please enter the password for this Pool to join</p>
+  <form method="post">
+    <fieldset>
+      <input type="password" name="password" value="" autofocus="autofocus">
+      <p class="text-error">{{error_login}}</p> 
+    </fieldset>
+    <input type="submit" value="Join" class="btn btn-primary">
   </form>
 </div>
 {% endblock %}

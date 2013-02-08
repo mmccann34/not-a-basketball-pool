@@ -8,7 +8,9 @@
 {% endblock %}
 
 {% block content %}
-<h2 class="pool-title"><a href="/pools/{{pool.id}}">{{pool.name}}</a></h2>
+<div class="page-header" style="color:#5A5A5A; position:relative;">
+  <h1 style="text-align:center">{{pool.name}}</h1>
+</div>
 <div style="height:16px; text-align:center; font-weight:bold;">Click on a matchup to see a breakdown of the picks</div>
 <div id="bracket">
   <!-- Column 1 -->
@@ -161,7 +163,7 @@
     </a>
   </div>
   <!-- Column 3 -->
-  <div class="column left-align" style="margin-right:-86px;">
+  <div class="column left-align" style="margin-right:-85px;">
     <div class="block3"></div>
     <a href="master/49">
       <div class="block bottom">{{teams[96]}}</div>
@@ -218,15 +220,15 @@
   <!-- Column 6 -->
   <div class="column">
     <div class="block19"></div>
-    <a href="master/63" style="width:96px;">
+    <a href="master/63" style="width:90px;">
       <div class="block bottom" style="text-align:left; padding-left:2px; float:left;">{{teams[124]}}</div>
-      <div style="width:10px; height:16px; float:left;"></div>
-      <div class="block11 champ" style="clear:both; width:96px;"></div>
-      <div style="width:5px; height:16px; float:left;" class="champ-left"></div>
+      <div style="width:5px; height:16px; float:left;"></div>
+      <div class="block11 champ" style="clear:both; width:90px;"></div>
+      <div style="width:2px; height:16px; float:left;" class="champ-left"></div>
       <div class="block champ-bottom" style="text-align:center; font-weight:bold; float:left;">{{teams[126]}}</div>
-      <div style="width:5px; height:16px; float:left;" class="champ-right"></div>
-      <div class="block12 champ" style="width:96px; clear:both;"></div>
-      <div style="width:10px; height:16px; float:left;" class="champ-left"></div>
+      <div style="width:3px; height:16px; float:left;" class="champ-right"></div>
+      <div class="block12 champ" style="width:90px; clear:both;"></div>
+      <div style="width:5px; height:16px; float:left;" class="champ-left"></div>
       <div class="block bottom champ-right" style="text-align:right; padding-right:2px; float:left;">{{teams[125]}}</div>
     </a>
   </div>
@@ -435,5 +437,5 @@
     </a>
   </div>
 </div>
-<div style="height:5px;"></div>
+<div class="footer"></div>
 {% endblock %}

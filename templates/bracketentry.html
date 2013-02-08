@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% if not pool_id %}
+{% set active_page = "createabracket" %}
+{% endif %}
+
 {% block title %}Bracket Entry{% endblock %}
 
 {% block head %}
@@ -17,11 +21,16 @@
 
 {% block content %}
 <form id="form_bracket" method="post" data-locked="{{locked}}" data-master="{{master}}">
-  <div style="text-align:center;">
+  <div style="text-align:center; font-size:normal;">
     {% if name %}
-    <label style="font-weight:bold;">{{name}}</label>
+    <div class="page-header">
+      <span style="font-weight:bold;">{{name}}</span>
+    </div>
     {% else %}
-    Entry Name: <input type="text" name="entry_name" value="{{name}}" {% if locked %} readonly="readonly" {% endif %} maxlength="25">
+    <div class="form-inline">
+      <label class="hide">Entry Name:</label>
+      <input type="text" name="entry_name" maxlength="25" placeholder="Entry Name">
+    </div>
     {% endif %}
   </div>
   <table class="centered bracket" border="0px" cellpadding="0px" cellspacing="0px">
@@ -321,10 +330,10 @@
       <td class="right" colspan="5" style="height: 30px;"></td>
       <td class="champ" rowspan="10" align="center">
         <input class="winner finals champ  {{css_winners[62]}}" readonly="readonly" name="winner_63" value="{{winners[62]}}">
-        <div style="font-size: 10px; margin-top: 15px;">Final Score Sum</div>
-        <input type="text" name="final_score" value="{{final_score}}" {% if locked %} readonly="readonly" {% endif %}>
+        <div style="font-size:10px; font-weight:bold; margin-top:15px; margin-bottom:5px;">Final Score Sum</div>
+        <input type="text" name="final_score" value="{{final_score}}" {% if locked %} disabled {% endif %}>
         {% if not locked %}
-        <input type="button" value="Save" onclick="validateInputs()">
+        <input type="button" class="btn btn-primary" value="Save" onclick="validateInputs()">
         {% endif %}
       </td>
       <td class="left" colspan="5"></td>
