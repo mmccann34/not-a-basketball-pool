@@ -934,9 +934,7 @@ def calc_points():
                   winner = game.team_2
                   loser = game.team_1
                 if pool.bonus == 'upset':
-                  dif = winner.seed - loser.seed
-                  if dif > 0:
-                    bonus = dif
+                  bonus = max(0, winner.seed - loser.seed)
                 elif pool.bonus == 'seed':
                   bonus = winner.seed
               ##round##
