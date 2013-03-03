@@ -245,7 +245,7 @@ class Team(db.Model):
   @classmethod
   def submit(cls, name, year, seed, bracket_position):
     t = Team(parent = pools_key(),
-              year = datetime.now().year,
+              year = year,
               name = name,
               seed = seed,
               bracket_position = bracket_position)
@@ -344,50 +344,118 @@ def games_key(group = 'default'):
 class Game(db.Model):
   game_id = db.IntegerProperty(required = True)
   year = db.IntegerProperty(required = True)
+  game_day = db.IntegerProperty()
   team_1 = db.ReferenceProperty(Team, collection_name = 'game_set_1')
+  team_1_potentials = db.ListProperty(int)
+  team_1_lowest_potential_seed = db.IntegerProperty()
   team_2 = db.ReferenceProperty(Team, collection_name = 'game_set_2')
+  team_2_potentials = db.ListProperty(int)
+  team_2_lowest_potential_seed = db.IntegerProperty()
+  winning_team = db.IntegerProperty()
+  losing_team = db.IntegerProperty()
+  next_game = db.IntegerProperty()
+
+  @classmethod
+  def submit(cls, game_id, team_1, team_2, next_game = None, year = datetime.now().year):
+    game = Game(game_id = game_id, team_1 = team_1, team_2 = team_2, next_game = next_game, year = year, parent = games_key())
+    game.put()
 
   @classmethod
   def by_game_id(cls, game_id, year = datetime.now().year):
-    game = Game.all().filter("game_id =", game_id).filter("year =", year).ancestor(games_key()).get()
-    if not game:
-      game = Game(game_id = game_id, year = year, parent = games_key())
-    return game
+    return Game.all().filter("game_id =", game_id).filter("year =", year).ancestor(games_key()).get()
 
   @classmethod
   def by_year(cls, year = datetime.now().year):
     return Game.all().filter('year = ', year).ancestor(games_key()).order('game_id').fetch(limit=63)
 
   @classmethod
-  def update_games(cls):
-    all_teams = Team.get_teams_dict()
-    teams = sorted(all_teams.values(), key=attrgetter('bracket_position'))
+  def create_games(cls, year):
+    ##Delete old games
+    old_games = Game.by_year(year)
+    db.delete(old_games)
+
+    teams = sorted(Team.by_year(year), key=attrgetter('bracket_position'))
+
+    ##Create first round games
     i = 0
     game_id = 1
     while i + 1 < len(teams):
-      game = Game.by_game_id(game_id)
-      game.team_1 = teams[i]
-      game.team_2 = teams[i + 1]
-      game.put()
+      Game.submit(game_id, teams[i], teams[i + 1], int(round(game_id/2.0)) + 32)
       game_id += 1
       i += 2
 
+    ##Create remaining games
+    while game_id < len(teams):
+      if game_id == len(teams) - 1:
+        Game.submit(game_id, None, None, None)
+      else:
+        Game.submit(game_id, None, None, int(round(game_id/2.0)) + 32)
+      game_id += 1
+
+    Game.update_games()
+
+  @classmethod
+  def update_games(cls):
+    games = Game.by_year()
+    all_teams = Team.get_teams_dict()
+    game_id = 32
     master = Entry.by_name('Master Bracket')
-    if master:
-      i = 0
-      while i + 1 < len(master.picks):
-        team_1 = None
-        if master.picks[i] != -1:
-          team_1 = all_teams[master.picks[i]]
-        team_2 = None
-        if master.picks[i + 1] != -1:
-          team_2 = all_teams[master.picks[i + 1]]
-        game = Game.by_game_id(game_id)
-        game.team_1 = team_1
-        game.team_2 = team_2
-        game.put()
-        game_id += 1
-        i += 2
+
+    ## For each game, update the results/potentials for the next game
+    for i, game in enumerate(games):
+      winning_team = None
+      if master:
+        master_pick = master.picks[i]
+        if master_pick != -1:
+          winning_team = all_teams[master_pick]
+          game.winning_team = winning_team.id
+          if winning_team.id == game.team_1.id:
+            game.losing_team = game.team_2.id
+          else:
+            game.losing_team = game.team_1.id
+        else:
+          game.winning_team = None
+          game.losing_team = None
+
+      game.put()
+      
+      if game.next_game:
+        potentials = []
+        lowest_potential_seed = None
+        ## If a winner has been picked, that team moves on. Otherwise aggregate the potential teams.
+        if not winning_team:
+          if game.team_1 != None:
+            potentials.append(game.team_1.id)
+            lowest_potential_seed = game.team_1.seed
+          else:
+            potentials.extend(game.team_1_potentials)
+            lowest_potential_seed = game.team_1_lowest_potential_seed
+
+          if game.team_2 != None:
+            potentials.append(game.team_2.id)
+            lowest_potential_seed = min(lowest_potential_seed, game.team_2.seed)
+          else:
+            potentials.extend(game.team_2_potentials)
+            lowest_potential_seed = min(lowest_potential_seed, game.team_2_lowest_potential_seed)
+
+        ## Update Team 1 in the next game if even game otherwise update Team 2
+        next_game = games[game.next_game - 1]
+        if i % 2 == 0:
+          next_game.team_1 = winning_team
+          next_game.team_1_potentials = potentials
+          next_game.team_1_lowest_potential_seed = lowest_potential_seed
+        else:
+          next_game.team_2 = winning_team
+          next_game.team_2_potentials = potentials
+          next_game.team_2_lowest_potential_seed = lowest_potential_seed
+
+####GameDay####
+def gameday_key(group = 'default'):
+  return db.Key.from_path('gamedays', group)
+
+class GameDay(db.Model):
+  date = db.DateTimeProperty()
+  name = db.StringProperty()
 
 ####Entry####
 def entries_key(group = 'default'):
@@ -444,37 +512,31 @@ class Entry(db.Model):
   def by_year(cls, year):
     return Entry.all().filter('year =', year).ancestor(entries_key()).run(batch_size=1000)
 
-####Points####
-def points_key(group = 'default'):
-  return db.Key.from_path('points', group)
+####Standings####
+def standings_key(group = 'default'):
+  return db.Key.from_path('standings', group)
 
-class Points(db.Model):
+class Standings(db.Model):
+  round = db.IntegerProperty(required = True)
   entry_id = db.IntegerProperty(required = True)
   pool_id = db.IntegerProperty(required = True)
-  round_1 = db.FloatProperty(required = True)
-  round_2 = db.FloatProperty(required = True)
-  round_3 = db.FloatProperty(required = True)
-  round_4 = db.FloatProperty(required = True)
-  round_5 = db.FloatProperty(required = True)
-  round_6 = db.FloatProperty(required = True)
-  total = db.FloatProperty(required = True)
+  points = db.ListProperty(int, required = True)
+  total = db.FloatProperty()
+  rank = db.IntegerProperty()
+  prev_rank = db.IntegerProperty()
+  change_rank = db.IntegerProperty()
+  max_score = db.FloatProperty()
+  max_score_rank = db.IntegerProperty()
   year = db.IntegerProperty(required = True)
 
   @classmethod
   def add_new(cls, entry_id, pool_id):
-    p = Points(parent = points_key(),
+    s = Standings(parent = standings_key(),
                 entry_id = entry_id, 
                 pool_id = pool_id,
-                round_1 = 0.0,
-                round_2 = 0.0,
-                round_3 = 0.0,
-                round_4 = 0.0,
-                round_5 = 0.0,
-                round_6 = 0.0,
-                total = 0.0,
+                points = [None, None, None, None, None, None],
                 year = datetime.now().year)
-    p.put()
-    return p
+    s.put()
 
   def reset(self):
     self.round_1 = 0.0
@@ -486,19 +548,18 @@ class Points(db.Model):
 
   @classmethod
   def get(cls, entry_id, pool_id):
-    p = Points.all().filter('entry_id =', entry_id).filter('pool_id =', pool_id).ancestor(points_key()).get()
-    return p
+    return Standings.all().filter('entry_id =', entry_id).filter('pool_id =', pool_id).ancestor(standings_key()).get()
 
   @classmethod
   def by_year(cls, year):
-    return Points.all().filter('year =', year).ancestor(points_key()).run(batch_size = 1000)
+    return Standings.all().filter('year =', year).ancestor(standings_key()).run(batch_size = 1000)
 
   @classmethod
   def by_pool(cls, pool_id):
-    points = dict()
-    for p in Points.all().filter('pool_id =', pool_id).ancestor(points_key()).run(batch_size=1000):
-      points[p.entry_id] = p
-    return points
+    standings = dict()
+    for s in Standings.all().filter('pool_id =', pool_id).ancestor(standings_key()).run(batch_size=1000):
+      standings[s.entry_id] = s
+    return standings
 
 ####Admin####
 def admins_key(group = 'default'):
@@ -734,9 +795,9 @@ class PoolPage(BaseHandler):
     else:
       if self.user.id in pool.users:
         entries = []
-        all_points = Points.by_pool(pool.id)
+        all_standings = Standings.by_pool(pool.id)
         for e in Entry.by_pool(pool.id):
-          e.points = all_points[e.id]
+          e.standings = all_standings[e.id]
           entries.append(e)
         entries.sort(key=attrgetter('points.total'), reverse=True)
         rank = 1
@@ -898,61 +959,63 @@ class PoolMasterBracket(BaseHandler):
 
 def calc_points():
   master = Entry.by_name('Master Bracket')
-  if master:
-    points = dict()
-    for pts in Points.by_year(datetime.now().year):
-      if pts.pool_id in points:
-        points[pts.pool_id][pts.entry_id] = pts
+  if not master:
+    return
+
+  points = dict()
+  for pts in Points.by_year(datetime.now().year):
+    if pts.pool_id in points:
+      points[pts.pool_id][pts.entry_id] = pts
+    else:
+      points[pts.pool_id] = {pts.entry_id: pts}
+
+  entries = dict()
+  for e in Entry.by_year(datetime.now().year):
+    for p in e.pools:
+      if p in entries:
+        entries[p].append(e)
       else:
-        points[pts.pool_id] = {pts.entry_id: pts}
+        entries[p] = [e]
 
-    entries = dict()
-    for e in Entry.by_year(datetime.now().year):
-      for p in e.pools:
-        if p in entries:
-          entries[p].append(e)
-        else:
-          entries[p] = [e]
+  games = Game.by_year()
 
-    games = Game.by_year()
-
-    for pool in Pool.by_year(datetime.now().year):
-      if pool.id in entries:
-        for entry in entries[pool.id]:
-          p = points[pool.id][entry.id]
-          p.reset()
-          for i in range(len(master.picks)):
-            if (entry.picks[i] == master.picks[i]):
-              ##bonus##
-              bonus = 0
-              if pool.bonus != 'none':
-                game = games[i]
-                if game.team_1.id == master.picks[i]:
-                  winner = game.team_1
-                  loser = game.team_2
-                else:
-                  winner = game.team_2
-                  loser = game.team_1
-                if pool.bonus == 'upset':
-                  bonus = max(0, winner.seed - loser.seed)
-                elif pool.bonus == 'seed':
-                  bonus = winner.seed
-              ##round##
-              if i < 32:
-                p.round_1 += pool.points[0] + bonus
-              elif i < 48:
-                p.round_2 += pool.points[1] + bonus
-              elif i < 56:
-                p.round_3 += pool.points[2] + bonus
-              elif i < 60:
-                p.round_4 += pool.points[3] + bonus
-              elif i < 62:
-                p.round_5 += pool.points[4] + bonus
+  for pool in Pool.by_year(datetime.now().year):
+    if pool.id in entries:
+      for entry in entries[pool.id]:
+        p = points[pool.id][entry.id]
+        p.reset()
+        for i in range(len(master.picks)):
+          if (entry.picks[i] == master.picks[i]):
+            ##bonus##
+            bonus = 0
+            if pool.bonus != 'none':
+              game = games[i]
+              if game.team_1.id == master.picks[i]:
+                winner = game.team_1
+                loser = game.team_2
               else:
-                p.round_6 += pool.points[5] + bonus
+                winner = game.team_2
+                loser = game.team_1
+              if pool.bonus == 'upset':
+                bonus = max(0, winner.seed - loser.seed)
+              elif pool.bonus == 'seed':
+                bonus = winner.seed
+            ##round##
+            if i < 32:
+              p.round_1 += pool.points[0] + bonus
+            elif i < 48:
+              p.round_2 += pool.points[1] + bonus
+            elif i < 56:
+              p.round_3 += pool.points[2] + bonus
+            elif i < 60:
+              p.round_4 += pool.points[3] + bonus
+            elif i < 62:
+              p.round_5 += pool.points[4] + bonus
+            else:
+              p.round_6 += pool.points[5] + bonus
 
-          p.total = math.fsum([p.round_1, p.round_2, p.round_3, p.round_4, p.round_5, p.round_6])
-          p.put()
+        p.total = math.fsum([p.round_1, p.round_2, p.round_3, p.round_4, p.round_5, p.round_6])
+        p.put()
 
 class BracketEntry(BaseHandler):
   def get(self, entry_id):
@@ -1002,7 +1065,6 @@ class BracketEntry(BaseHandler):
         if not self.locked and self.user.id != entry.user.id:
           self.render('access-denied.html')
           return
-
         if self.locked:
           master = Entry.by_name('Master Bracket')
           i = 0
@@ -1090,7 +1152,7 @@ class BracketEntry(BaseHandler):
           regions.append(self.request.get('region_' + str(i + 1)))
         Admin.update_regions(regions)
         Game.update_games()
-        calc_points()
+        # calc_points()
         self.redirect('/brackets/master')
         return
     else:
@@ -1225,8 +1287,8 @@ class UploadTeams(BaseHandler):
       self.redirect('/')
       return
 
-    year = self.request.get('year')
-    old_teams = Team.by_year(int(year))
+    year = int(self.request.get('year'))
+    old_teams = Team.by_year(year)
     db.delete(old_teams)
 
     teams = self.request.get('team_file')
@@ -1234,7 +1296,7 @@ class UploadTeams(BaseHandler):
       if row[0] != 'Team':
         Team.submit(row[0], year, int(row[1]), int(row[2]))
 
-    Game.update_games()
+    Game.create_games(year)
 
     self.redirect('/admin')
 
@@ -1541,28 +1603,6 @@ class ForgotPassword(BaseHandler):
       msg.send()
       self.redirect('/login?password_reset=true')
 
-class UpdateYear(BaseHandler):
-  def get(self):
-    for e in Entry.by_year(2012):
-      e.year = 2013
-      e.put()
-
-    for g in Game.by_year(2012):
-      g.year = 2013
-      g.put()
-
-    for p in Points.by_year(2012):
-      p.year = 2013
-      p.put()
-
-    for p in Pool.by_year(2012):
-      p.year = 2013
-      p.put()
-
-    for p in Team.by_year(2012):
-      p.year = 2013
-      p.put()
-
 config = {}
 config['webapp2_extras.sessions'] = {
     'secret_key': 'mavlkjhasehffcsasldfkj',
@@ -1589,6 +1629,5 @@ app = webapp2.WSGIApplication([('/', Front),
                                ('/settings/password/forgot', ForgotPassword),
                                ('/settings/password/reset', ResetPassword),
                                ('/validate/entry', ValidateEntry),
-                               ('/manage', ManageTourney),
-                               ('/updateyear', UpdateYear)],
+                               ('/manage', ManageTourney)],
                               debug=True, config=config)
