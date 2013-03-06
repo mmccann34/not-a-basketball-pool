@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}{{pool.name}}{% endblock %}
+
+{% block head %}
+{{ super() }}
+<script type="text/javascript" src="/static/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="/static/pool.js"></script>
+<link type="text/css" rel="stylesheet" href="/static/pool.css" />
+{% endblock %}
+
+{% block content %}
+<div class="page-header" style="position:relative;">
+  <h1 style="text-align:center">{{pool.name}}</h1>
+  {% if pool.admin_user.id == user.id %}
+  <div>
+    <p style="position:absolute; bottom:0; right:0; margin-bottom:19px; margin-right:5px;"><a href="/pools/{{pool.id}}/admin">Admin Dashboard</a></p>
+  </div>
+  {% endif %}
+</div>
+<p style="text-align:center;">
+  {% if not locked %}
+  <a href="/brackets/choose?p={{pool.id}}" class="btn btn-primary btn-large">Enter a Bracket</a>
+  {% else %}
+  <a href="/pools/{{pool.id}}/master">View Master Bracket/Game Analysis</a>
+  {% endif %}
+</p>
+<h2>Standings</h2>
+<div class="mod-content" style="font-size:13px;">
+  <table id="standings" class="table table-striped table-hover tablesorter">
+    <thead>
+      <tr>
+        <th>User Name</th>
+        {% for column in gamePicks|dictsort %}
+          <th>{{ column[0]|e }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for g in gamePicks|dictsort %}
+      <tr>
+        <td>{{ g[0]|e }}</td>
+		<td>{{ g[1]|e }}</td>
+        {% for i in g[1] %}
+        <td>{{ i[0], i[1] }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
