@@ -7,6 +7,7 @@
 {% block head %}
 {{ super() }}
 <link type="text/css" rel="stylesheet" href="/static/pool-form.css" />
+<script type="text/javascript" src="/static/pool-form.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -69,17 +70,26 @@
         </div>
       </div>
     </div>
+
     <p style="font-weight:bold;">Select bonus point option:</p>
     <div id="bonus">
       <label class="radio">
         <input type="radio" name="bonus" value="upset" checked>
         Upset bonus: Add points equal to difference in seed when the lower seed wins 
-        <span style="color:blue; cursor:default" title="Upset Bonus Example: &#013If you pick the #12 to beat the #5 in the first round you will get 9 points: 2 points for winning the pick in Round 1 and 7 points for the difference in seed when the lower seed wins (12-5)">(?)</span>
+		<a href="#" class="btn" id="explainupsetbonus" data-toggle="popover" data-placement="top" data-trigger="hover"
+			data-content="You get these bonus points for picking lower seeded teams to win. This bonus is calculated as the difference 
+		    between the seeds when the lower seed wins. For example, in a Round 1 game, you pick the #12 seed to upset the #5:
+		    You would get {{pts_1}} points for picking the game correctly, plus 7 bonus points (#12 - #5)" 
+    		title="" data-original-title="Upset Bonus Info">More Details</a>		    	
       </label>
       <label class="radio">
         <input type="radio" name="bonus" value="seed">
         Seed bonus: Add points equal to seed for each round
-        <span style="color:blue; cursor:default" title="Seed Bonus Example: &#013If you pick the #12 to beat the #5 in the first round you will get 14 points: 2 points for winning the pick in Round 1 and 12 points for picking the 12 seed">(?)</span>
+		<a href="#" class="btn" id="explainseedbonus" data-toggle="popover" data-placement="top" data-trigger="hover"
+			data-content="You get these bonus points for every correct pick. This bonus adds the seed to the points for correct pick.
+		    For example, in a Round 1 game, you pick the #12 seed to win:
+		    You would get {{pts_1}} points for picking the game correctly, plus 12 bonus points" 
+    		title="" data-original-title="Seed Bonus Info">More Details</a>		    	
       </label>
       <label class="radio">
         <input type="radio" name="bonus" value="none">None
