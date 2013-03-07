@@ -37,16 +37,15 @@
       </tr>
     </thead>
     <tbody>
-      {% for g in gamePicks|dictsort %}
-      <tr>
-        <td>{{ g[0]|e }}</td>
-		<td>{{ g[1]|e }}</td>
-        {% for i in g[1] %}
-	        <td>{{ i[0], i[1] }}</td>
-        {% endfor %}
-      </tr>
-      {% endfor %}
-    </tbody>
+    	{% for key, value in gamePicks|dictsort %}
+		<tr>
+	        <td>{{ key|e }}</td>
+    	    {% for kvp in value|dictsort %}
+        	<td>{{ kvp[1] }}</td>
+	        {% endfor %}
+    	</tr>
+	    {% endfor %}
+	</tbody>
   </table>
 </div>
 {% endblock %}

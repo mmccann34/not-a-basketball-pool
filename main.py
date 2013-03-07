@@ -1589,7 +1589,7 @@ class UserSimilarity(BaseHandler):
 								gameMatches += 1
 						sameGamePicks[e1.id][e2.id] = gameMatches
 						gameMatches = 0
-				self.write(str(sameGamePicks)+ '<br>')
+#				self.write(str(sameGamePicks)+ '<br>')   this was for testing the output to the browser
 		
 		params = dict()
 		params['pool'] = pool
