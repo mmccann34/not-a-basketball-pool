@@ -1575,14 +1575,16 @@ class UserSimilarity(BaseHandler):
 		pool_id = int(pool_id)
 		pool = Pool.by_id(pool_id)
 		gameMatches = 0  #initialize variable to track matches with other users
-
+		
 		if not pool:
 			self.error(404)
 		else:
 			if self.user.id in pool.users:
-				sameGamePicks = {}
+				sameGamePicks = {} # this stores the dictionary of similarities
+				bracketnames = {}  # this will store the bracket entry names
 				for e1 in Entry.by_pool(pool_id):
 					sameGamePicks[e1.id] = {}
+					bracketnames[e1.id] = e1.name
 					for e2 in Entry.by_pool(pool_id):
 						for game in range(63):
 							if (e1.picks[game] == e2.picks[game]):
@@ -1594,6 +1596,7 @@ class UserSimilarity(BaseHandler):
 		params = dict()
 		params['pool'] = pool
 		params['gamePicks'] = sameGamePicks
+		params['bracketnames'] = bracketnames
 		self.render('usersimilarity.html', **params)
 
 

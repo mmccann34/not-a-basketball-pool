@@ -30,20 +30,20 @@
   <table id="standings" class="table table-striped table-hover tablesorter">
     <thead>
       <tr>
-        <th>User Name</th>
-        {% for column in gamePicks|dictsort %}
-          <th>{{ column[0]|e }}</th>
+        <th>Entry Name</th>
+        {% for column in bracketnames|dictsort %}
+          <th>{{ column[1]|e }}</th>
         {% endfor %}
       </tr>
     </thead>
     <tbody>
     	{% for key, value in gamePicks|dictsort %}
 		<tr>
-	        <td>{{ key|e }}</td>
+		    <td>{{ bracketnames[key] }}</td>
     	    {% for kvp in value|dictsort %}
-        	<td>{{ kvp[1] }}</td>
-	        {% endfor %}
-    	</tr>
+    			<td>{{ kvp[1] }}</td>
+			{% endfor %}
+	    </tr>
 	    {% endfor %}
 	</tbody>
   </table>
