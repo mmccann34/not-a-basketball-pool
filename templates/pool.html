@@ -22,7 +22,8 @@
   {% if not locked %}
   <a href="/brackets/choose?p={{pool.id}}" class="btn btn-primary btn-large">Enter a Bracket</a>
   {% else %}
-  <a href="/pools/{{pool.id}}/master">View Master Bracket/Game Analysis</a>
+  <a href="/pools/{{pool.id}}/master" class="btn btn-primary btn-large">View Master Bracket/Game Analysis</a>
+  <a href="/pools/{{pool.id}}/usersimilarity">See how similar you are to others</a>
   {% endif %}
 </p>
 <h2>Standings</h2>
