@@ -1574,6 +1574,7 @@ class UserSimilarity(BaseHandler):
 		
 		pool_id = int(pool_id)
 		pool = Pool.by_id(pool_id)
+		entries = Entry.by_pool(pool_id)
 		gameMatches = 0  #initialize variable to track matches with other users
 		
 		if not pool:
@@ -1582,7 +1583,7 @@ class UserSimilarity(BaseHandler):
 			if self.user.id in pool.users:
 				sameGamePicks = {} # this stores the dictionary of similarities
 				bracketnames = {}  # this will store the bracket entry names
-				for e1 in Entry.by_pool(pool_id):
+				for e1 in entries
 					sameGamePicks[e1.id] = {}
 					bracketnames[e1.id] = e1.name
 					for e2 in Entry.by_pool(pool_id):
