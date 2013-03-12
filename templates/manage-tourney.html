@@ -6,9 +6,17 @@
 {% block content %}
 <div class="page-header"><h1>Manage My Tourney</h1></div>
 <div class="row">
-  <div class="span6">
-    <h2>My Brackets <a href="/brackets/new" class="btn btn-small">Create a Bracket</a></h2>
-    <div class="well-frame">
+<div class="container">
+  <ul class="nav nav-tabs">
+  	<li class="active"> <a href="#tab1" data-toggle="tab">My Brackets</a></li>
+  	<li><a href="#tab2" data-toggle="tab">My Pools</a></li>
+  </ul>
+  
+    <div class="tab-content">
+    <div class="tab-pane active" id="tab1">
+
+	<h2>My Brackets <a href="/brackets/new" class="btn btn-small">Create a Bracket</a></h2>
+
       <table class="table table-striped">
         <thead>
           <tr>
@@ -30,9 +38,9 @@
         </tbody>
       </table>
     </div>
-  </div>
-  <div class="span6">
-    <h2>My Pools <a href="/pools/new" class="btn btn-small">Create a Pool</a> <a href="/pools/all" class="btn btn-small">Find a Pool</a></h2>
+  
+  <div class="tab-pane" id="tab2">
+  <h2>My Pools <a href="/pools/new" class="btn btn-small">Create a Pool</a> <a href="/pools/all" class="btn btn-small">Find a Pool</a></h2>
     <div class="well-frame">
       <table class="table table-striped">
         <thead>
@@ -54,5 +62,6 @@
       </table>
     </div>
   </div>
+</div>
 </div>
 {% endblock %}
