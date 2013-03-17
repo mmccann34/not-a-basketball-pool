@@ -1161,9 +1161,16 @@ class ManageTourney(BaseHandler):
       self.require_login()
       return
 
+#	pools = dict()
+#	pools = self.user.get_pools()
+
+#	for p in userpools:
+#		self.write(str(p.name)+ '<br>')
+
     params = dict()
     params['pools'] = self.user.get_pools()
     params['entries'] = self.user.get_entries()
+
     self.render('manage-tourney.html',  **params)
 
 class MyBrackets(BaseHandler):
@@ -1599,6 +1606,11 @@ class UserSimilarity(BaseHandler):
 		params['gamePicks'] = sameGamePicks
 		params['bracketnames'] = bracketnames
 		self.render('usersimilarity.html', **params)
+		
+class FAQ(BaseHandler):
+  def get(self):
+    self.render('FAQ.html')
+		
 
 
 config = {}
@@ -1629,5 +1641,6 @@ app = webapp2.WSGIApplication([('/', Front),
                                ('/settings/password/reset', ResetPassword),
                                ('/validate/entry', ValidateEntry),
                                ('/manage', ManageTourney),
-                               ('/updateyear', UpdateYear)],
+                               ('/updateyear', UpdateYear),
+                               ('/FAQ', FAQ)],
                               debug=True, config=config)
