@@ -1167,10 +1167,11 @@ class ManageTourney(BaseHandler):
 #	for p in userpools:
 #		self.write(str(p.name)+ '<br>')
 
+    
     params = dict()
     params['pools'] = self.user.get_pools()
     params['entries'] = self.user.get_entries()
-
+    
     self.render('manage-tourney.html',  **params)
 
 class MyBrackets(BaseHandler):
@@ -1588,7 +1589,7 @@ class UserSimilarity(BaseHandler):
 			self.error(404)
 		else:
 			if self.user.id in pool.users:
-				sameGamePicks = {} # this stores the dictionary of similarities
+				sameGamePicks = {} # this stores the dictionary of game similarities
 				bracketnames = {}  # this will store the bracket entry names
 				for e1 in entries:
 					sameGamePicks[e1.id] = {}

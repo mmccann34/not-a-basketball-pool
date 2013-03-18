@@ -3,7 +3,17 @@ $(document).ready( function () {
   
 
 	var oTable = $('#usersimilarity').dataTable( {
-		"sDom": 'Rlfrtip'
+		"sDom": 'RCfrtip',
+		"bPaginate": false,
+		"sSortable":true
+		
 	} );
+
+	$.extend( $.fn.dataTableExt.oStdClasses, {
+    	"sSortAsc": "header headerSortDown",
+    	"sSortDesc": "header headerSortUp",
+    	"sSortable": "header"
+	} )
+  	
   
 });
