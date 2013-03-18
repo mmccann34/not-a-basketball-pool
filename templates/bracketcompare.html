@@ -1,0 +1,635 @@
+{% extends "base.html" %}
+
+{% if not pool_id %}
+{% set active_page = "createabracket" %}
+{% endif %}
+
+{% block title %}Bracket Entry{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link type="text/css" rel="stylesheet" href="/static/bracketentry.css" />
+<script type="text/javascript" src="/static/bracketentry.js"></script>
+<script type="text/javascript" src="/static/jquery.hotkeys.js"></script>
+{% if locked %}
+<style type="text/css">
+.team { cursor: auto; }
+.winner { cursor: auto; }
+</style>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<form id="form_bracket" method="post" data-locked="{{locked}}" data-master="{{master}}">
+  <div style="text-align:center; font-size:normal;">
+    {% if name %}
+    <div class="page-header">
+      <span style="font-weight:bold;">{{name}}</span>
+    </div>
+    {% else %}
+    <div class="form-inline">
+      <label class="hide">Entry Name:</label>
+      <input type="text" name="entry_name" maxlength="25" placeholder="Entry Name">
+    </div>
+    {% endif %}
+  </div>
+  <table class="centered bracket" border="0px" cellpadding="0px" cellspacing="0px">
+    <!-- Top Half -->
+    <tr>
+      <td class="bottom"><div id="team_1" class="team left">{{teams[0].seed}} {{teams[0].name}}</button></div></td>
+      <td colspan="9"></td>
+      <td class="bottom"><div id="team_33" class="team right">{{teams[32].seed}} {{teams[32].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner left {{css_winners[0]}}" readonly="readonly" name="winner_1" value="{{winners[0]}}"></td>
+      <td colspan="7"></td>
+      <td class="bottom"><input class="winner right {{css_winners[16]}}" readonly="readonly" name="winner_17" value="{{winners[16]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_2" class="team left">{{teams[1].seed}} {{teams[1].name}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="7"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><div id="team_34" class="team right">{{teams[33].seed}} {{teams[33].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom"><input class="winner left {{css_winners[32]}}" readonly="readonly" name="winner_33" value="{{winners[32]}}"></td>
+      <td colspan="5"></td>
+      <td class="bottom"><input class="winner right {{css_winners[40]}}" readonly="readonly" name="winner_41" value="{{winners[40]}}"></td>
+      <td class="left" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_3" class="team left">{{teams[2].seed}} {{teams[2].name}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="5"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><div id="team_35" class="team right">{{teams[34].seed}} {{teams[34].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[1]}}" readonly="readonly" name="winner_2" value="{{winners[1]}}"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="5"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[17]}}" readonly="readonly" name="winner_18" value="{{winners[17]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_4" class="team left">{{teams[3].seed}} {{teams[3].name}}</div></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="5"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom left"><div id="team_36" class="team right">{{teams[35].seed}} {{teams[35].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="3"></td>
+      <td class="bottom"><input class="winner left {{css_winners[48]}}" readonly="readonly" name="winner_49" value="{{winners[48]}}"></td>
+      <td colspan="3"></td>
+      <td class="bottom"><input class="winner right {{css_winners[52]}}" readonly="readonly" name="winner_53" value="{{winners[52]}}"></td>
+      <td class="left" colspan="3"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_5" class="team left">{{teams[4].seed}} {{teams[4].name}}</div></td>
+      <td class="right" colspan="2"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom"><div id="team_37" class="team right">{{teams[36].seed}} {{teams[36].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner left {{css_winners[2]}}" readonly="readonly" name="winner_3" value="{{winners[2]}}"></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><input class="winner right {{css_winners[18]}}" readonly="readonly" name="winner_19" value="{{winners[18]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_6" class="team left">{{teams[5].seed}} {{teams[5].name}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><div id="team_38" class="team right">{{teams[37].seed}} {{teams[37].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[33]}}" readonly="readonly" name="winner_34" value="{{winners[33]}}"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[41]}}" readonly="readonly" name="winner_42" value="{{winners[41]}}"></td>
+      <td class="left" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_7" class="team left">{{teams[6].seed}} {{teams[6].name}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="2"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><div id="team_39" class="team right">{{teams[38].seed}} {{teams[38].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[3]}}" readonly="readonly" name="winner_4" value="{{winners[3]}}"></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[19]}}" readonly="readonly" name="winner_20" value="{{winners[19]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_8" class="team left">{{teams[7].seed}} {{teams[7].name}}</div></td>
+      <td class="right" colspan="3"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="3"></td>
+      <td class="bottom left"><div id="team_40" class="team right">{{teams[39].seed}} {{teams[39].name}}</div></td>
+    </tr>
+    <tr>
+      <td colspan="2"></td>
+      <td colspan="2" class="right">
+        <div class="region">{% if master %}<input type="text" name="region_1" value="{{regions[0]}}">{% else %}{{regions[0]}}{% endif %}</div>
+      </td>
+      <td class="bottom"><input class="winner left {{css_winners[56]}}" readonly="readonly" name="winner_57" value="{{winners[56]}}"></td>
+      <td colspan="1"></td>
+      <td class="bottom"><input class="winner right {{css_winners[58]}}" readonly="readonly" name="winner_59" value="{{winners[58]}}"></td>
+      <td colspan="2" class="left">
+        <div class="region">{% if master %}<input type="text" name="region_3" value="{{regions[2]}}">{% else %}{{regions[2]}}{% endif %}</div>
+      </td>
+      <td colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_9" class="team left">{{teams[8].seed}} {{teams[8].name}}</div></td>
+      <td class="right" colspan="3"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="3"></td>
+      <td class="bottom"><div id="team_41" class="team right">{{teams[40].seed}} {{teams[40].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner left {{css_winners[4]}}" readonly="readonly" name="winner_5" value="{{winners[4]}}"></td>
+      <td class="right" colspan="2"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom"><input class="winner right {{css_winners[20]}}" readonly="readonly" name="winner_21" value="{{winners[20]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_10" class="team left">{{teams[9].seed}} {{teams[9].name}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="2"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><div id="team_42" class="team right">{{teams[41].seed}} {{teams[41].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom"><input class="winner left {{css_winners[34]}}" readonly="readonly" name="winner_35" value="{{winners[34]}}"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td class="semi_left"><input class="winner left finals {{css_winners[60]}}" readonly="readonly" name="winner_61" value="{{winners[60]}}"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom"><input class="winner right {{css_winners[42]}}" readonly="readonly" name="winner_43" value="{{winners[42]}}"></td>
+      <td class="left"colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_11" class="team left">{{teams[10].seed}} {{teams[10].name}}</div></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom"><div id="team_43" class="team right">{{teams[42].seed}} {{teams[42].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[5]}}" readonly="readonly" name="winner_6" value="{{winners[5]}}"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[21]}}" readonly="readonly" name="winner_22" value="{{winners[21]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_12" class="team left">{{teams[11].seed}} {{teams[11].name}}</div></td>
+      <td class="right"colspan="2"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="2"></td>
+      <td class="bottom left"><div id="team_44" class="team right">{{teams[43].seed}} {{teams[43].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="3"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[49]}}" readonly="readonly" name="winner_50" value="{{winners[49]}}"></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[53]}}" readonly="readonly" name="winner_54" value="{{winners[53]}}"></td>
+      <td class="left"colspan="3"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_13" class="team left">{{teams[12].seed}} {{teams[12].name}}</div></td>
+      <td class="right"colspan="2"></td>
+      <td class="right"colspan="2"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="2"></td>
+      <td class="left"colspan="2"></td>
+      <td class="bottom"><div id="team_45" class="team right">{{teams[44].seed}} {{teams[44].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner left {{css_winners[6]}}" readonly="readonly" name="winner_7" value="{{winners[6]}}"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="2"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="2"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom"><input class="winner right {{css_winners[22]}}" readonly="readonly" name="winner_23" value="{{winners[22]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_14" class="team left">{{teams[13].seed}} {{teams[13].name}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><div id="team_46" class="team right">{{teams[45].seed}} {{teams[45].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[35]}}" readonly="readonly" name="winner_36" value="{{winners[35]}}"></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[43]}}" readonly="readonly" name="winner_44" value="{{winners[43]}}"></td>
+      <td class="left" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_15" class="team left">{{teams[14].seed}} {{teams[14].name}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="3"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><div id="team_47" class="team right">{{teams[46].seed}} {{teams[46].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[7]}}" readonly="readonly" name="winner_8" value="{{winners[7]}}"></td>
+      <td class="right" colspan="3"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="3"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[23]}}" readonly="readonly" name="winner_24" value="{{winners[23]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_16" class="team left">{{teams[15].seed}} {{teams[15].name}}</div></td>
+      <td class="right"colspan="4"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="4"></td>
+      <td class="bottom left"><div id="team_48" class="team right">{{teams[47].seed}} {{teams[47].name}}</div></td>
+    </tr>
+
+    <!-- Championship -->
+    <tr>
+      <td class="right" colspan="5" style="height: 30px;"></td>
+      <td class="champ" rowspan="10" align="center">
+        <input class="winner finals champ  {{css_winners[62]}}" readonly="readonly" name="winner_63" value="{{winners[62]}}">
+        <div style="font-size:10px; font-weight:bold; margin-top:15px; margin-bottom:5px;">Final Score Sum</div>
+        <input type="text" name="final_score" value="{{final_score}}" {% if locked %} disabled {% endif %}>
+        {% if not locked %}
+        <input type="button" class="btn btn-primary" value="Save" onclick="validateInputs()">
+        {% endif %}
+      </td>
+      <td class="left" colspan="5"></td>
+    </tr>
+
+    <!-- Bottom Half -->
+    <tr>
+      <td class="bottom"><div id="team_17" class="team left">{{teams[16].seed}} {{teams[16].name}}</div></td>
+      <td class="right"colspan="4"></td>
+      <!-- <td colspan="1"></td> -->
+      <td class="left"colspan="4"></td>
+      <td class="bottom"><div id="team_49" class="team right">{{teams[48].seed}} {{teams[48].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner left {{css_winners[8]}}" readonly="readonly" name="winner_9" value="{{winners[8]}}"></td>
+      <td class="right" colspan="3"></td>
+      <!-- <td colspan="1"></td> -->
+      <td class="left" colspan="3"></td>
+      <td class="bottom"><input class="winner right {{css_winners[24]}}" readonly="readonly" name="winner_25" value="{{winners[24]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_18" class="team left">{{teams[17].seed}} {{teams[17].name}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="3"></td>
+      <!-- <td colspan="1"></td> -->
+      <td class="left" colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><div id="team_50" class="team right">{{teams[49].seed}} {{teams[49].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom"><input class="winner left {{css_winners[36]}}" readonly="readonly" name="winner_37" value="{{winners[36]}}"></td>
+      <td class="right" colspan="2"></td>
+      <!-- <td colspan="1"></td> -->
+      <td class="left" colspan="2"></td>
+      <td class="bottom"><input class="winner right {{css_winners[44]}}" readonly="readonly" name="winner_45" value="{{winners[44]}}"></td>
+      <td class="left" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_19" class="team left">{{teams[18].seed}} {{teams[18].name}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="2"></td>
+      <!-- <td colspan="1"></td> -->
+      <td class="left" colspan="2"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><div id="team_51" class="team right">{{teams[50].seed}} {{teams[50].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[9]}}" readonly="readonly" name="winner_10" value="{{winners[9]}}"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="2"></td>
+      <!-- <td colspan="1"></td> -->
+      <td class="left"colspan="2"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[25]}}" readonly="readonly" name="winner_26" value="{{winners[25]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_20" class="team left">{{teams[19].seed}} {{teams[19].name}}</div></td>
+      <td class="right"colspan="2"></td>
+      <td class="right"colspan="2"></td>
+      <!-- <td colspan="1"></td> -->
+      <td class="left"colspan="2"></td>
+      <td class="left"colspan="2"></td>
+      <td class="bottom left"><div id="team_52" class="team right">{{teams[51].seed}} {{teams[51].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="3"></td>
+      <td class="bottom"><input class="winner left {{css_winners[50]}}" readonly="readonly" name="winner_51" value="{{winners[50]}}"></td>
+      <td class="right"colspan="1"></td>
+      <!-- <td colspan="1"></td> -->
+      <td class="left"colspan="1"></td>
+      <td class="bottom"><input class="winner right {{css_winners[54]}}" readonly="readonly" name="winner_55" value="{{winners[54]}}"></td>
+      <td class="left" colspan="3"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_21" class="team left">{{teams[20].seed}} {{teams[20].name}}</div></td>
+      <td class="right"colspan="2"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <!-- <td colspan="1"></td> -->
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="2"></td>
+      <td class="bottom"><div id="team_53" class="team right">{{teams[52].seed}} {{teams[52].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner left {{css_winners[10]}}" readonly="readonly" name="winner_11" value="{{winners[10]}}"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom"><input class="winner right {{css_winners[26]}}" readonly="readonly" name="winner_27" value="{{winners[26]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_22" class="team left">{{teams[21].seed}} {{teams[21].name}}</div></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom left"><div id="team_54" class="team right">{{teams[53].seed}} {{teams[53].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[37]}}" readonly="readonly" name="winner_38" value="{{winners[37]}}"></td>
+      <td class="right"colspan="1"></td>
+      <td class="right"colspan="1"></td>
+      <td class="semi_right"><input class="winner right finals {{css_winners[61]}}" readonly="readonly" name="winner_62" value="{{winners[61]}}"></td>
+      <td class="left"colspan="1"></td>
+      <td class="left"colspan="1"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[45]}}" readonly="readonly" name="winner_46" value="{{winners[45]}}"></td>
+      <td class="left" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_23" class="team left">{{teams[22].seed}} {{teams[22].name}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="2"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><div id="team_55" class="team right">{{teams[54].seed}} {{teams[54].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[11]}}" readonly="readonly" name="winner_12" value="{{winners[11]}}"></td>
+      <td class="right" colspan="2"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[27]}}" readonly="readonly" name="winner_28" value="{{winners[27]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_24" class="team left">{{teams[23].seed}} {{teams[23].name}}</div></td>
+      <td class="right" colspan="3"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="3"></td>
+      <td class="bottom left"><div id="team_56" class="team right">{{teams[55].seed}} {{teams[55].name}}</div></td>
+    </tr>
+    <tr>
+      <td colspan="2"></td>
+      <td colspan="2" class="right">
+        <div class="region">{% if master %}<input type="text" name="region_2" value="{{regions[1]}}">{% else %}{{regions[1]}}{% endif %}</div>
+      </td>
+      <td class="bottom right"><input class="winner left {{css_winners[57]}}" readonly="readonly" name="winner_58" value="{{winners[57]}}"></td>
+      <td colspan="1"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[59]}}" readonly="readonly" name="winner_60" value="{{winners[59]}}"></td>
+      <td colspan="2" class="left">
+        <div class="region">{% if master %}<input type="text" name="region_4" value="{{regions[3]}}">{% else %}{{regions[3]}}{% endif %}</div>
+      </td>
+      <td colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_25" class="team left">{{teams[24].seed}} {{teams[24].name}}</div></td>
+      <td class="right" colspan="3"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="3"></td>
+      <td class="bottom"><div id="team_57" class="team right">{{teams[56].seed}} {{teams[56].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner left {{css_winners[12]}}" readonly="readonly" name="winner_13" value="{{winners[12]}}"></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom"><input class="winner right {{css_winners[28]}}" readonly="readonly" name="winner_29" value="{{winners[28]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_26" class="team left">{{teams[25].seed}} {{teams[25].name}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="2"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><div id="team_58" class="team right">{{teams[57].seed}} {{teams[57].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom"><input class="winner left {{css_winners[38]}}" readonly="readonly" name="winner_39" value="{{winners[38]}}"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><input class="winner right {{css_winners[46]}}" readonly="readonly" name="winner_47" value="{{winners[46]}}"></td>
+      <td class="left"colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_27" class="team left">{{teams[26].seed}} {{teams[26].name}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><div id="team_59" class="team right">{{teams[58].seed}} {{teams[58].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[13]}}" readonly="readonly" name="winner_14" value="{{winners[13]}}"></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[29]}}" readonly="readonly" name="winner_30" value="{{winners[29]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_28" class="team left">{{teams[27].seed}} {{teams[27].name}}</div></td>
+      <td class="right" colspan="2"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="3"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom left"><div id="team_60" class="team right">{{teams[59].seed}} {{teams[59].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="3"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[51]}}" readonly="readonly" name="winner_52" value="{{winners[51]}}"></td>
+      <td colspan="3"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[55]}}" readonly="readonly" name="winner_56" value="{{winners[55]}}"></td>
+      <td class="left"colspan="3"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_29" class="team left">{{teams[28].seed}} {{teams[28].name}}</div></td>
+      <td class="right" colspan="2"></td>
+      <td colspan="5"></td>
+      <td class="left" colspan="2"></td>
+      <td class="bottom"><div id="team_61" class="team right">{{teams[60].seed}} {{teams[60].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom"><input class="winner left {{css_winners[14]}}" readonly="readonly" name="winner_15" value="{{winners[14]}}"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="5"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><input class="winner right {{css_winners[30]}}" readonly="readonly" name="winner_31" value="{{winners[30]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_30" class="team left">{{teams[29].seed}} {{teams[29].name}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="5"></td>
+      <td class="left" colspan="1"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom left"><div id="team_62" class="team right">{{teams[61].seed}} {{teams[61].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="2"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[39]}}" readonly="readonly" name="winner_40" value="{{winners[39]}}"></td>
+      <td colspan="5"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[47]}}" readonly="readonly" name="winner_48" value="{{winners[47]}}"></td>
+      <td class="left" colspan="2"></td>
+    </tr>
+    <tr>
+      <td class="bottom"><div id="team_31" class="team left">{{teams[30].seed}} {{teams[30].name}}</div></td>
+      <td class="right" colspan="1"></td>
+      <td colspan="7"></td>
+      <td class="left" colspan="1"></td>
+      <td class="bottom"><div id="team_63" class="team right">{{teams[62].seed}} {{teams[62].name}}</div></td>
+    </tr>
+    <tr>
+      <td class="right" colspan="1"></td>
+      <td class="bottom right"><input class="winner left {{css_winners[15]}}" readonly="readonly" name="winner_16" value="{{winners[15]}}"></td>
+      <td colspan="7"></td>
+      <td class="bottom left"><input class="winner right {{css_winners[31]}}" readonly="readonly" name="winner_32" value="{{winners[31]}}"></td>
+      <td class="left" colspan="1"></td>
+    </tr>
+    <tr>
+      <td class="bottom right"><div id="team_32" class="team left">{{teams[31].seed}} {{teams[31].name}}</div></td>
+      <td colspan="9"></td>
+      <td class="bottom left"><div id="team_64" class="team right">{{teams[63].seed}} {{teams[63].name}}</div></td>
+    </tr>
+  </table>
+</form>
+<div style="height: 5px;"></div>
+{% endblock %}
