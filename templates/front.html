@@ -1,16 +1,62 @@
 {% extends "base.html" %}
 {% set active_page = "home" %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Not a Basketball Pool{% endblock %}
 
 {% block content %}
-<div style="text-align:center;">
-  <h1 style="color:#5A5A5A;">Welcome to Not A Basketball Pool</h1>
-  <p class="lead">Blah blah blah blah blah</p>
-  <p>
-    <a href="/brackets/new" class="btn btn-primary" style="width:125px;">Create a Bracket</a>
-    <a href="/pools/new" class="btn btn-primary" style="width:125px;">Create a Pool</a>
-    <a href="/pools/all" class="btn btn-primary" style="width:125px;">Find a Pool</a>
-  </p>
-</div>
+
+    <div class="container">
+
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit">
+        <h4><em>This is...</em></h4>
+        <h1>Not a Basketball Pool</h1>
+        <p>This is the year that we bring the greatest and nerdiest basketball pool online.</p>
+        <p><a href="/brackets/new" class="btn btn-primary btn-large">Get Started &raquo;</a></p>
+      </div>
+
+      <!-- Row of Calls to Action -->
+      <div class="row">
+        <div class="span4">
+          <h2>Make your picks</h2>
+          <p>Start here if you just want to enter your picks for this year</p>
+          <p><a class="btn" href="/brackets/new">Create a Bracket &raquo;</a></p>
+        </div>
+        <div class="span4">
+          <h2>Set up a Pool</h2>
+          <p>Start here if you want to create a pool and invite your friends to join you</p>
+          <p><a class="btn" href="/pools/new">Create a Pool &raquo;</a></p>
+       </div>
+        <div class="span4">
+          <h2>Join a Pool</h2>
+          <p>Check this out if you're looking for an existing pool to join</p>
+          <p><a class="btn" href="/pools/all">Find a Pool &raquo;</a></p>
+        </div>
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>&copy; Not a Basketball Pool 2013</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../assets/js/jquery.js"></script>
+    <script src="../assets/js/bootstrap-transition.js"></script>
+    <script src="../assets/js/bootstrap-alert.js"></script>
+    <script src="../assets/js/bootstrap-modal.js"></script>
+    <script src="../assets/js/bootstrap-dropdown.js"></script>
+    <script src="../assets/js/bootstrap-scrollspy.js"></script>
+    <script src="../assets/js/bootstrap-tab.js"></script>
+    <script src="../assets/js/bootstrap-tooltip.js"></script>
+    <script src="../assets/js/bootstrap-popover.js"></script>
+    <script src="../assets/js/bootstrap-button.js"></script>
+    <script src="../assets/js/bootstrap-collapse.js"></script>
+    <script src="../assets/js/bootstrap-carousel.js"></script>
+    <script src="../assets/js/bootstrap-typeahead.js"></script>
+
 {% endblock %}

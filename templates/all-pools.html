@@ -19,7 +19,7 @@
         {% for p in pools %}
         <tr>
           <td><a href="/pools/{{p.key().id()}}">{{p.name}}</a></td>
-          <td>{{p.admin_user.name}}</td>
+          <td>{{p.admin_user.name if p.admin_user}}</td>
         </tr>
         {% endfor %}
       </tbody>
