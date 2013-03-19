@@ -1,15 +1,32 @@
 {% extends "base.html" %}
-{% set active_page = "managemytourney" %}
+
+{% block head %}
+{{ super() }}
+<script type="text/javascript" src="/static/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="/static/usersimilarity.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/static/ColReorder.min.js"></script>
+<link type="text/css" rel="stylesheet" href="/static/pool.css" />
+<link type="text/css" rel="stylesheet" href="/static/ColReorder.css" />
+{% endblock %}
 
 {% block title %}Manage My Tourney{% endblock %}
 
 {% block content %}
 <div class="page-header"><h1>Manage My Tourney</h1></div>
 <div class="row">
-  <div class="span6">
-    <h2>My Brackets <a href="/brackets/new" class="btn btn-small">Create a Bracket</a></h2>
-    <div class="well-frame">
-      <table class="table table-striped">
+<div class="container">
+  <ul class="nav nav-tabs">
+  	<li class="active"> <a href="#tab1" data-toggle="tab">My Brackets</a></li>
+  	<li><a href="#tab2" data-toggle="tab">My Pools</a></li>
+  </ul>
+  
+    <div class="tab-content">
+    <div class="tab-pane active" id="tab1">
+
+	<h2>My Brackets</h2>
+
+      <table id="usersimilarity" class="table table-striped tablesorter">
         <thead>
           <tr>
             <th>Name</th>
@@ -20,19 +37,22 @@
         </thead>
         <tbody>
           {% for e in entries %}
-          <tr>
-            <td><a href="/brackets/{{e.id}}">{{e.name}}</a></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
+              {% for i in range(e.pools|length) %}
+              <tr>
+                <td><a href="/brackets/{{e.id}}">{{e.name}}</a></td>
+                <td><a href="/pools/{{e.pools[i]}}">{{ e.pools[i] }}</a></td>
+                <td></td>
+                <td></td>
+              </tr>
+              {% endfor %}
           {% endfor %}
+
         </tbody>
       </table>
     </div>
-  </div>
-  <div class="span6">
-    <h2>My Pools <a href="/pools/new" class="btn btn-small">Create a Pool</a> <a href="/pools/all" class="btn btn-small">Find a Pool</a></h2>
+  
+  <div class="tab-pane" id="tab2">
+  <h2>My Pools <a href="/pools/new" class="btn btn-small">Create a Pool</a> <a href="/pools/all" class="btn btn-small">Find a Pool</a></h2>
     <div class="well-frame">
       <table class="table table-striped">
         <thead>
@@ -45,7 +65,7 @@
         <tbody>
           {% for p in pools %}
           <tr>
-            <td style="width:100px;"><a href="#" class="btn btn-mini">Enter a Bracket</a></td>
+            <td style="width:100px;"><a href="/brackets/choose?p={{p.id}}" class="btn btn-mini">Enter a Bracket</a></td>
             <td><a href="/pools/{{p.id}}">{{p.name}}</a></td>
             <td>{% if p.admin_user.id == user.id %}<a href="/pools/{{p.id}}/admin" class="btn btn-mini">Admin</a>{% endif %}</td>
           </tr>
@@ -54,5 +74,6 @@
       </table>
     </div>
   </div>
+</div>
 </div>
 {% endblock %}

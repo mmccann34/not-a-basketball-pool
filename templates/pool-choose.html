@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}View Game Detail{% endblock %}
+
+{% block content %}
+<h2>Choose the pool to view {{game}} <small>{{region}} Region</small> </h2>
+<div style="margin-bottom:5px;">Pools:</div>
+<form method="post" class="input_form">
+  {% for p in pools %}
+  <div style="height:20px;"><input type="checkbox" name="pool" value="{{p.id}}" style="margin-top:1.5px; margin-right:5px; float:left">{{p.name}}</div>
+  {% endfor %}
+  <input type="submit" value="Submit">
+</form>
+{% endblock %}

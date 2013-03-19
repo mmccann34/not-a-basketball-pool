@@ -22,9 +22,60 @@
   {% if not locked %}
   <a href="/brackets/choose?p={{pool.id}}" class="btn btn-primary btn-large">Enter a Bracket</a>
   {% else %}
-  <a href="/pools/{{pool.id}}/master">View Master Bracket/Game Analysis</a>
+  <a href="/pools/{{pool.id}}/master" class="btn btn-primary btn-large">View Master Bracket/Game Analysis</a>
+  <a href="/pools/{{pool.id}}/usersimilarity" class="btn btn-info btn-large">See how similar you are to others</a>
   {% endif %}
 </p>
+
+<!-- Rules Modal -->
+<!-- Button to trigger modal -->
+<div class="span2 offset10"><a href="#myModal" role="button" class="btn btn-inverse" data-toggle="modal">Pool Rules</a>
+ 
+<!-- Modal -->
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Rules for {{pool.name}}</h3>
+  </div>
+  <div class="modal-body">
+    <h4>Points per Round</h4>
+    <table style="table-layout:fixed; border:solid">
+      <thead>
+        <tr>
+          <th style="text-align:center; width:18%">Round 1</th>
+          <th style="text-align:center; width:18%">Round 2</th>
+          <th style="text-align:center; width:18%">Sweet Sixteen</th>
+          <th style="text-align:center; width:18%">Elite Eight</th>
+          <th style="text-align:center; width:18%">Final Four</th>
+          <th style="text-align:center; width:18%">Championship</th>
+        </tr>
+      </thead>
+      <tbody><tr>
+      {% for p in pool.points %}
+        <td style="text-align:center">{{p}}</td>
+      {% endfor %}
+      </tbody>
+    </table>
+    <h4>Bonus Option</h4>
+    {% if pool.bonus == 'seed' %}
+      <strong>Seed</strong>: You get these bonus points for every correct pick. This bonus adds the seed to the points for correct pick.
+      <p>For example, in a Round 1 game, you pick the #12 seed to win:
+      You would get <strong>{{pool.points[0]}} points </strong> for picking the game correctly, plus <strong>12 bonus points</strong>
+    {% elif pool.bonus == 'upset' %}
+      <strong>Upset</strong>: You get these bonus points for picking lower seeded teams to win. This bonus is calculated as the difference between the seeds when the lower seed wins.
+      <p>For example, in a Round 1 game, you pick the #12 seed to upset the #5:
+      You would get {{pool.points[0]}} points for picking the game correctly, plus 7 bonus points (#12 - #5)
+    {% else %}
+      No Bonus
+    {% endif %}
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
+</div>
+
+
+</div>
 <h2>Standings</h2>
 <div class="mod-content" style="font-size:13px;">
   <table id="standings" class="table table-striped table-hover tablesorter">

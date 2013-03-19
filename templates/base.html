@@ -2,7 +2,6 @@
 <html>
 <head>
   {% set navigation_bar = [
-  ('/brackets/new', 'createabracket', 'Create a Bracket'),
   ('/pools/new', 'createapool', 'Create a Pool'),
   ('/pools/all', 'findapool', 'Find a Pool')
   ] -%}
@@ -53,6 +52,31 @@
     {% endif %}
     {% block content %}
     {% endblock %}
-  </div>
+  
+  <hr>
+  <footer>
+    <div class="row">
+      <div class="span6">
+        <p>&copy; Not a Basketball Pool 2013 | <a href="mailto:madness@pool757.com">Send us feedback</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+
+  <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-39113965-1']);
+  _gaq.push(['_setDomainName', 'notabasketballpool.appspot.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </body>
 </html>
