@@ -99,19 +99,19 @@
     <tbody>
       {% for e in entries %}
       <tr class="{{loop.cycle('odd', 'even')}} {% if e.own %}user-entry{% endif %}" {% if locked or e.own %}onclick="document.location.href = '/brackets/{{e.id}}';"{% endif %}}>
-        <td>{{e.standings.rank if e.standings.rank else '-'}}</td>
+        <td>{{e.rank}}</td>
         <td>{{e.name}}</td>
-        <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.total) if e.standings.total else '-'}}</td>
-        <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.points[0]) if e.standings.points[0] else '-'}}</td>
-        <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.points[1]) if e.standings.points[1] else '-'}}</td>
-        <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.points[2]) if e.standings.points[2] else '-'}}</td>
-        <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.points[3]) if e.standings.points[3] else '-'}}</td>
-        <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.points[4]) if e.standings.points[4] else '-'}}</td>
-        <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.points[5]) if e.standings.points[5] else '-'}}</td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.points.total)}}</td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.points.round_1)}}</td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.points.round_2)}}</td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.points.round_3)}}</td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.points.round_4)}}</td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.points.round_5)}}</td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.points.round_6)}}</td>
         <td></td>
         <td></td>
-        <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.max_score) if e.standings.max_score else '-'}}</td>
-        <td style="text-align:center;">{{e.standings.max_score_rank if e.standings.max_score_rank else '-'}}</td>
+        <td></td>
+        <td></td>
       </tr>
       {% endfor %}
     </tbody>

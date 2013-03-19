@@ -5,8 +5,10 @@ $(document).ready( function () {
 	var oTable = $('#usersimilarity').dataTable( {
 		"sDom": 'RCfrtip',
 		"bPaginate": false,
-		"sSortable":true
-		
+		"sSortable":true,
+		"oColVis": {
+            "aiExclude": [ 0 ]
+		}
 	} );
 
 	$.extend( $.fn.dataTableExt.oStdClasses, {
