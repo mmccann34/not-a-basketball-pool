@@ -1340,20 +1340,21 @@ class ManageTourney(BaseHandler):
       self.require_login()
       return
   
-    entries = self.user.get_entries()
-    standings = dict()
-    # for e in entries:
-    #   entry_standings = Standings.by_entry(e.id)
-    #   for s in entry_standings:
-    #     if s.entry_id in standings:
-    #       standings[s.entry_id][s.pool_id] = s
-    #     else:
-    #       standings[s.entry_id] = {s.pool_id: s}
-
     pools = dict()
     for p in self.user.get_pools():
       pools[p.id] = p
-      
+
+    entries = []
+    standings = dict()
+    for e in self.user.get_entries():
+      entries.append(e)
+      entry_standings = Standings.by_entry(e.id)
+      for s in entry_standings:
+        if s.entry_id in standings:
+          standings[s.entry_id][s.pool_id] = s
+        else:
+          standings[s.entry_id] = {s.pool_id: s}
+
     params = dict()
     params['pools'] = pools 
     params['entries'] = entries

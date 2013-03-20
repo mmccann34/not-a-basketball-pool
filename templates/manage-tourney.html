@@ -42,11 +42,21 @@
         </thead>
         <tbody>
           {% for e in entries %}
-            {% for p in e.pools %}
+            {% for pool_id in e.pools %}
             <tr class="{{loop.cycle('odd', 'even')}}" onclick="document.location.href = '/brackets/{{e.id}}';">
               <td>{{e.name}}</td>
-              {% if p in pools %}
-              <td><a href="/pools/{{p}}">{{ pools[p].name }}</a></td>
+              {% if pool_id in pools %}
+              <td><a href="/pools/{{pool_id}}">{{ pools[pool_id].name }}</a></td>
+              <td>{{standings[e.id][pool_id].rank if standings[e.id][pool_id].rank else '-'}}</td>
+              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].total) if standings[e.id][pool_id].total else '-'}}</td>
+              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[0]) if standings[e.id][pool_id].points[0] else '-'}}</td>
+              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[1]) if standings[e.id][pool_id].points[1] else '-'}}</td>
+              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[2]) if standings[e.id][pool_id].points[2] else '-'}}</td>
+              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[3]) if standings[e.id][pool_id].points[3] else '-'}}</td>
+              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[4]) if standings[e.id][pool_id].points[4] else '-'}}</td>
+              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[5]) if standings[e.id][pool_id].points[5] else '-'}}</td>
+              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].max_score) if standings[e.id][pool_id].max_score else '-'}}</td>
+              <td style="text-align:center;">{{standings[e.id][pool_id].max_score_rank if standings[e.id][pool_id].max_score_rank else '-'}}</td>
               {% else %}
               <td></td>
               <td></td>
