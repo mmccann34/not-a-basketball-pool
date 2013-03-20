@@ -1332,6 +1332,8 @@ class BracketChoose(BaseHandler):
           entry.pools.append(pool.id)
           entry.put()
           Standings.add_new(entry.id, pool.id)
+          ##Put a task on the queue to calc standings so we can return to user quickly
+          deferred.defer(calculate_standings)
       self.redirect('/pools/' + str(pool.id))
 
 class ManageTourney(BaseHandler):
