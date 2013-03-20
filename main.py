@@ -574,6 +574,7 @@ class Standings(db.Model):
                 points = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                 year = datetime.now().year)
     s.put()
+    return s
 
   def reset(self):
     self.points = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -833,7 +834,10 @@ class PoolPage(BaseHandler):
         entries = []
         all_standings = Standings.by_pool(pool.id)
         for e in Entry.by_pool(pool.id):
-          e.standings = all_standings[e.id]
+          if e.id in all_standings:
+            e.standings = all_standings[e.id]
+          else:
+            e.standings = Standings.add_new(e.id, pool.id)    
           entries.append(e)
         entries.sort(key=attrgetter('name'))
         entries.sort(key=attrgetter('standings.rank'))
