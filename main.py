@@ -1072,7 +1072,7 @@ def calculate_standings():
                         lowest_potential_seed = game.team_1_lowest_potential_seed
                     bonus = max(0, picked_winner.seed - lowest_potential_seed)
                 elif pool.bonus == 'seed':
-                  bonus = winner.seed
+                  bonus = picked_winner.seed
               ## Calculate round
               if i < 32:
                 potential_points += pool.points[0] + bonus
@@ -1335,13 +1335,6 @@ class ManageTourney(BaseHandler):
     if not self.user:
       self.require_login()
       return
-
-#	pools = dict()
-#	pools = self.user.get_pools()
-
-#	for p in userpools:
-#		self.write(str(p.name)+ '<br>')
-
     
     params = dict()
     params['pools'] = self.user.get_pools()
