@@ -835,7 +835,7 @@ class PoolPage(BaseHandler):
     if not pool:
       self.error(404)
     else:
-      if self.user.id in pool.users:
+      if self.user.id in pool.users or self.user.admin:
         entries = []
         all_standings = Standings.by_pool(pool.id)
         for e in Entry.by_pool(pool.id):
@@ -1154,7 +1154,7 @@ class BracketEntry(BaseHandler):
     else:
       entry = Entry.by_id(int(entry_id))
       if entry:
-        if not self.locked and self.user.id != entry.user.id:
+        if not self.locked and self.user.id != entry.user.id and not self.user.admin:
           self.render('access-denied.html')
           return
         if self.locked:
@@ -1268,6 +1268,7 @@ class BracketEntry(BaseHandler):
         Admin.update_regions(regions)
         Game.update_games()
         calculate_standings()
+        self.add_flash('Master Bracket was saved successfully and standings were recalculated.', 'success')
         self.redirect('/brackets/master')
         return
     else:

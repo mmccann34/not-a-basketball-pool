@@ -98,7 +98,7 @@
     </thead>
     <tbody>
       {% for e in entries %}
-      <tr class="{{loop.cycle('odd', 'even')}} {% if e.own %}user-entry{% endif %}" {% if locked or e.own %}onclick="document.location.href = '/brackets/{{e.id}}';"{% endif %}}>
+      <tr class="{{loop.cycle('odd', 'even')}} {% if e.own %}user-entry{% endif %}" {% if locked or e.own or user.admin %}onclick="document.location.href = '/brackets/{{e.id}}';"{% endif %}}>
         <td>{{e.standings.rank if e.standings.rank else '-'}}</td>
         <td>{{e.name}}</td>
         <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.total) if e.standings.total else '-'}}</td>
