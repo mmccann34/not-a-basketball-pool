@@ -34,6 +34,7 @@ from webapp2_extras import sessions
 import jinja2
 
 from google.appengine.ext import db
+from google.appengine.ext import deferred
 from google.appengine.api import mail
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
@@ -519,6 +520,8 @@ class Entry(db.Model):
     e.put()
     if pool_id:
       Standings.add_new(e.id, pool_id)
+      ##Put a task on the queue to calc standings so we can return to user quickly
+      deferred.defer(calculate_standings)
     return e
 
   def update(self, picks, losers, final_score):
@@ -526,6 +529,8 @@ class Entry(db.Model):
     self.losers = losers
     self.final_score = final_score
     self.put()
+    ##Put a task on the queue to calc standings so we can return to user quickly
+    deferred.defer(calculate_standings)
 
   @classmethod
   def by_id(cls, eid):
@@ -840,6 +845,7 @@ class PoolPage(BaseHandler):
             e.standings = Standings.add_new(e.id, pool.id)    
           entries.append(e)
         entries.sort(key=attrgetter('name'))
+        entries.sort(key=attrgetter('standings.max_score_rank'))
         entries.sort(key=attrgetter('standings.rank'))
         for e in entries:
           e.own = self.user.id == e.user.id
