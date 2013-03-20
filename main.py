@@ -1449,6 +1449,12 @@ class AdminPage(BaseHandler):
     self.add_flash('Changes were saved successfully.', 'success')
     self.redirect('/admin')
 
+class RecalcStandings(BaseHandler):
+  def get(self):
+    calculate_standings()
+    self.add_flash('Standings have been recalculated.', 'success')
+    self.redirect('/admin')
+
 class ValidateEntry(BaseHandler):
   def get(self):
     name = self.request.get('entry_name')
@@ -1840,6 +1846,7 @@ app = webapp2.WSGIApplication([('/', Front),
                                ('/mypools', MyPools),
                                ('/admin', AdminPage),
                                ('/admin/teams/upload', UploadTeams),
+                               ('/admin/recalc-standings', RecalcStandings),
                                ('/settings', AccountSettings),
                                ('/settings/password/forgot', ForgotPassword),
                                ('/settings/password/reset', ResetPassword),
