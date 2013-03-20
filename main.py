@@ -631,13 +631,7 @@ class Admin(db.Model):
 
 class Front(BaseHandler):
   def get(self):
-    if self.user:
-      params = dict()
-      params['pools'] = self.user.get_pools()
-      params['entries'] = self.user.get_entries()
-      self.render('manage-tourney.html',  **params)
-    else:
-      self.render('front.html')
+    self.render('front.html')
 
 USER_RE = re.compile(r"^.{3,20}$")
 USERNAME_ERROR = "3 to 20 characters"
@@ -1764,7 +1758,59 @@ class FAQ(BaseHandler):
   def get(self):
     self.render('FAQ.html')
 		
+###POOL SETTINGS CHANGES FROM BRIAN
+class PoolSettings(BaseHandler):
+  def get(self, pool_id):
+    pooltoedit = Pool.by_id(int(pool_id))
 
+    if not pooltoedit:
+      self.error(404)
+    else:
+      if not self.user:
+        self.require_login()
+      elif self.user.id != pooltoedit.admin_user.id:
+        self.render('access-denied.html')
+      else:
+        params = dict(username = self.user.name, poolname = pooltoedit.name, pool_id=pooltoedit.id)
+        self.render('pool-settings.html', **params)
+
+  def post(self, pool_id):
+    if not self.user:
+      self.redirect('/')
+      return
+
+    have_error = False
+
+    username = self.user.name
+    pooltoedit = Pool.by_id(int(pool_id))
+    pooltoeditname = pooltoedit.name
+    pooltoeditID = pooltoedit.id
+    password_new = self.request.get('password_new')
+    verify_new = self.request.get('verify_new')
+
+    params = dict(pooltoedit = pooltoedit, username = username)
+
+    if password_new:
+      if not valid_password(password_new):
+        params['message_password_new'] = PASSWORD_ERROR
+        params['status_password_new'] = "error"
+        have_error = True
+      elif password_new != verify_new:
+        params['message_verify_new'] = "Your passwords didn't match"
+        params['status_password_new'] = "error"
+        params['status_verify_new'] = "error"
+        have_error = True
+
+    if not have_error:
+      pooltoedit.pw_hash = make_pw_hash(password_new, pooltoedit.name)
+      #self.redirect('/pools/99/PoolSettings')
+
+      pooltoedit.put()
+      self.add_flash('Your changes were saved successfully.', 'success')
+      self.redirect('/pools/all')
+    else:
+      self.add_flash('Your changes were not saved.', 'error')
+      self.render('pool-settings.html', **params)
 
 config = {}
 config['webapp2_extras.sessions'] = {
@@ -1782,6 +1828,7 @@ app = webapp2.WSGIApplication([('/', Front),
                                ('/pools/([0-9]+)', PoolPage),
                                ('/pools/([0-9]+)/usersimilarity', UserSimilarity), #User Similarity Page per Pool
                                ('/pools/([0-9]+)/admin', PoolAdmin),
+                               ('/pools/([0-9]+)/admin/PoolSettings', PoolSettings),
                                ('/pools/([0-9]+)/admin/export-picks', PoolExportPicks),
                                ('/pools/([0-9]+)/master', PoolMasterBracket),
                                ('/pools/([0-9]+)/master/([0-9]+)', GameAnalysis),
@@ -1793,6 +1840,6 @@ app = webapp2.WSGIApplication([('/', Front),
                                ('/settings/password/forgot', ForgotPassword),
                                ('/settings/password/reset', ResetPassword),
                                ('/validate/entry', ValidateEntry),
-                               ('/manage', ManageTourney)],
+                               ('/manage', ManageTourney),
                                ('/FAQ', FAQ)],
                               debug=True, config=config)
