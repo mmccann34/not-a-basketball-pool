@@ -597,6 +597,10 @@ class Standings(db.Model):
     return cls.by_year(datetime.now().year)
 
   @classmethod
+  def by_entry(cls, entry_id):
+    return Standings.all().filter('entry_id =', entry_id).ancestor(standings_key()).run(batch_size=1000)
+
+  @classmethod
   def by_pool(cls, pool_id):
     standings = dict()
     for s in Standings.all().filter('pool_id =', pool_id).ancestor(standings_key()).run(batch_size=1000):
@@ -1335,10 +1339,25 @@ class ManageTourney(BaseHandler):
     if not self.user:
       self.require_login()
       return
-    
+  
+    entries = self.user.get_entries()
+    standings = dict()
+    # for e in entries:
+    #   entry_standings = Standings.by_entry(e.id)
+    #   for s in entry_standings:
+    #     if s.entry_id in standings:
+    #       standings[s.entry_id][s.pool_id] = s
+    #     else:
+    #       standings[s.entry_id] = {s.pool_id: s}
+
+    pools = dict()
+    for p in self.user.get_pools():
+      pools[p.id] = p
+      
     params = dict()
-    params['pools'] = self.user.get_pools()
-    params['entries'] = self.user.get_entries()
+    params['pools'] = pools 
+    params['entries'] = entries
+    params['standings'] = standings
     
     self.render('manage-tourney.html',  **params)
 
