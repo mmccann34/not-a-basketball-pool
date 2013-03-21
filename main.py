@@ -1135,7 +1135,7 @@ class BracketEntry(BaseHandler):
           pool = Pool.by_id(int(pool_id))
         except ValueError:
           pool = None
-        if not pool or not self.user.id in pool.users:
+        if not pool or (self.user.id not in pool.users and not self.user.admin):
           self.error(404)
           return
       params['pool_id'] = pool_id
@@ -1253,7 +1253,7 @@ class BracketEntry(BaseHandler):
           pool = Pool.by_id(int(p_id))
         except ValueError:
           pool = None
-        if not pool or not self.user.id in pool.users:
+        if not pool or (not self.user.id in pool.users and not self.user.admin):
           self.error(404)
           return
         else:
@@ -1296,7 +1296,7 @@ class BracketChoose(BaseHandler):
     except ValueError:
       pool = None
 
-    if not pool or not self.user.id in pool.users:
+    if not pool or (not self.user.id in pool.users and not self.user.admin):
       self.error(404)
     else:
       entries = []
@@ -1322,7 +1322,7 @@ class BracketChoose(BaseHandler):
     except ValueError:
       pool = None
 
-    if not pool or not self.user.id in pool.users:
+    if not pool or (self.user.id not in pool.users and not self.user.admin):
       self.error(404)
     else:
       entries = self.request.get_all('entry')
