@@ -104,7 +104,7 @@ class BaseHandler(webapp2.RequestHandler):
     self.user = uid and User.by_id(int(uid))
     
     a = Admin.get_current()
-    self.locked = a and datetime.today() > a.lock_date
+    self.locked = a and a.locked
 
     self.dev = os.environ['SERVER_SOFTWARE'].startswith('Development')
     if self.dev:
@@ -613,18 +613,19 @@ def admins_key(group = 'default'):
 
 class Admin(db.Model):
   year = db.IntegerProperty(required = True)
-  lock_date = db.DateTimeProperty(required = True)
+  locked = db.BooleanProperty()
+  lock_date = db.DateTimeProperty()
   regions = db.ListProperty(str)
 
   @classmethod
-  def submit(cls, lock_date):
+  def submit(cls, locked):
     year = datetime.now().year
     a = Admin.all().filter('year =', year).get()
     if not a:
       a = Admin(year = year,
-                lock_date = lock_date)
+                locked = locked)
     else:
-      a.lock_date = lock_date
+      a.locked = locked
     a.put()
     return a
 
@@ -1455,8 +1456,7 @@ class AdminPage(BaseHandler):
 
     params = dict()
     a = Admin.get_current()
-    if a:
-      params['lock_date'] = datetime.strftime(a.lock_date, '%m/%d/%Y')
+    params['locked'] = a and a.locked
 
     self.render('admin.html', **params)
 
@@ -1465,8 +1465,11 @@ class AdminPage(BaseHandler):
       self.redirect('/')
       return
 
-    lock_date = datetime.strptime(self.request.get('lock_date'), '%m/%d/%Y')
-    Admin.submit(lock_date)
+    a = Admin.get_current()
+    if a.locked == True:
+      Admin.submit(False)
+    else:
+      Admin.submit(True)
 
     self.add_flash('Changes were saved successfully.', 'success')
     self.redirect('/admin')

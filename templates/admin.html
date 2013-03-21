@@ -19,10 +19,6 @@ $(function(){
 <p><a href="/brackets/master">Edit Master Bracket</a></p>
 <p><a href="/admin/recalc-standings" class="btn">Recalc Standings</a></p>
 <form method="post">
-  <fieldset>
-    <label for="datepicker">Lock Date</label>
-    <input type="text" name="lock_date" id="datepicker" value="{{lock_date}}" class="input-small">
-  </fieldset>
-  <input type="submit" class="btn btn-primary" value="Save Changes">
+  <input type="submit" class="btn btn-danger" value="{{ 'Unlock All Pools' if locked else 'Lock All Pools' }}">
 </form>
 {% endblock %}
