@@ -40,47 +40,43 @@
 
 <div class="alert alert-info">
   <button type="button" class="close" data-dismiss="alert">×</button>
-  <p>The number shown here is the number of games these two users picked in common
-  <p><em>The highest possible similarity is picking all 63 games the same</em>
+  <p>The number shown here is the number of games these two users picked in common</p>
+  <p><em>The highest possible similarity is picking all 63 games the same</em></p>
 </div>
 
 <div class="alert alert-warning">
   <button type="button" class="close" data-dismiss="alert">x</button>
-  <p><strong>Re-order the columns by dragging the header</strong>
+  <p><strong>Re-order the columns by dragging the header</strong></p>
 </div>
 
 <div class="mod-content" style="font-size:13px;">
   <table id="usersimilarity" class="table table-hover tablesorter">
-  
+    
     <thead>
       <tr>
         <th>Entry Name</th>
         {% for column in bracketnames|dictsort %}
-          <th style="text-align:center">{{ column[1]|e }}</th>
+        <th style="text-align:center">{{ column[1]|e }}</th>
         {% endfor %}
       </tr>
     </thead>
     <tbody>
     	{% for key, value in gamePicks|dictsort %}
-		  <tr>
-		    <td><a href="/brackets/{{key}}">{{ bracketnames[key] }}</a></td>
-    	    {% for kvp in value|dictsort %}
-    			 {% if kvp[1] > 45 %}
-            <td class="lotofmatch" style="text-align:center">{{ kvp[1] }}</td>
-           {% elif kvp[1] > 32 %}
-            <td class="middlematch" style="text-align:center">{{ kvp[1] }}</td>
-           {% else %}
-            <td style="text-align:center">{{ kvp[1] }}</td>
-           {% endif %}
-			    {% endfor %}
-	    </tr>
-	    {% endfor %}
-	</tbody>
+      <tr>
+        <td><a href="/brackets/{{key}}">{{ bracketnames[key] }}</a></td>
+        {% for kvp in value|dictsort %}
+        {% if kvp[1] > 45 %}
+        <td class="lotofmatch" style="text-align:center">{{ kvp[1] }}</td>
+        {% elif kvp[1] > 32 %}
+        <td class="middlematch" style="text-align:center">{{ kvp[1] }}</td>
+        {% else %}
+        <td style="text-align:center">{{ kvp[1] }}</td>
+        {% endif %}
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
   </table>
 </div>
 
-
-<footer>
-  <p>&copy; Not a Basketball Pool 2013</p>
-</footer>
 {% endblock %}

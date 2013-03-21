@@ -1563,11 +1563,11 @@ class GameAnalysis(BaseHandler):
     total = 0
     teams = []
     entries = []
-    points = Points.by_pool(pool_id)
+    standings = Standings.by_pool(pool_id)
     for e in Entry.by_pool(pool_id):
       team = all_teams[e.picks[game_id]]
       e.team = team
-      e.points = points[e.id]
+      e.standings = standings[e.id]
       e.own = self.user.id == e.user.id
       entries.append(e)
       if team in teams:
@@ -1584,6 +1584,8 @@ class GameAnalysis(BaseHandler):
     teams.sort(key=attrgetter('name'))
     teams.sort(key=attrgetter('percent_picked'), reverse=True)
     entries.sort(key=attrgetter('name'))
+    entries.sort(key=attrgetter('standings.max_score_rank'))
+    entries.sort(key=attrgetter('standings.rank'))
 
     params = dict()
     params['teams'] = teams
