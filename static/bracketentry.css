@@ -11,7 +11,6 @@
 
 input[readonly] {
   background-color: transparent;
-  cursor: auto !important;
 }
 
 input[type=text][readonly] {
