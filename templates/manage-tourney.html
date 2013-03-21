@@ -15,13 +15,13 @@
 {% block content %}
 <div class="page-header"><h1>Manage My Tourney</h1></div>
 <div class="row">
-<div class="container">
-  <ul class="nav nav-tabs">
-  	<li class="active"> <a href="#tab1" data-toggle="tab">My Brackets</a></li>
-  	<li><a href="#tab2" data-toggle="tab">My Pools</a></li>
-  </ul>
-  
-    <div class="tab-content">
+  <div class="container">
+    <ul class="nav nav-tabs">
+     <li class="active"> <a href="#tab1" data-toggle="tab">My Brackets</a></li>
+     <li><a href="#tab2" data-toggle="tab">My Pools</a></li>
+   </ul>
+   
+   <div class="tab-content">
     <div class="tab-pane active" id="tab1">
       <table id="usersimilarity" class="table table-striped table-hover tablesorter">
         <thead>
@@ -42,64 +42,64 @@
         </thead>
         <tbody>
           {% for e in entries %}
-            {% for pool_id in e.pools %}
-            <tr class="{{loop.cycle('odd', 'even')}}" onclick="document.location.href = '/brackets/{{e.id}}';">
-              <td>{{e.name}}</td>
-              {% if pool_id in pools %}
-              <td><a href="/pools/{{pool_id}}">{{ pools[pool_id].name }}</a></td>
-              <td>{{standings[e.id][pool_id].rank if standings[e.id][pool_id].rank else '-'}}</td>
-              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].total) if standings[e.id][pool_id].total else '-'}}</td>
-              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[0]) if standings[e.id][pool_id].points[0] else '-'}}</td>
-              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[1]) if standings[e.id][pool_id].points[1] else '-'}}</td>
-              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[2]) if standings[e.id][pool_id].points[2] else '-'}}</td>
-              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[3]) if standings[e.id][pool_id].points[3] else '-'}}</td>
-              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[4]) if standings[e.id][pool_id].points[4] else '-'}}</td>
-              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[5]) if standings[e.id][pool_id].points[5] else '-'}}</td>
-              <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].max_score) if standings[e.id][pool_id].max_score else '-'}}</td>
-              <td style="text-align:center;">{{standings[e.id][pool_id].max_score_rank if standings[e.id][pool_id].max_score_rank else '-'}}</td>
-              {% else %}
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              {% endif %}
+          {% for pool_id in e.pools %}
+          <tr class="{{loop.cycle('odd', 'even')}}" onclick="document.location.href = '/brackets/{{e.id}}';">
+            <td>{{e.name}}</td>
+            {% if pool_id in pools %}
+            <td><a href="/pools/{{pool_id}}">{{ pools[pool_id].name }}</a></td>
+            <td>{{standings[e.id][pool_id].rank if standings[e.id][pool_id].rank else '-'}}</td>
+            <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].total) if standings[e.id][pool_id].total else '-'}}</td>
+            <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[0]) if standings[e.id][pool_id].points[0] else '-'}}</td>
+            <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[1]) if standings[e.id][pool_id].points[1] else '-'}}</td>
+            <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[2]) if standings[e.id][pool_id].points[2] else '-'}}</td>
+            <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[3]) if standings[e.id][pool_id].points[3] else '-'}}</td>
+            <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[4]) if standings[e.id][pool_id].points[4] else '-'}}</td>
+            <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].points[5]) if standings[e.id][pool_id].points[5] else '-'}}</td>
+            <td style="text-align:center;">{{'{0:.3g}'.format(standings[e.id][pool_id].max_score) if standings[e.id][pool_id].max_score else '-'}}</td>
+            <td style="text-align:center;">{{standings[e.id][pool_id].max_score_rank if standings[e.id][pool_id].max_score_rank else '-'}}</td>
+            {% else %}
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="tab-pane" id="tab2">
+      <!-- <h2><a href="/pools/new" class="btn btn-small">Create a Pool</a> <a href="/pools/all" class="btn btn-small">Find a Pool</a></h2> -->
+      <div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Name</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in pools.values() %}
+            <tr>
+              <td style="width:100px;"><a href="/brackets/choose?p={{p.id}}" class="btn btn-mini">Enter a Bracket</a></td>
+              <td><a href="/pools/{{p.id}}">{{p.name}}</a></td>
+              <td>{% if p.admin_user.id == user.id %}<a href="/pools/{{p.id}}/admin" class="btn btn-mini">Admin</a>{% endif %}</td>
             </tr>
             {% endfor %}
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  
-  <div class="tab-pane" id="tab2">
-  <!-- <h2><a href="/pools/new" class="btn btn-small">Create a Pool</a> <a href="/pools/all" class="btn btn-small">Find a Pool</a></h2> -->
-    <div>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Name</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for p in pools.values() %}
-          <tr>
-            <td style="width:100px;"><a href="/brackets/choose?p={{p.id}}" class="btn btn-mini">Enter a Bracket</a></td>
-            <td><a href="/pools/{{p.id}}">{{p.name}}</a></td>
-            <td>{% if p.admin_user.id == user.id %}<a href="/pools/{{p.id}}/admin" class="btn btn-mini">Admin</a>{% endif %}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-</div>
 </div>
 {% endblock %}
