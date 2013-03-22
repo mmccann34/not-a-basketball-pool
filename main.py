@@ -601,9 +601,9 @@ class Standings(db.Model):
     return Standings.all().filter('entry_id =', entry_id).filter('round =', 0).ancestor(standings_key()).run(batch_size=1000)
 
   @classmethod
-  def by_pool(cls, pool_id, round = 0, day = None):
+  def by_pool(cls, pool_id, day = None):
     standings = dict()
-    for s in Standings.all().filter('pool_id =', pool_id).filter('round =', round).filter('day =', day).ancestor(standings_key()).run(batch_size=1000):
+    for s in Standings.all().filter('pool_id =', pool_id).filter('day =', day).ancestor(standings_key()).run(batch_size=1000):
       standings[s.entry_id] = s
     return standings
 
@@ -616,6 +616,7 @@ class Admin(db.Model):
   locked = db.BooleanProperty()
   lock_date = db.DateTimeProperty()
   regions = db.ListProperty(str)
+  days_played = db.IntegerProperty()
 
   @classmethod
   def submit(cls, locked):
@@ -841,22 +842,38 @@ class PoolPage(BaseHandler):
       self.error(404)
     else:
       if self.user.id in pool.users or self.user.admin:
+        params = dict()
         entries = []
-        all_standings = Standings.by_pool(pool.id)
+        day = self.request.get('day')
+        if not day or int(day) == 0:
+          all_standings = Standings.by_pool(pool.id)
+          params['selected'] = 0
+        else:
+          all_standings = Standings.by_pool(pool.id, int(day))
+          params['selected'] = int(day)
+
         for e in Entry.by_pool(pool.id):
           if e.id in all_standings:
             e.standings = all_standings[e.id]
-          else:
-            e.standings = Standings.add_new(e.id, pool.id)    
           entries.append(e)
         entries.sort(key=attrgetter('name'))
         entries.sort(key=attrgetter('standings.max_score_rank'))
         entries.sort(key=attrgetter('standings.rank'))
         for e in entries:
           e.own = self.user.id == e.user.id
-        params = dict()
         params['pool'] = pool
         params['entries'] = entries
+
+        ##Standings history options
+        standings_options = []
+        a = Admin.get_current()
+        if a.days_played > 0:
+          standings_options.append([0, 'Current'])
+          standings_options.append([1, 'Round 1, Day 1'])
+          if a.days_played > 1:
+            standings_options.append([2, 'Round 1, Day 2'])
+        params['standings_options'] = standings_options
+
         self.render('pool.html', **params)
       else:
         self.render('pool-join.html', pool = pool)
@@ -1495,14 +1512,17 @@ class LockScores(BaseHandler):
       new_standing.prev_rank = s.prev_rank
       new_standing.change_rank = s.change_rank
       new_standing.round = int(round)
-      if day:
-        new_standing.day = int(day)
+      new_standing.day = int(day)
       new_standing.put()
       
       if s.prev_rank:
         s.change_rank = s.rank - s.prev_rank
       s.prev_rank = s.rank
       s.put()
+
+    a = Admin.get_current()
+    a.days_played += int(day)
+    a.put()
 
     self.add_flash('Scores were locked successfully.', 'success')
     self.redirect('/admin')
