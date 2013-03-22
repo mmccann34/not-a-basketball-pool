@@ -1758,43 +1758,45 @@ class ForgotPassword(BaseHandler):
       self.redirect('/login?password_reset=true')
 
 class UserSimilarity(BaseHandler):
-	def get(self, pool_id):
-		if not self.user:
-			self.require_login()
-			return
-		
-		pool_id = int(pool_id)
-		pool = Pool.by_id(pool_id)
-		entries = Entry.by_pool(pool_id)
-		gameMatches = 0  #initialize variable to track matches with other users
-		
-		if not pool:
-			self.error(404)
-		else:
-			if self.user.id in pool.users:
-				sameGamePicks = {} # this stores the dictionary of game similarities
-				bracketnames = {}  # this will store the bracket entry names
-				for e1 in entries:
-					sameGamePicks[e1.id] = {}
-					bracketnames[e1.id] = e1.name
-					for e2 in Entry.by_pool(pool_id):
-						for game in range(63):
-							if (e1.picks[game] == e2.picks[game]):
-								gameMatches += 1
-						sameGamePicks[e1.id][e2.id] = gameMatches
-						gameMatches = 0
-#				self.write(str(sameGamePicks)+ '<br>')   this was for testing the output to the browser
-		
-		params = dict()
-		params['pool'] = pool
-		params['gamePicks'] = sameGamePicks
-		params['bracketnames'] = bracketnames
-		self.render('usersimilarity.html', **params)
-		
+  def get(self, pool_id):
+    if not self.user:
+      self.require_login()
+      return
+
+    pool_id = int(pool_id)
+    pool = Pool.by_id(pool_id)
+    gameMatches = 0  #initialize variable to track matches with other users
+
+    entries = []
+    for e in Entry.by_pool(pool_id):
+      entries.append(e)
+
+    if not pool:
+      self.error(404)
+    else:
+      if self.user.id in pool.users:
+        sameGamePicks = {} # this stores the dictionary of game similarities
+        bracketnames = {}  # this will store the bracket entry names
+        for e1 in entries:
+          sameGamePicks[e1.id] = {}
+          bracketnames[e1.id] = e1.name
+          for e2 in entries:
+            for game in range(63):
+              if (e1.picks[game] == e2.picks[game]):
+                gameMatches += 1
+            sameGamePicks[e1.id][e2.id] = gameMatches
+            gameMatches = 0
+
+    params = dict()
+    params['pool'] = pool
+    params['gamePicks'] = sameGamePicks
+    params['bracketnames'] = bracketnames
+    self.render('usersimilarity.html', **params)
+
 class FAQ(BaseHandler):
   def get(self):
     self.render('FAQ.html')
-		
+
 ###POOL SETTINGS CHANGES FROM BRIAN
 class PoolSettings(BaseHandler):
   def get(self, pool_id):
