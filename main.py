@@ -1500,7 +1500,7 @@ def get_game_title(game_id):
     if game_id < 8:
       region = a.regions[0]
     elif game_id < 16:
-      region = regions[1]
+      region = a.regions[1]
     elif game_id < 24:
       region = a.regions[2]
     else:
