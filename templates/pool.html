@@ -90,7 +90,7 @@
         <th style="text-align:center;">EE</th>
         <th style="text-align:center;">FF</th>
         <th style="text-align:center;">Champ</th>
-        <th style="text-align:center;">Prior Rank</th>
+        <th style="text-align:center;">Prev Rank</th>
         <th style="text-align:center;">Change in Rank</th>
         <th style="text-align:center;">Max Score</th>
         <th style="text-align:center;">Max Score Rank</th>
@@ -108,8 +108,8 @@
         <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.points[3]) if e.standings.points[3] else '-'}}</td>
         <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.points[4]) if e.standings.points[4] else '-'}}</td>
         <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.points[5]) if e.standings.points[5] else '-'}}</td>
-        <td></td>
-        <td></td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.prev_rank) if e.standings.prev_rank else '-'}}</td>
+        <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.change_rank) if e.standings.change_rank else '-'}}</td>
         <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.max_score) if e.standings.max_score else '-'}}</td>
         <td style="text-align:center;">{{e.standings.max_score_rank if e.standings.max_score_rank else '-'}}</td>
       </tr>

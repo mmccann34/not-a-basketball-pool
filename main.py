@@ -1102,6 +1102,7 @@ def calculate_standings():
           standing.rank = rank_tie
         else:
           standing.rank = rank_tie = i
+        standing.change_rank = standing.rank - standing.prev_rank
         last_score = standing.total
 
       rank_tie = 1

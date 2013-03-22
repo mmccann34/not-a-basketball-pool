@@ -1,0 +1,15 @@
+/* tablesorter */
+table.tablesorter thead tr .header {
+  /*background-image: url(/static/images/bg.gif);*/
+  /*background-repeat: no-repeat;*/
+  /*background-position: center right;*/
+  cursor: pointer;
+}
+
+tr[onclick] {
+  cursor: pointer;
+}
+
+tr.user-entry {
+  font-weight: bold;
+}
