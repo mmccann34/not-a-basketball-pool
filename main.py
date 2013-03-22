@@ -586,11 +586,11 @@ class Standings(db.Model):
 
   @classmethod
   def get(cls, entry_id, pool_id):
-    return Standings.all().filter('entry_id =', entry_id).filter('pool_id =', pool_id).ancestor(standings_key()).get()
+    return Standings.all().filter('entry_id =', entry_id).filter('pool_id =', pool_id).filter('round =', 0).ancestor(standings_key()).get()
 
   @classmethod
   def by_year(cls, year):
-    return Standings.all().filter('year =', year).ancestor(standings_key()).run(batch_size = 1000)
+    return Standings.all().filter('year =', year).filter('round =', 0).ancestor(standings_key()).run(batch_size = 1000)
 
   @classmethod
   def current(cls):
@@ -598,12 +598,12 @@ class Standings(db.Model):
 
   @classmethod
   def by_entry(cls, entry_id):
-    return Standings.all().filter('entry_id =', entry_id).ancestor(standings_key()).run(batch_size=1000)
+    return Standings.all().filter('entry_id =', entry_id).filter('round =', 0).ancestor(standings_key()).run(batch_size=1000)
 
   @classmethod
-  def by_pool(cls, pool_id):
+  def by_pool(cls, pool_id, round = 0, day = None):
     standings = dict()
-    for s in Standings.all().filter('pool_id =', pool_id).ancestor(standings_key()).run(batch_size=1000):
+    for s in Standings.all().filter('pool_id =', pool_id).filter('round =', round).filter('day =', day).ancestor(standings_key()).run(batch_size=1000):
       standings[s.entry_id] = s
     return standings
 
@@ -1460,6 +1460,7 @@ class AdminPage(BaseHandler):
 
     self.render('admin.html', **params)
 
+class LockPools(BaseHandler):
   def post(self):
     if not self.user or not self.user.admin:
       self.redirect('/')
@@ -1471,7 +1472,38 @@ class AdminPage(BaseHandler):
     else:
       Admin.submit(True)
 
-    self.add_flash('Changes were saved successfully.', 'success')
+    self.add_flash('Pools were locked successfully.', 'success')
+    self.redirect('/admin')
+
+class LockScores(BaseHandler):
+  def post(self):
+    if not self.user or not self.user.admin:
+      self.redirect('/')
+      return
+
+    round = self.request.get('round')
+    day = self.request.get('day')
+
+    for s in  Standings.current():
+      new_standing = Standings.add_new(s.entry_id, s.pool_id)
+      new_standing.points = s.points
+      new_standing.total = s.total
+      new_standing.rank = s.rank
+      new_standing.max_score = s.max_score
+      new_standing.max_score_rank = s.max_score_rank
+      new_standing.prev_rank = s.prev_rank
+      new_standing.change_rank = s.change_rank
+      new_standing.round = int(round)
+      if day:
+        new_standing.day = int(day)
+      new_standing.put()
+      
+      if s.prev_rank:
+        s.change_rank = s.rank - s.prev_rank
+      s.prev_rank = s.rank
+      s.put()
+
+    self.add_flash('Scores were locked successfully.', 'success')
     self.redirect('/admin')
 
 class RecalcStandings(BaseHandler):
@@ -1874,6 +1906,8 @@ app = webapp2.WSGIApplication([('/', Front),
                                ('/mybrackets', MyBrackets),
                                ('/mypools', MyPools),
                                ('/admin', AdminPage),
+                               ('/admin/lock-pools', LockPools),
+                               ('/admin/lock-scores', LockScores),
                                ('/admin/teams/upload', UploadTeams),
                                ('/admin/recalc-standings', RecalcStandings),
                                ('/settings', AccountSettings),
