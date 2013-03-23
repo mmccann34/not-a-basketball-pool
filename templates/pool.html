@@ -78,7 +78,7 @@
     <h2>Standings 
       {% if standings_options|count > 0 %}
       <form method="get" class="form-inline" style="display:inline;">
-        <select name="day" onchange="this.form.submit()" style="font-weight:bold;">
+\        <select name="day" onchange="this.form.submit()" style="font-weight:bold;">
           {% for option in standings_options %}
           <option value="{{option[0]}}" style="font-weight:bold;" {% if option[0] == selected %} selected {% endif %}>{{option[1]}}</option>
           {% endfor %}
@@ -92,7 +92,7 @@
           <tr>
             <th>Rank</th>
             <th>Bracket Name</th>
-            {% if pool.id == 40001 %}<th>User</th>{% endif %}
+            <th>User</th>
             <th style="text-align:center;">Total Score</th>
             <th style="text-align:center;">Rd 1</th>
             <th style="text-align:center;">Rd 2</th>
@@ -111,7 +111,7 @@
           <tr class="{{loop.cycle('odd', 'even')}} {% if e.own %}user-entry{% endif %}" {% if locked or e.own or user.admin %}onclick="document.location.href = '/brackets/{{e.id}}';"{% endif %}}>
             <td>{{e.standings.rank if e.standings.rank else '-'}}</td>
             <td>{{e.name}}</td>
-            {% if pool.id == 40001 %}<td>{{e.user.name}}</td>{% endif %}
+            <td>{{e.user.name}}</td>
             <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.total) if e.standings.total else '-'}}</td>
             <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.points[0]) if e.standings.points[0] else '-'}}</td>
             <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.points[1]) if e.standings.points[1] else '-'}}</td>
