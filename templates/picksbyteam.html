@@ -1,19 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}{{pool.name}}{% endblock %}
+{% block title %}Pool Viz Table{% endblock %}
 
 {% block head %}
 {{ super() }}
 <script type="text/javascript" src="/static/jquery.tablesorter.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/static/ColVis.min.js"></script>
-<script type="text/javascript" src="/static/ColReorder.min.js"></script>
 <script type="text/javascript" src="/static/FixedColumns.min.js"></script>
 <script type="text/javascript" src="/static/usersimilarity.js"></script>
 
 
 <link type="text/css" rel="stylesheet" href="/static/pool.css" />
-<link type="text/css" rel="stylesheet" href="/static/ColReorder.css" />
 <link type="text/css" rel="stylesheet" href="/static/ColVis.css" />
 <link type="text/css" rel="stylesheet" href="/static/usersimilarity.css" />
 
@@ -31,53 +29,63 @@
 </div>
 <p style="text-align:center;">
   {% if not locked %}
-  <a href="/brackets/choose?p={{pool.id}}" class="btn btn-primary btn-large">Enter a Bracket</a>
+    <a href="/brackets/choose?p={{pool.id}}" class="btn btn-primary btn-large">Enter a Bracket</a>
+  
   {% else %}
-  <a href="/pools/{{pool.id}}/master" class="btn btn-primary btn-large">Master Bracket/Game Analysis</a>
-  <a href="/pools/{{pool.id}}/usersimilarity" class="btn btn-info btn-large">User Similarity</a>
-  <a href="/pools/{{pool.id}}/picksbyteam" class="btn btn-info btn-large">Pool Picks by Team</a>
+    <a href="/pools/{{pool.id}}/master" class="btn btn-primary btn-large">View Master Bracket/Game Analysis</a>
+      <a href="/pools/{{pool.id}}/usersimilarity" class="btn btn-info btn-large">User Similarity</a>
+      <a href="/pools/{{pool.id}}/picksbyteam" class="btn btn-info btn-large">Pool Picks by Team</a>
+        
+
   {% endif %}
+
 </p>
-<h2>User to User Similarity (games picked the same way)</h2>
+<h2>What did people pick?</h2>
 
 <div class="alert alert-info">
   <button type="button" class="close" data-dismiss="alert">×</button>
-  <p>The number shown here is the number of games these two users picked in common</p>
-  <p><em>The highest possible similarity is picking all 63 games the same</em></p>
+  <p>The number shown here is the number of entries that selected a team to win
+  <p><em>Higher numbers indicate that more people picked that team to win</em>
 </div>
 
 <div class="alert alert-warning">
   <button type="button" class="close" data-dismiss="alert">x</button>
-  <p><strong>Re-order the columns by dragging the header</strong></p>
+  <p><strong>Re-order the columns by dragging the header</strong>
 </div>
 
 <div class="mod-content" style="font-size:13px;">
   <table id="usersimilarity" class="table table-hover tablesorter">
+  
     <thead>
       <tr>
         <th>Entry Name</th>
-        {% for column in bracketnames|dictsort %}
-        <th style="text-align:center">{{ column[1]|e }}</th>
+        {% for i in range(6) %}
+          <th style="text-align:center"> Round {{i+1}}</th>
         {% endfor %}
       </tr>
     </thead>
     <tbody>
-    	{% for key, value in gamePicks|dictsort %}
-      <tr>
-        <td><a href="/brackets/{{key}}">{{ bracketnames[key] }}</a></td>
-        {% for kvp in value|dictsort %}
-        {% if kvp[1] > 45 %}
-        <td class="lotofmatch" style="text-align:center">{{ kvp[1] }}</td>
-        {% elif kvp[1] > 32 %}
-        <td class="middlematch" style="text-align:center">{{ kvp[1] }}</td>
-        {% else %}
-        <td style="text-align:center">{{ kvp[1] }}</td>
-        {% endif %}
-        {% endfor %}
-      </tr>
-      {% endfor %}
-    </tbody>
+    	{% for resultslist in visualizationdata.values() %}
+		  <tr>
+		    <td>{{ resultslist[0] }}</td>
+    	    {% for j in range(6) %}
+            {% set percentpicked = 100 * resultslist[j+1] / numentries %}
+    			 {% if percentpicked > 75 %}
+            <td class="lotofmatch" style="text-align:center">{{ resultslist[j+1] }} ({{'{0:.3g}'.format(percentpicked) }}%)</td>
+           {% elif percentpicked > 50 %}
+            <td class="middlematch" style="text-align:center">{{ resultslist[j+1] }} ({{'{0:.3g}'.format(percentpicked) }}%)</td>
+           {% else %}
+            <td style="text-align:center">{{ resultslist[j+1] }} ({{'{0:.3g}'.format(percentpicked) }}%)</td>
+           {% endif %}
+			    {% endfor %}
+	    </tr>
+	    {% endfor %}
+	</tbody>
   </table>
 </div>
 
+
+<footer>
+  <p>&copy; Not a Basketball Pool 2013</p>
+</footer>
 {% endblock %}

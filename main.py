@@ -1904,6 +1904,58 @@ class PoolSettings(BaseHandler):
       self.add_flash('Your changes were not saved.', 'error')
       self.render('pool-settings.html', **params)
 
+## POOL VISUALIZATION
+class DisplayPicksbyTeam(BaseHandler):
+  def get(self, pool_id):
+    if not self.user:
+      self.require_login()
+      return
+    
+    pool_id = int(pool_id)
+    pooltovisualize = Pool.by_id(pool_id)
+    entries = Entry.by_pool(pool_id)    
+    vizpicks = {}
+    numentries = 0
+
+    if not pooltovisualize:
+      self.error(404)
+    else:
+      if self.user.id in pooltovisualize.users:
+        teams = Team.by_year() # get the list of teams
+        
+        #Initialize an array for each Team that will store Round 1, Round 2, ...
+        #Each round's value will be the sum total of all people who picked that team
+        for teamtoviz in teams:
+          vizpicks[teamtoviz.id] = [teamtoviz.name, 0, 0, 0, 0, 0, 0]          
+
+        #Sum the number of people who picked a team to win each game store that
+        for e in entries:
+          numentries += 1
+          for i, p in enumerate(e.picks):            
+
+            #if this entry's pick is for a given team
+            #check which round it is and increment the counter
+            if i < 32:
+              vizpicks[p][1] += 1            
+            elif i < 48:
+              vizpicks[p][2] += 1
+            elif i < 56:
+              vizpicks[p][3] += 1
+            elif i < 60:
+              vizpicks[p][4] += 1
+            elif i < 62:
+              vizpicks[p][5] += 1            
+            elif i < 64:
+              vizpicks[p][6] += 1                
+            else:
+              self.error(404)
+
+    params = dict()
+    params['pool'] = pooltovisualize
+    params['numentries'] = numentries
+    params['visualizationdata'] = vizpicks
+    self.render('picksbyteam.html', **params)
+
 config = {}
 config['webapp2_extras.sessions'] = {
     'secret_key': 'mavlkjhasehffcsasldfkj',
@@ -1919,6 +1971,7 @@ app = webapp2.WSGIApplication([('/', Front),
                                ('/pools/all', AllPools),
                                ('/pools/([0-9]+)', PoolPage),
                                ('/pools/([0-9]+)/usersimilarity', UserSimilarity), #User Similarity Page per Pool
+                               ('/pools/([0-9]+)/picksbyteam', DisplayPicksbyTeam), #Table of times each team was picked
                                ('/pools/([0-9]+)/admin', PoolAdmin),
                                ('/pools/([0-9]+)/admin/PoolSettings', PoolSettings),
                                ('/pools/([0-9]+)/admin/export-picks', PoolExportPicks),
