@@ -1926,7 +1926,7 @@ class DisplayPicksbyTeam(BaseHandler):
         #Initialize an array for each Team that will store Round 1, Round 2, ...
         #Each round's value will be the sum total of all people who picked that team
         for teamtoviz in teams:
-          vizpicks[teamtoviz.id] = [teamtoviz.name, 0, 0, 0, 0, 0, 0]          
+          vizpicks[teamtoviz.id] = [teamtoviz.name, 0, 0, 0, 0, 0, 0, teamtoviz.bracket_position]
 
         #Sum the number of people who picked a team to win each game store that
         for e in entries:
