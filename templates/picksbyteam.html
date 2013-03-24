@@ -70,12 +70,16 @@
 		    <td>{{ resultslist[0] }}</td>
     	    {% for j in range(6) %}
             {% set percentpicked = 100 * resultslist[j+1] / numentries %}
+            {% set bracketspot = resultslist[7] %}
+            {% set gamenumber = 65-2**(6-j) + ((bracketspot-1) / 2**(j+1))|int %}
+            
+
     			 {% if percentpicked > 75 %}
-            <td class="lotofmatch" style="text-align:center">{{ resultslist[j+1] }} ({{'{0:.3g}'.format(percentpicked) }}%)</td>
+            <td class="lotofmatch" style="text-align:center"><a href="master/{{gamenumber}}">{{ resultslist[j+1] }} ({{'{0:.3g}'.format(percentpicked) }}%)</a></td>
            {% elif percentpicked > 50 %}
-            <td class="middlematch" style="text-align:center">{{ resultslist[j+1] }} ({{'{0:.3g}'.format(percentpicked) }}%)</td>
+            <td class="middlematch" style="text-align:center"><a href="master/{{gamenumber}}">{{ resultslist[j+1] }} ({{'{0:.3g}'.format(percentpicked) }}%)</a></td>
            {% else %}
-            <td style="text-align:center">{{ resultslist[j+1] }} ({{'{0:.3g}'.format(percentpicked) }}%)</td>
+            <td style="text-align:center"><a href="master/{{gamenumber}}">{{ resultslist[j+1] }} ({{'{0:.3g}'.format(percentpicked) }}%)</a></td>
            {% endif %}
 			    {% endfor %}
 	    </tr>
