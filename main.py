@@ -871,7 +871,11 @@ class PoolPage(BaseHandler):
           standings_options.append([0, 'Current'])
           standings_options.append([1, 'Round 1, Day 1'])
           if a.days_played > 1:
-            standings_options.append([2, 'Round 1, Day 2'])
+            standings_options.insert(1, [2, 'Round 1, Day 2'])
+            if a.days_played > 2:
+              standings_options.insert(1, [3, 'Round 2, Day 1'])
+              if a.days_played > 3:
+                standings_options.insert(1, [4, 'Round 2, Day 2'])
         params['standings_options'] = standings_options
 
         self.render('pool.html', **params)
@@ -1521,7 +1525,7 @@ class LockScores(BaseHandler):
       s.put()
 
     a = Admin.get_current()
-    a.days_played += int(day)
+    a.days_played = int(day)
     a.put()
 
     self.add_flash('Scores were locked successfully.', 'success')
@@ -1990,4 +1994,4 @@ app = webapp2.WSGIApplication([('/', Front),
                                ('/validate/entry', ValidateEntry),
                                ('/manage', ManageTourney),
                                ('/FAQ', FAQ)],
-                              debug=True, config=config)
+                              debug=False, config=config)
