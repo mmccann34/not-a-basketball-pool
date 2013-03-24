@@ -71,7 +71,7 @@
     	    {% for j in range(6) %}
             {% set percentpicked = 100 * resultslist[j+1] / numentries %}
             {% set bracketspot = resultslist[7] %}
-            {% set gamenumber = 64-2**(6-j) + ((bracketspot-1) / (2**(j+1)))|round|int + 1 %}
+            {% set gamenumber = 65-2**(6-j) + ((bracketspot-1) / 2**(j+1))|int %}
             
 
     			 {% if percentpicked > 75 %}
