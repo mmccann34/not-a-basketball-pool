@@ -484,6 +484,21 @@ class GameDay(db.Model):
   date = db.DateTimeProperty()
   name = db.StringProperty()
 
+####Scenario####
+def scenarios_key(group = 'default'):
+  return db.Key.from_path('scenarios', group)  
+
+class Scenario(db.Model):
+  winners = db.ListProperty(int)
+  losers = db.ListProperty(int)
+
+  @classmethod
+  def submit(cls, winners, losers):
+    s = Scenario(winners = winners,
+                  losers = losers)
+    s.put()
+    return s
+
 ####Entry####
 def entries_key(group = 'default'):
   return db.Key.from_path('entries', group)
@@ -1136,6 +1151,87 @@ def calculate_standings():
         last_score = standing.max_score
         standing.put()
 
+class CalculateScenarios(BaseHandler):
+  def get(self, pool_id):
+    # old_scenarios = Scenario.all().ancestor(scenarios_key()).run(batch_size=1000)
+    # db.delete(old_scenarios)
+    self.response.headers['Content-Type'] = 'text/csv'
+    self.response.headers['Content-Disposition'] = "attachment; filename=scenarios.csv"
+    results = []
+
+    games = Game.get_current()
+    teams = Team.get_teams_dict()
+
+    for i in range(8):
+      game = games[48 + i]
+      game.team_1_id = game.team_1.id
+      game.team_2_id = game.team_2.id
+
+    pool_id = int(pool_id)
+    pool = Pool.by_id(pool_id)
+    standings = Standings.by_pool(pool_id)
+
+    entries = []
+    for e in Entry.by_pool(pool_id):
+      entries.append(e)
+
+    for count, result in enumerate(itertools.product(range(2), repeat=15)):
+      if count <= 15000:
+        continue
+      winners = []      
+      for e in entries:
+        e.user_name = e.user.name
+        e.total = standings[e.id].total
+
+      for index, winner_index in enumerate(result):
+        i = 48 + index
+        game = games[i]
+        if winner_index == 0:
+          winner = teams[game.team_1_id]
+          loser = teams[game.team_2_id]
+        else:
+          winner = teams[game.team_2_id]
+          loser = teams[game.team_1_id]
+
+        ## Calculate points awarded for picking this game correctly
+        ## Calculate bonus
+        bonus = 0
+        if pool.bonus != 'none':
+          if pool.bonus == 'upset':
+            bonus = max(0, winner.seed - loser.seed)
+          elif pool.bonus == 'seed':
+            bonus = winner.seed
+        ## Calculate round
+        # if i < 32:
+        #   points = pool.points[0] + bonus
+        # elif i < 48:
+        #   points = pool.points[1] + bonus
+        if i < 56:
+          points = pool.points[2] + bonus
+        elif i < 60:
+          points = pool.points[3] + bonus
+        elif i < 62:
+          points = pool.points[4] + bonus
+        else:
+          points = pool.points[5] + bonus
+
+        for e in entries:
+          if e.picks[i] == winner.id:
+            e.total += points
+
+        winners.append(winner.name)
+        # losers.append(loser.id)
+
+        ## Update Team 1 in the next game if even game otherwise update Team 2
+        if game.next_game:
+          next_game = games[game.next_game - 1]
+          if i % 2 == 0:
+            next_game.team_1_id = winner.id
+          else:
+            next_game.team_2_id = winner.id
+      entries.sort(key=attrgetter('total'), reverse=True)
+      self.write(','.join(winners + map(lambda entry: entry.user_name, entries)) + '\r\n')
+
 class BracketEntry(BaseHandler):
   def get(self, entry_id):
     if not self.user:
@@ -1519,9 +1615,8 @@ class LockScores(BaseHandler):
       new_standing.day = int(day)
       new_standing.put()
       
-      if s.prev_rank:
-        s.change_rank = s.rank - s.prev_rank
       s.prev_rank = s.rank
+      s.change_rank = 0
       s.put()
 
     a = Admin.get_current()
@@ -1988,6 +2083,7 @@ app = webapp2.WSGIApplication([('/', Front),
                                ('/admin/lock-scores', LockScores),
                                ('/admin/teams/upload', UploadTeams),
                                ('/admin/recalc-standings', RecalcStandings),
+                               ('/admin/calculate-scenarios/([0-9]+)', CalculateScenarios),
                                ('/settings', AccountSettings),
                                ('/settings/password/forgot', ForgotPassword),
                                ('/settings/password/reset', ResetPassword),
