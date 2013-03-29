@@ -891,6 +891,14 @@ class PoolPage(BaseHandler):
               standings_options.insert(1, [3, 'Round 2, Day 1'])
               if a.days_played > 3:
                 standings_options.insert(1, [4, 'Round 2, Day 2'])
+                if a.days_played > 4:
+                  standings_options.insert(1, [5, 'Sweet Sixteen, Day 1'])
+                  if a.days_played > 5:
+                    standings_options.insert(1, [6, 'Sweet Sixteen, Day 2'])
+                    if a.days_played > 6:
+                      standings_options.insert(1, [7, 'Elite Eight, Day 1'])
+                      if a.days_played > 7:
+                        standings_options.insert(1, [8, 'Elite Eight, Day 2'])
         params['standings_options'] = standings_options
 
         self.render('pool.html', **params)
