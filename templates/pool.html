@@ -104,6 +104,7 @@
           <th style="text-align:center;">Change in Rank</th>
           <th style="text-align:center;">Max Score</th>
           <th style="text-align:center;">Max Score Rank</th>
+          <th>Winner</th>
         </tr>
       </thead>
       <tbody>
@@ -123,6 +124,7 @@
           <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.change_rank) if e.standings.change_rank else '-'}}</td>
           <td style="text-align:center;">{{'{0:.3g}'.format(e.standings.max_score) if e.standings.max_score else '-'}}</td>
           <td style="text-align:center;">{{e.standings.max_score_rank if e.standings.max_score_rank else '-'}}</td>
+          <td>{{e.winner}}</td>
         </tr>
         {% endfor %}
       </tbody>

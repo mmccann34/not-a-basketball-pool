@@ -867,9 +867,13 @@ class PoolPage(BaseHandler):
           all_standings = Standings.by_pool(pool.id, int(day))
           params['selected'] = int(day)
 
+        teams = Team.get_teams_dict()
+
         for e in Entry.by_pool(pool.id):
           if e.id in all_standings:
             e.standings = all_standings[e.id]
+          if e.picks[62] in teams:
+            e.winner = teams[e.picks[62]].name
           entries.append(e)
         entries.sort(key=attrgetter('name'))
         entries.sort(key=attrgetter('standings.max_score_rank'))
@@ -899,6 +903,8 @@ class PoolPage(BaseHandler):
                       standings_options.insert(1, [7, 'Elite Eight, Day 1'])
                       if a.days_played > 7:
                         standings_options.insert(1, [8, 'Elite Eight, Day 2'])
+                        if a.days_played > 8:
+                          standings_options.insert(1, [9, 'Final Four'])
         params['standings_options'] = standings_options
 
         self.render('pool.html', **params)
@@ -1163,6 +1169,9 @@ class CalculateScenarios(BaseHandler):
   def get(self, pool_id):
     # old_scenarios = Scenario.all().ancestor(scenarios_key()).run(batch_size=1000)
     # db.delete(old_scenarios)
+    games_remaining = 3
+    games_played = 63 - games_remaining
+
     self.response.headers['Content-Type'] = 'text/csv'
     self.response.headers['Content-Disposition'] = "attachment; filename=scenarios.csv"
     results = []
@@ -1170,8 +1179,8 @@ class CalculateScenarios(BaseHandler):
     games = Game.get_current()
     teams = Team.get_teams_dict()
 
-    for i in range(8):
-      game = games[48 + i]
+    for i in range(2):
+      game = games[games_played + i]
       game.team_1_id = game.team_1.id
       game.team_2_id = game.team_2.id
 
@@ -1183,16 +1192,17 @@ class CalculateScenarios(BaseHandler):
     for e in Entry.by_pool(pool_id):
       entries.append(e)
 
-    for count, result in enumerate(itertools.product(range(2), repeat=15)):
-      if count <= 15000:
-        continue
+    for count, result in enumerate(itertools.product(range(2), repeat=games_remaining)):
+      # if count <= 15000:
+      #   continue
+
       winners = []      
       for e in entries:
         e.user_name = e.user.name
         e.total = standings[e.id].total
 
       for index, winner_index in enumerate(result):
-        i = 48 + index
+        i = games_played + index
         game = games[i]
         if winner_index == 0:
           winner = teams[game.team_1_id]
@@ -1210,10 +1220,10 @@ class CalculateScenarios(BaseHandler):
           elif pool.bonus == 'seed':
             bonus = winner.seed
         ## Calculate round
-        # if i < 32:
-        #   points = pool.points[0] + bonus
-        # elif i < 48:
-        #   points = pool.points[1] + bonus
+        if i < 32:
+          points = pool.points[0] + bonus
+        elif i < 48:
+          points = pool.points[1] + bonus
         if i < 56:
           points = pool.points[2] + bonus
         elif i < 60:
@@ -1238,7 +1248,7 @@ class CalculateScenarios(BaseHandler):
           else:
             next_game.team_2_id = winner.id
       entries.sort(key=attrgetter('total'), reverse=True)
-      self.write(','.join(winners + map(lambda entry: entry.user_name, entries)) + '\r\n')
+      self.write(','.join(winners + map(lambda entry: entry.name, entries)) + '\r\n')
 
 class BracketEntry(BaseHandler):
   def get(self, entry_id):
@@ -1473,9 +1483,12 @@ class ManageTourney(BaseHandler):
     for p in self.user.get_pools():
       pools[p.id] = p
 
+    teams = Team.get_teams_dict()
     entries = []
     standings = dict()
     for e in self.user.get_entries():
+      if e.picks[62] in teams:
+        e.winner = teams[e.picks[62]].name
       entries.append(e)
       entry_standings = Standings.by_entry(e.id)
       for s in entry_standings:
