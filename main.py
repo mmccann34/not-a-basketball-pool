@@ -1152,7 +1152,12 @@ def calculate_standings():
           standing.rank = rank_tie
         else:
           standing.rank = rank_tie = i
-        standing.change_rank = standing.prev_rank - standing.rank
+
+        if not standing.prev_rank:
+          standing.change_rank = 0
+        else:
+          standing.change_rank = standing.prev_rank - standing.rank
+
         last_score = standing.total
 
       rank_tie = 1
@@ -2024,6 +2029,13 @@ class PoolSettings(BaseHandler):
       self.add_flash('Your changes were not saved.', 'error')
       self.render('pool-settings.html', **params)
 
+class QuickFix(BaseHandler):
+  def get(self):
+    master = Entry.get_master()
+    master.picks = [202001L, 232001L, 252001L, 262001L, 292001L, 302001L, 332001L, 342001L, 212002L, 232002L, 262002L, 272002L, 292002L, 312002L, 332002L, 202003L, 222003L, 242003L, 272003L, 282003L, 302003L, 322003L, 342003L, 212004L, 232004L, 252004L, 272004L, 292004L, 322004L, 342004L, 202005L, 222005L, 202001L, 262001L, 292001L, 332001L, 212002L, 272002L, 312002L, 332002L, 222003L, 282003L, 302003L, 212004L, 252004L, 292004L, 322004L, 222005L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L]
+    master.losers = [212001L, 222001L, 242001L, 272001L, 282001L, 312001L, 322001L, 202002L, 222002L, 242002L, 252002L, 282002L, 302002L, 322002L, 342002L, 212003L, 232003L, 252003L, 262003L, 292003L, 312003L, 332003L, 202004L, 222004L, 242004L, 262004L, 282004L, 302004L, 312004L, 332004L, 212005L, 232005L, 232001L, 252001L, 302001L, 342001L, 232002L, 262002L, 292002L, 202003L, 242003L, 272003L, 322003L, 342003L, 232004L, 272004L, 342004L, 202005L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L, -1L]
+    master.put()
+
 ## POOL VISUALIZATION
 class DisplayPicksbyTeam(BaseHandler):
   def get(self, pool_id):
@@ -2110,5 +2122,6 @@ app = webapp2.WSGIApplication([('/', Front),
                                ('/settings/password/reset', ResetPassword),
                                ('/validate/entry', ValidateEntry),
                                ('/manage', ManageTourney),
-                               ('/FAQ', FAQ)],
+                               ('/FAQ', FAQ),
+                               ('/quick-fix', QuickFix)],
                               debug=False, config=config)
