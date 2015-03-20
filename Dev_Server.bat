@@ -1,1 +1,0 @@
-dev_appserver.py --smtp_host=smtp.gmail.com --smtp_port=587 --smtp_user=matthew.m.mccann@gmail.com --smtp_password=vincecarter15 .
